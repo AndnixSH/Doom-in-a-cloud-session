@@ -10,6 +10,25 @@ no sound card. [doomgeneric](https://github.com/ozkl/doomgeneric) runs the
 game with a small custom backend, and [Freedoom](https://freedoom.github.io/)
 (a free replacement for the original game data) supplies the levels.
 
+## The container
+
+This is what the Claude Code cloud session looked like when this was built
+(September 2026). Other sessions may get different hardware.
+
+| | |
+| --- | --- |
+| CPU | 4 vCPUs, Intel Xeon @ 2.80 GHz, in a KVM virtual machine |
+| Memory | 15 GiB, no swap |
+| Disk | `df` shows 30 GB free, but writable space is a per-session allowance, so it can be less |
+| GPU, display, sound | none: no `/dev/dri`, no `$DISPLAY`, no `/dev/snd` |
+| OS | Ubuntu 24.04.4 LTS, Linux 6.18 |
+| Tools | gcc 13.3, make, git, Python 3.11 |
+| Network | outbound HTTPS through a proxy; GitHub and Ubuntu's package mirror were reachable |
+| Lifetime | reclaimed after a period of inactivity; anything not pushed to GitHub can be lost |
+
+Doom only uses one core. With the virtual clock described below, 2 minutes of
+game time takes about 3 seconds.
+
 ## Quick start
 
 Needs `gcc`, `make`, `git`, and Python 3 with Pillow (`pip install pillow`).
