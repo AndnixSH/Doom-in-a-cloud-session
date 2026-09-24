@@ -1,0 +1,21 @@
+# The README demo: python3 doom.py play --title -f examples/demo.txt --gif media/demo.gif
+
+# Title screen -> New Game -> Episode 1 -> "Bring on the pain" (the default skill)
+wait 1.5s
+tap esc; wait 0.5s
+tap enter; wait 0.5s
+tap enter; wait 0.5s
+tap enter
+
+# E1M1: head down the corridor and drop the first zombie
+hold forward 3s
+turn left 6
+hold fire 2s
+
+# Grab the health bonuses at the junction
+hold forward 1.5s
+
+# A second zombie sneaks up from behind
+turn left 180
+hold fire 1.5s
+wait 1s
