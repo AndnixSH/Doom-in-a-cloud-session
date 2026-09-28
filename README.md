@@ -44,11 +44,22 @@ python3 doom.py play "hold forward 3s; turn left 6; hold fire 2s" --gif out/run.
 ```json
 {"tic": 181, "state": "level", "episode": 1, "map": 1, "health": 100, "armor": 0,
  "weapon": "pistol", "ammo": 45, "kills": 1, "total_kills": 29, "items": 0,
- "secrets": 0, "dead": false, "x": 466, "y": 256, "angle": 5}
+ "secrets": 0, "dead": false, "x": 466, "y": 256, "angle": 5.3,
+ "monsters_in_sight": []}
 ```
+
+`monsters_in_sight` lists every living monster the player has a clear line
+to, facing or not, with its type, position and health.
 
 To re-render the demo above:
 `python3 doom.py play --title -f examples/demo.txt --gif media/demo.gif`.
+
+`examples/e1m1-complete.txt` plays all of E1M1 from the title screen to the
+exit switch (34% kills, finished in 0:44):
+`python3 doom.py play --title -f examples/e1m1-complete.txt`. Claude
+recorded it by running an autopilot through [live mode](#live-mode):
+A* pathfinding over the map's geometry, and aiming at whatever showed up in
+`monsters_in_sight`.
 
 ## How it works
 
@@ -79,7 +90,8 @@ Moves are separated by `;` or newlines, and `#` starts a comment.
 | --- | --- |
 | `hold KEYS TIME` | hold keys down, e.g. `hold forward 2s`, `hold forward+fire 1s` |
 | `tap KEYS [xN]` | a quick press, e.g. `tap use`, `tap down x2` |
-| `turn left\|right DEGREES` | turn in place, accurate to about 2° |
+| `turn left\|right DEGREES` | turn in place with the arrow keys, accurate to about 2° |
+| `aim left\|right DEGREES` | turn instantly with a mouse flick, exact to 0.05° (up to 179.9°) |
 | `wait TIME` | do nothing |
 | `press KEYS` / `release KEYS` | for overlapping moves: `press forward; turn left 90; release forward` |
 
@@ -106,6 +118,24 @@ python3 doom.py play --session e1m1 --reset "hold forward 3s" --gif out/turn.gif
 python3 doom.py play --session e1m1 "turn left 6; hold fire 2s" --gif out/turn.gif
 python3 doom.py play --session e1m1 "hold forward 1.5s" --gif out/turn.gif
 ```
+
+## Live mode
+
+For scripts that react to the game, the binary can stay running and take
+commands on stdin. Start it with `-interactive`, and it prints the status JSON
+at `-maxtics` and then waits:
+
+```
+key GAMETIC PRESSED KEYCODE   queue a key event (PRESSED: 0 up, 1 down, 2 mouse turn)
+until GAMETIC                 run to that tic, then print the status again
+shot FILE                     write the current frame as a PPM
+quit                          exit
+```
+
+Events must be queued in tic order, no earlier than the current tic.
+`doom.compile_moves(text, tic=...)` turns move text into these events. A run
+driven this way replays identically from its moves, so it can be saved as a
+session or a moves file.
 
 ## Options
 

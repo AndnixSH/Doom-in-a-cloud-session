@@ -11,13 +11,22 @@
 // stands still, so frames are counted separately, one per 1/35 s of video.
 //
 // Extra command-line options (besides the usual Doom ones like -iwad, -warp):
-//   -keys FILE      key script, one "GAMETIC PRESSED KEYCODE" event per line
+//   -keys FILE      key script, one "GAMETIC PRESSED KEYCODE" event per line;
+//                   PRESSED 2 is a mouse turn instead, with KEYCODE the
+//                   horizontal mouse motion (8/65536 of a circle per unit,
+//                   positive turns right)
 //   -frames DIR     write DIR/frame_FRAMENO_GAMETIC.ppm (320x200) every
 //                   -every frames
 //   -every N        frame interval (default 2, i.e. 17.5 fps)
 //   -shot FILE      write the final frame to FILE at full 640x400
 //   -maxtics N      stop once gametic reaches N (35 tics = 1 second;
 //                   default 30 seconds)
+//   -interactive    at -maxtics, print the status and wait for commands on
+//                   stdin instead of exiting:
+//                     key GAMETIC PRESSED KEYCODE   queue a key event
+//                     shot FILE                     write the current frame
+//                     until GAMETIC                 run on, then report again
+//                     quit                          exit (so does end of input)
 
 #include "doomgeneric.h"
 #include "doomkeys.h"
@@ -25,17 +34,19 @@
 #include "doomstat.h"
 #include "d_player.h"
 #include "m_argv.h"
+#include "p_local.h"
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define MAX_EVENTS 65536
 
 typedef struct
 {
     int tic;
-    int pressed;
-    unsigned char key;
+    int pressed;    // 0 key up, 1 key down, 2 mouse turn
+    int key;        // key code, or mouse motion for a mouse turn
 } key_event_t;
 
 // Start above zero: I_GetTime() treats a base time of 0 as "not set yet".
@@ -52,12 +63,27 @@ static const char *shot_path = NULL;
 static int frame_every = 2;
 static int max_tics = 35 * 30;
 static int frame_no = 0;
+static int interactive = 0;
 
 static const char *ArgValue(const char *name)
 {
     int p = M_CheckParmWithArgs((char *) name, 1);
 
     return p ? myargv[p + 1] : NULL;
+}
+
+static void AddEvent(int tic, int pressed, int key)
+{
+    if (num_events == MAX_EVENTS)
+    {
+        fprintf(stderr, "headless: more than %d key events\n", MAX_EVENTS);
+        exit(1);
+    }
+
+    events[num_events].tic = tic;
+    events[num_events].pressed = pressed;
+    events[num_events].key = key;
+    num_events++;
 }
 
 static void LoadKeyScript(const char *path)
@@ -71,16 +97,13 @@ static void LoadKeyScript(const char *path)
         exit(1);
     }
 
-    while (fgets(line, sizeof(line), f) != NULL && num_events < MAX_EVENTS)
+    while (fgets(line, sizeof(line), f) != NULL)
     {
         int tic, pressed, key;
 
         if (sscanf(line, "%d %d %d", &tic, &pressed, &key) == 3)
         {
-            events[num_events].tic = tic;
-            events[num_events].pressed = pressed;
-            events[num_events].key = (unsigned char) key;
-            num_events++;
+            AddEvent(tic, pressed, key);
         }
     }
 
@@ -137,7 +160,61 @@ static const char *GameStateName(void)
     }
 }
 
-static void PrintStatusAndExit(void)
+static const char *MonsterName(int doomednum)
+{
+    switch (doomednum)
+    {
+        case 3004: return "zombieman";
+        case 9:    return "shotgun guy";
+        case 65:   return "chaingunner";
+        case 3001: return "imp";
+        case 3002: return "demon";
+        case 58:   return "spectre";
+        case 3006: return "lost soul";
+        case 3005: return "cacodemon";
+        case 69:   return "hell knight";
+        case 3003: return "baron of hell";
+        case 68:   return "arachnotron";
+        case 71:   return "pain elemental";
+        case 66:   return "revenant";
+        case 67:   return "mancubus";
+        case 64:   return "arch-vile";
+        case 7:    return "spider mastermind";
+        case 16:   return "cyberdemon";
+        case 84:   return "wolfenstein ss";
+        default:   return "monster";
+    }
+}
+
+// Living monsters the player has a line of sight to, facing or not.
+static void PrintMonstersInSight(player_t *p)
+{
+    thinker_t *th;
+    const char *sep = "";
+
+    printf(", \"monsters_in_sight\": [");
+
+    for (th = thinkercap.next; p->mo != NULL && th != &thinkercap; th = th->next)
+    {
+        mobj_t *mo = (mobj_t *) th;
+
+        if (th->function.acp1 != (actionf_p1) P_MobjThinker
+         || !(mo->flags & MF_COUNTKILL) || mo->health <= 0
+         || !P_CheckSight(p->mo, mo))
+        {
+            continue;
+        }
+
+        printf("%s{\"type\": \"%s\", \"x\": %d, \"y\": %d, \"health\": %d}",
+               sep, MonsterName(mobjinfo[mo->type].doomednum),
+               mo->x >> FRACBITS, mo->y >> FRACBITS, mo->health);
+        sep = ", ";
+    }
+
+    printf("]");
+}
+
+static void PrintStatus(void)
 {
     player_t *p = &players[consoleplayer];
     static const char *weapons[] = {
@@ -164,17 +241,47 @@ static void PrintStatusAndExit(void)
 
     if (p->mo != NULL)
     {
-        printf(", \"x\": %d, \"y\": %d, \"angle\": %d",
+        printf(", \"x\": %d, \"y\": %d, \"angle\": %.1f",
                p->mo->x >> FRACBITS, p->mo->y >> FRACBITS,
-               (int) ((uint64_t) p->mo->angle * 360 >> 32));
+               p->mo->angle * (360.0 / 4294967296.0));
     }
 
+    PrintMonstersInSight(p);
     printf("}\n");
     fflush(stdout);
+}
 
-    if (shot_path != NULL)
+// Read commands until one says to run on (see -interactive above).
+static void ReadCommands(void)
+{
+    char line[4200];
+
+    while (fgets(line, sizeof(line), stdin) != NULL)
     {
-        WritePPM(shot_path, 1);
+        int tic, pressed, key;
+        char path[4096];
+
+        if (sscanf(line, "key %d %d %d", &tic, &pressed, &key) == 3)
+        {
+            AddEvent(tic, pressed, key);
+        }
+        else if (sscanf(line, "shot %4095s", path) == 1)
+        {
+            WritePPM(path, 1);
+        }
+        else if (sscanf(line, "until %d", &tic) == 1)
+        {
+            max_tics = tic;
+            return;
+        }
+        else if (strncmp(line, "quit", 4) == 0)
+        {
+            break;
+        }
+        else
+        {
+            fprintf(stderr, "headless: unknown command: %s", line);
+        }
     }
 
     exit(0);
@@ -199,6 +306,7 @@ void DG_Init(void)
 
     frames_dir = ArgValue("-frames");
     shot_path = ArgValue("-shot");
+    interactive = M_CheckParm("-interactive") > 0;
     singletics = true;
 }
 
@@ -215,9 +323,20 @@ void DG_DrawFrame(void)
 
     frame_no++;
 
-    if (gametic >= max_tics)
+    while (gametic >= max_tics)
     {
-        PrintStatusAndExit();
+        PrintStatus();
+
+        if (!interactive)
+        {
+            if (shot_path != NULL)
+            {
+                WritePPM(shot_path, 1);
+            }
+            exit(0);
+        }
+
+        ReadCommands();
     }
 }
 
@@ -241,9 +360,17 @@ int DG_GetKey(int *pressed, unsigned char *key)
         key_event_t *e = &events[next_event++];
         event_t ev = {0};
 
-        ev.type = e->pressed ? ev_keydown : ev_keyup;
-        ev.data1 = e->key;
-        ev.data2 = e->pressed ? e->key : 0;
+        if (e->pressed == 2)
+        {
+            ev.type = ev_mouse;
+            ev.data2 = e->key;
+        }
+        else
+        {
+            ev.type = e->pressed ? ev_keydown : ev_keyup;
+            ev.data1 = e->key;
+            ev.data2 = e->pressed ? e->key : 0;
+        }
         D_PostEvent(&ev);
     }
 

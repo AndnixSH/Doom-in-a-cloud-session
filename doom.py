@@ -47,6 +47,8 @@ TAP_GAP_TICS = 2     # pause after each tap so repeated taps stay separate
 SLOW_TURN_TICS = 5
 SLOW_TURN_DEG = 320 * 360 / 65536
 TURN_DEG = 640 * 360 / 65536
+# Aiming is a mouse turn: each unit of motion turns 8/65536 of a circle.
+AIM_UNITS_PER_DEG = 65536 / 360 / 8
 
 KEYS = {
     "forward": 0xad, "up": 0xad,
@@ -130,14 +132,21 @@ def compile_moves(text, tic=START_TIC):
                 tic += TAP_TICS + TAP_GAP_TICS
         elif cmd in ("press", "release") and len(args) == 1:
             events.extend((tic, int(cmd == "press"), c) for c in parse_keys(args[0]))
-        elif cmd == "turn" and len(args) == 2 and args[0] in ("left", "right"):
+        elif cmd in ("turn", "aim") and len(args) == 2 and args[0] in ("left", "right"):
             try:
                 degrees = float(args[1].rstrip("°"))
             except ValueError:
                 raise MoveError(f"bad angle {args[1]!r} (try 90)") from None
-            length = turn_tics(degrees)
-            hold(parse_keys(args[0]), tic, length)
-            tic += length
+            if cmd == "turn":
+                length = turn_tics(degrees)
+                hold(parse_keys(args[0]), tic, length)
+                tic += length
+            else:
+                if not 0 <= degrees < 180:
+                    raise MoveError(f"can only aim up to 179.9 degrees, not {degrees}")
+                motion = round(degrees * AIM_UNITS_PER_DEG)
+                events.append((tic, 2, -motion if args[0] == "left" else motion))
+                tic += 1
         else:
             raise MoveError(f"don't understand {line!r}")
 

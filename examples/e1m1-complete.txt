@@ -1,0 +1,159 @@
+# All of E1M1 (Outer Prison), from the title screen to the exit switch.
+# python3 doom.py play --title -f examples/e1m1-complete.txt
+#
+# Recorded by an autopilot driving live mode: A* over the map's geometry for
+# the route, "use" at doors, and aimed pistol shots at monsters_in_sight.
+# Result: 10 of 29 kills, 8% health left, level time 0:44.
+
+wait 1.5s
+tap esc
+wait 0.6s
+tap enter
+wait 0.6s
+tap enter
+wait 0.6s
+tap enter
+wait 1.5s
+
+aim left 1.5; hold forward+run 12t
+hold forward+run 12t
+hold forward+run 12t
+hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+aim left 0.4; hold forward+run 12t
+aim left 6.2; hold fire 4t; wait 15t
+hold fire 4t; wait 15t
+aim right 2.3; hold fire 4t; wait 15t
+aim right 2.1; hold forward+run 3t
+hold forward+run 3t
+aim left 34.4; hold fire 4t; wait 15t
+aim left 9.6; hold fire 4t; wait 15t
+aim left 3.0; hold forward+run 6t
+hold forward+run 4t
+hold forward+run 3t
+aim left 0.5; hold forward+run 3t
+hold forward+run 3t
+aim left 35.4; hold forward 2t; wait 4t
+aim left 134.8; hold forward 4t; wait 4t
+aim right 1.5; hold forward 3t; wait 4t
+aim right 2.7; hold forward 2t; wait 4t
+wait 12t
+aim right 134.4; tap use; wait 1s
+aim left 7.1; hold fire 4t; wait 15t
+aim right 1.3; hold fire 4t; wait 15t
+aim right 3.9; hold fire 4t; wait 15t
+aim left 3.7; hold fire 4t; wait 15t
+aim right 4.0; hold fire 4t; wait 15t
+aim right 0.3; hold fire 4t; wait 15t
+aim left 0.4; hold fire 4t; wait 15t
+aim left 5.8; hold fire 4t; wait 15t
+aim right 2.3; hold fire 4t; wait 15t
+aim left 2.6; hold fire 4t; wait 15t
+aim left 2.4; hold fire 4t; wait 15t
+aim right 9.8; hold forward+run 6t
+hold forward+run 4t
+hold forward+run 3t
+aim left 0.5; hold forward+run 3t
+aim left 1.5; hold forward+run 3t
+aim left 1.5; hold forward+run 3t
+aim left 1.5; hold forward+run 3t
+aim left 1.5; hold forward+run 3t
+aim left 0.7; hold forward+run 3t
+aim left 0.4; tap use; wait 1s
+aim left 3.8; hold fire 4t; wait 15t
+aim right 2.5; hold fire 4t; wait 15t
+aim right 8.4; hold fire 4t; wait 15t
+aim right 1.4; hold fire 4t; wait 15t
+aim left 4.9; hold fire 4t; wait 15t
+aim left 10.2; hold fire 4t; wait 15t
+aim left 12.6; hold fire 4t; wait 15t
+aim right 1.0; hold fire 4t; wait 15t
+aim right 5.2; hold fire 4t; wait 15t
+aim right 15.9; hold fire 4t; wait 15t
+aim right 0.4; hold fire 4t; wait 15t
+aim left 4.2; hold forward+run 3t
+hold forward+run 3t
+aim left 0.3; hold forward+run 3t
+hold forward+run 3t
+aim right 0.7; hold forward+run 3t
+tap use; wait 1s
+aim right 1.0; hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+aim left 22.5; hold forward+run 12t
+aim left 8.3; hold forward+run 6t
+aim left 8.0; hold forward+run 3t
+aim left 9.7; hold forward+run 3t
+aim left 5.2; hold forward 8t; wait 4t
+aim left 133.2; hold forward 3t; wait 4t
+aim left 19.3; hold forward 5t; wait 4t
+aim left 0.5; hold forward 3t; wait 4t
+aim right 0.5; hold forward 2t; wait 4t
+wait 12t
+aim right 156.7; tap use; wait 1s
+aim left 2.6; hold forward+run 8t
+hold forward+run 5t
+aim left 6.5; hold forward+run 4t
+aim left 8.0; hold forward+run 3t
+aim left 5.6; hold forward+run 3t
+hold forward+run 3t
+tap use; wait 1s
+hold forward+run 3t
+aim right 1.1; hold forward+run 3t
+aim right 2.6; hold forward+run 3t
+aim right 5.4; hold forward+run 3t
+aim right 9.2; hold forward+run 3t
+aim right 16.4; hold forward+run 3t
+aim right 11.2; hold forward+run 12t
+aim right 36.0; hold fire 4t; wait 15t
+aim right 44.9; hold fire 4t; wait 15t
+aim right 27.5; hold fire 4t; wait 15t
+aim right 4.7; hold fire 4t; wait 15t
+aim left 76.9; hold fire 4t; wait 15t
+aim left 11.6; hold fire 4t; wait 15t
+aim left 2.3; hold fire 4t; wait 15t
+aim left 2.0; hold forward+run 6t
+hold forward+run 5t
+aim right 0.5; hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+aim left 58.8; hold fire 4t; wait 15t
+aim left 43.9; hold fire 4t; wait 32t
+aim left 7.8; hold fire 4t; wait 32t
+aim right 16.3; hold fire 4t; wait 32t
+aim left 86.1; hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+aim right 83.4; hold forward+run 12t
+aim right 5.3; hold forward+run 12t
+aim left 3.5; hold forward+run 9t
+aim left 5.2; hold forward+run 3t
+aim left 5.7; hold forward+run 3t
+wait 12t
+aim left 133.7; tap use; wait 1s
+aim left 33.9; hold forward+run 3t
+hold forward+run 3t
+aim left 0.4; hold forward+run 3t
+aim right 59.2; hold forward+run 3t
+aim right 49.9; hold forward+run 3t
+aim right 19.2; hold forward+run 3t
+aim left 2.6; hold forward+run 3t
+aim left 6.0; hold forward+run 3t
+aim left 8.7; hold forward+run 3t
+aim left 4.6; hold forward+run 3t
+hold forward+run 3t
+tap use; wait 1s
+hold forward+run 3t
+aim right 0.9; hold forward+run 3t
+aim right 39.0; hold fire 4t; wait 32t
+aim right 30.1; hold forward 8t; wait 4t
+aim right 0.8; hold forward 7t; wait 4t
+aim right 1.5; hold forward 2t; wait 4t
+wait 12t
+aim right 15.4; tap use; wait 1s
+wait 1s
+
+wait 3s
