@@ -97,8 +97,9 @@ the real game, so use `hold fire 2s` to keep shooting.
 
 `--session NAME` saves your moves under `build/sessions/`. Each call replays
 the earlier moves (fast, and identical every time), adds the new ones, and
-writes a GIF of only the new part. That means you can play Doom through chat
-one turn at a time:
+writes a GIF of only the new part. A session keeps the `--wad`, `--level`,
+`--skill` and `--title` it started with. That means you can play Doom through
+chat one turn at a time:
 
 ```sh
 python3 doom.py play --session e1m1 --reset "hold forward 3s" --gif out/turn.gif

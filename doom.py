@@ -236,12 +236,13 @@ def play(args):
     if args.session:
         session = SESSIONS / f"{args.session}.json"
         state = {"wad": args.wad, "level": args.level, "skill": args.skill,
-                 "moves": []}
+                 "title": args.title, "moves": []}
         if session.exists() and not args.reset:
             state = json.loads(session.read_text())
             _, new_from = compile_moves("; ".join(state["moves"]))
         # A session's settings are fixed when it starts.
         args.wad, args.level, args.skill = state["wad"], state["level"], state["skill"]
+        args.title = state.get("title", False)
         if moves.strip():
             state["moves"].append(moves)
         moves = "; ".join(state["moves"])
