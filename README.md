@@ -32,6 +32,7 @@ game time takes about 3 seconds.
 ## Quick start
 
 Needs `gcc`, `make`, `git`, and Python 3 with Pillow (`pip install pillow`).
+For `--video`, also `pip install imageio-ffmpeg`.
 
 ```sh
 python3 doom.py build   # fetch doomgeneric + Freedoom and compile (~10 s)
@@ -55,11 +56,10 @@ To re-render the demo above:
 `python3 doom.py play --title -f examples/demo.txt --gif media/demo.gif`.
 
 `examples/e1m1-complete.txt` plays all of E1M1 from the title screen to the
-exit switch (34% kills, finished in 0:44):
-`python3 doom.py play --title -f examples/e1m1-complete.txt`. Claude
-recorded it by running an autopilot through [live mode](#live-mode):
-A* pathfinding over the map's geometry, and aiming at whatever showed up in
-`monsters_in_sight`.
+exit switch (34% kills, finished in 0:44). [Watch it](media/e1m1-complete.mp4),
+or re-render it with
+`python3 doom.py play --title -f examples/e1m1-complete.txt --video media/e1m1-complete.mp4`.
+The [autopilot](#autopilot) recorded it.
 
 ## How it works
 
@@ -109,7 +109,7 @@ the real game, so use `hold fire 2s` to keep shooting.
 
 `--session NAME` saves your moves under `build/sessions/`. Each call replays
 the earlier moves (fast, and identical every time), adds the new ones, and
-writes a GIF of only the new part. A session keeps the `--wad`, `--level`,
+writes a GIF or video of only the new part. A session keeps the `--wad`, `--level`,
 `--skill` and `--title` it started with. That means you can play Doom through
 chat one turn at a time:
 
@@ -137,6 +137,29 @@ Events must be queued in tic order, no earlier than the current tic.
 driven this way replays identically from its moves, so it can be saved as a
 session or a moves file.
 
+## Autopilot
+
+`autopilot/e1m1.py` plays E1M1 by itself through live mode and writes the
+run out as a moves file:
+
+```sh
+python3 autopilot/e1m1.py                                  # writes out/e1m1-autopilot.txt
+python3 autopilot/e1m1.py --out examples/e1m1-complete.txt # regenerates the example
+```
+
+- `nav.py` reads the map from the WAD and plans with A* on a 16-unit grid,
+  using Doom's movement rules: steps of at most 24 units, 56 units of
+  headroom, and ledges you can drop off but not climb.
+- `live.py` drives the game: it follows the route in short running bursts,
+  re-aiming with `aim` each time. It opens doors with `use`, and shoots
+  anything in `monsters_in_sight` within 900 units, one aimed shot per
+  pistol cycle.
+- `e1m1.py` goes through the menus, re-plans after every leg, and presses the
+  exit switch. It takes about 10 seconds.
+
+It has only been tried on E1M1, which needs no keycards. It doesn't pick up
+keys, ride lifts, or look for health, and it finishes on 8% health.
+
 ## Options
 
 | Option | Default | |
@@ -148,6 +171,7 @@ session or a moves file.
 | `--gif` | | write an animated GIF of the run |
 | `--every` | `2` | GIF frame interval in tics (2 = 17.5 fps) |
 | `--scale` | `1` | GIF scale factor (frames are 320×200) |
+| `--video` | | write a 640×400 MP4 of the run at 35 fps |
 | `--shot` | `out/last.png` | PNG of the final frame, 640×400 |
 | `-f FILE` | | read moves from a file |
 

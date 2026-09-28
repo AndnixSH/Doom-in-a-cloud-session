@@ -1,9 +1,9 @@
 # All of E1M1 (Outer Prison), from the title screen to the exit switch.
 # python3 doom.py play --title -f examples/e1m1-complete.txt
 #
-# Recorded by an autopilot driving live mode: A* over the map's geometry for
-# the route, "use" at doors, and aimed pistol shots at monsters_in_sight.
-# Result: 10 of 29 kills, 8% health left, level time 0:44.
+# Recorded by autopilot/e1m1.py driving live mode: A* over the map's
+# geometry for the route, "use" at doors, and aimed pistol shots at
+# monsters_in_sight. Result: 10 of 29 kills, 8% health left.
 
 wait 1.5s
 tap esc
@@ -155,5 +155,4 @@ aim right 1.5; hold forward 2t; wait 4t
 wait 12t
 aim right 15.4; tap use; wait 1s
 wait 1s
-
 wait 3s

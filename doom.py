@@ -235,7 +235,33 @@ def write_gif(frames, path, scale):
                    duration=durations, loop=0, optimize=True)
 
 
+def write_video(frames, path):
+    """frames: every frame at 35 fps, as (frame number, Path to PPM), in order."""
+    import imageio_ffmpeg
+    from PIL import Image
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    ffmpeg = subprocess.Popen(
+        [imageio_ffmpeg.get_ffmpeg_exe(), "-y", "-loglevel", "error",
+         "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", "320x200", "-r", str(TICRATE),
+         "-i", "-",
+         # Doubled with nearest-neighbour scaling so the pixels stay sharp.
+         "-vf", "scale=640:400:flags=neighbor", "-c:v", "libx264", "-preset", "slow",
+         "-crf", "26", "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(path)],
+        stdin=subprocess.PIPE)
+    for _, ppm in frames:
+        ffmpeg.stdin.write(Image.open(ppm).convert("RGB").tobytes())
+    ffmpeg.stdin.close()
+    if ffmpeg.wait() != 0:
+        sys.exit("ffmpeg failed to write the video")
+
+
 def play(args):
+    if args.video:
+        try:
+            import imageio_ffmpeg  # noqa: F401
+        except ImportError:
+            sys.exit("--video needs ffmpeg: pip install imageio-ffmpeg")
     if not BINARY.exists() or not (WADS / "freedoom1.wad").exists():
         build()
 
@@ -272,9 +298,9 @@ def play(args):
                "-maxtics", end + TAIL_TICS, "-shot", tmp / "last.ppm"]
         if not args.title:
             cmd += warp_args(level) + ["-skill", args.skill]
-        if args.gif:
+        if args.gif or args.video:
             (tmp / "frames").mkdir()
-            cmd += ["-frames", tmp / "frames", "-every", args.every]
+            cmd += ["-frames", tmp / "frames", "-every", 1 if args.video else args.every]
 
         proc = subprocess.run([str(c) for c in cmd], cwd=tmp, text=True,
                               capture_output=True, timeout=600)
@@ -288,7 +314,7 @@ def play(args):
         args.shot.parent.mkdir(parents=True, exist_ok=True)
         Image.open(tmp / "last.ppm").save(args.shot)
 
-        if args.gif:
+        if args.gif or args.video:
             # In a session, only show what the newest moves did. When warping,
             # skip the level-start wipe: it melts from uninitialised memory.
             first = max(new_from - 1, 0 if args.title else 1)
@@ -297,15 +323,19 @@ def play(args):
                 _, frame_no, gametic = ppm.stem.split("_")
                 if int(gametic) >= first:
                     frames.append((int(frame_no), ppm))
-            write_gif(frames, args.gif, args.scale)
+            if args.gif:
+                write_gif([f for f in frames if f[0] % args.every == 0],
+                          args.gif, args.scale)
+            if args.video:
+                write_video(frames, args.video)
 
     if session:
         session.parent.mkdir(parents=True, exist_ok=True)
         session.write_text(json.dumps(state, indent=2) + "\n")
 
     print(json.dumps(status))
-    print(f"screenshot: {args.shot}" + (f"\ngif: {args.gif}" if args.gif else ""),
-          file=sys.stderr)
+    print(f"screenshot: {args.shot}" + (f"\ngif: {args.gif}" if args.gif else "")
+          + (f"\nvideo: {args.video}" if args.video else ""), file=sys.stderr)
 
 
 def main():
@@ -331,8 +361,10 @@ def main():
     p.add_argument("--every", type=int, default=2,
                    help="GIF frame interval in 1/35 s; 2 = 17.5 fps (default)")
     p.add_argument("--scale", type=int, default=1, help="GIF scale factor")
+    p.add_argument("--video", type=Path, help="write a 640x400 MP4 of the run at "
+                   "35 fps (needs: pip install imageio-ffmpeg)")
     p.add_argument("--session", help="keep playing a saved game: earlier moves are "
-                   "replayed and the GIF shows only the new ones")
+                   "replayed and the GIF or video shows only the new ones")
     p.add_argument("--reset", action="store_true", help="start the session over")
 
     args = parser.parse_args()
