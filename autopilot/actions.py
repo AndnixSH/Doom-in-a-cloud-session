@@ -45,10 +45,10 @@ class Run:
         self.m = m
         self.skip = set()   # pickups found to be out of reach
 
-    def collect(self, x, y, name=""):
+    def collect(self, x, y, name="", ride_lifts=True):
         """Walk to (x, y) and stand on it."""
         L = self.L
-        r = travel(L, self.m, (x, y), arrive=40, live_heights=True)
+        r = travel(L, self.m, (x, y), arrive=40, live_heights=True, ride_lifts=ride_lifts)
         if r != "arrived":
             L.log(f"could not reach {name} ({x},{y}): {r}")
             return False
@@ -70,27 +70,33 @@ class Run:
         return True
 
     def grab_nearby(self, radius=400):
-        """Detour for wanted pickups within `radius` that have a short path."""
+        """Detour for wanted pickups within `radius` that have a short path
+        (and for health from further away when running low)."""
         L, m = self.L, self.m
         for _ in range(6):
             s = L.status
             if s["state"] != "level":
                 return
             here = (s["x"], s["y"])
+
+            def reach(it):
+                return radius * 2.5 if it["type"] in HEALTH | ALWAYS and s["health"] < 50 else radius
+
             cands = sorted(((math.hypot(it["x"] - here[0], it["y"] - here[1]), it)
                             for it in L.items()
                             if wanted(it["type"], s) and (it["x"], it["y"]) not in self.skip),
                            key=lambda c: c[0])
-            cands = [c for c in cands if c[0] < radius][:3]
+            cands = [c for c in cands if c[0] < reach(c[1])][:3]
             got = False
             for d, it in cands:
                 cells = m.path(here, (it["x"], it["y"]))
-                if (not cells or len(cells) * 16 > 1.8 * radius
-                        or m.cell_sector[cells[-1]] != m.sector_at(it["x"], it["y"])):
+                if not cells or m.cell_sector[cells[-1]] != m.sector_at(it["x"], it["y"]):
                     self.skip.add((it["x"], it["y"]))
                     continue
+                if len(cells) * 16 > 1.8 * reach(it):
+                    continue            # too far round for now
                 before = L.status["items"]
-                self.collect(it["x"], it["y"])
+                self.collect(it["x"], it["y"], ride_lifts=False)
                 if (L.status["items"] == before
                         and math.hypot(L.status["x"] - it["x"], L.status["y"] - it["y"]) > 30):
                     self.skip.add((it["x"], it["y"]))

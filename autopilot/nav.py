@@ -18,6 +18,7 @@ S_LIFT_SPECIALS = {21, 62, 122, 123}         # switches that lower a lift
 W_LIFT_SPECIALS = {10, 88, 120, 121}         # lines that lower a lift when crossed
 HURT_SPECIALS = {4, 5, 7, 11, 16}            # sector specials for damaging floors
 KEY_DOOR_SPECIALS = {26, 27, 28, 32, 33, 34}
+TELEPORT_SPECIALS = {39, 97}                 # W1 and WR teleporters (for players too)
 
 
 def read_map(wad_path, mapname):
@@ -87,6 +88,7 @@ class Map:
                 self.cell_sector[gx, gy] = self.sector_at(*self.center(gx, gy))
         self.clear = {}   # cell -> (distance to walls, distance to step-ups)
         self.drop = {}    # cell -> distance to drop-offs
+        self._find_teleports()
 
     def _find_lifts(self):
         """Lift sectors: {sector: {"low", "high", "triggers": [(line, special)]}}.
@@ -115,6 +117,38 @@ class Map:
                     lifts[i] = {"low": low, "high": high, "triggers": by_tag[sec[6]]}
         return lifts
 
+    def _find_teleports(self):
+        """Teleporter lines work when crossed from the front. The planner
+        treats the cells in front as a jump to the destination instead of a
+        step across the line.
+
+        tele_jumps: {cell in front: {destination cell: line}}
+        tele_blocked: {(cell in front, cell behind)}: steps that would teleport
+        """
+        dests = {}
+        for x, y, a, t, f in self.things:
+            if t == 14:                          # teleport destination
+                dests.setdefault(self.sectors[self.sector_at(x, y)][6], (x, y))
+        self.tele_jumps = {}
+        self.tele_blocked = set()
+        for idx, (v1, v2, fl, sp, tag, s1, s2) in enumerate(self.lines):
+            if sp not in TELEPORT_SPECIALS or tag not in dests or s2 == -1:
+                continue
+            (ax, ay), (bx, by) = self.V[v1], self.V[v2]
+            dest = self.cell(*dests[tag])
+            ga, gb = self.cell(ax, ay), self.cell(bx, by)
+            for gx in range(min(ga[0], gb[0]) - 2, max(ga[0], gb[0]) + 3):
+                for gy in range(min(ga[1], gb[1]) - 2, max(ga[1], gb[1]) + 3):
+                    x1, y1 = self.center(gx, gy)
+                    if (bx - ax) * (y1 - ay) - (by - ay) * (x1 - ax) >= 0:
+                        continue                 # not in front of the line
+                    for dx in (-1, 0, 1):
+                        for dy in (-1, 0, 1):
+                            x2, y2 = self.center(gx + dx, gy + dy)
+                            if (dx or dy) and segs_cross(x1, y1, x2, y2, ax, ay, bx, by):
+                                self.tele_blocked.add(((gx, gy), (gx + dx, gy + dy)))
+                                self.tele_jumps.setdefault((gx, gy), {})[dest] = idx
+
     def set_keys(self, keys):
         """Door specials the player can open; door sectors behind them count as open."""
         self.door_sectors = set()
@@ -122,9 +156,19 @@ class Map:
         for v1, v2, fl, sp, tag, s1, s2 in self.lines:
             if (sp in DOOR_SPECIALS or (sp in KEY_DOOR_SPECIALS and sp in keys)) and s2 != -1:
                 self.door_sectors.add(self.sides[s2][5])
-                self.door_entries.setdefault(self.sides[s2][5], set()).add(self.sides[s1][5])
+                self.door_entries.setdefault(self.sides[s2][5], set()).update(
+                    self._in_front(self.V[v1], self.V[v2]))
         self.clear = {}
         self.drop = {}
+
+    def _in_front(self, a, b):
+        """Sectors in front of line a->b, near enough to use it from. (The
+        front sector itself can be a sliver too thin to stand in.)"""
+        dx, dy = b[0] - a[0], b[1] - a[1]
+        n = math.hypot(dx, dy)
+        nx, ny = dy / n, -dx / n
+        return {self.sector_at(a[0] + dx * t + nx * d, a[1] + dy * t + ny * d)
+                for t in (0.2, 0.5, 0.8) for d in (4, 20, 40)}
 
     def give_up_lift(self, sec):
         """Stop planning over a lift that couldn't be called from where it's needed."""
@@ -229,7 +273,7 @@ class Map:
 
     def can_step(self, a, b):
         """Can the player walk from cell a to neighbouring cell b?"""
-        if b not in self.cell_sector:
+        if b not in self.cell_sector or (a, b) in self.tele_blocked:
             return False
         self.clearance(*a)
         self.clearance(*b)
@@ -288,28 +332,28 @@ class Map:
                 break
             if c > cost[cur]:
                 continue
+            # Steps to the eight neighbours, and jumps through teleporters.
+            moves = [(nb, CELL * 2) for nb in self.tele_jumps.get(cur, ())]
             for dx in (-1, 0, 1):
                 for dy in (-1, 0, 1):
-                    if dx == dy == 0:
-                        continue
                     nb = (cur[0] + dx, cur[1] + dy)
-                    if not self.can_step(cur, nb):
-                        continue
-                    step = math.hypot(dx, dy) * CELL
-                    cl = self.clearance(*nb)
-                    if cl < 40:
-                        step *= 1 + (40 - cl) / 20   # keep off the walls
-                    dd = self.drop_dist(*nb)
-                    if dd < 40:
-                        step *= 1 + (40 - dd) / 10   # and away from drop-offs
-                    if self.cell_sector[nb] in self.hurt:
-                        step *= 6                    # and off damaging floors
-                    nc = c + step
-                    if nc < cost.get(nb, 1e18):
-                        cost[nb] = nc
-                        came[nb] = cur
-                        h = math.hypot(nb[0] - g[0], nb[1] - g[1]) * CELL
-                        heapq.heappush(openq, (nc + h, nc, nb))
+                    if (dx or dy) and self.can_step(cur, nb):
+                        moves.append((nb, math.hypot(dx, dy) * CELL))
+            for nb, step in moves:
+                cl = self.clearance(*nb)
+                if cl < 40:
+                    step *= 1 + (40 - cl) / 20   # keep off the walls
+                dd = self.drop_dist(*nb)
+                if dd < 40:
+                    step *= 1 + (40 - dd) / 10   # and away from drop-offs
+                if self.cell_sector[nb] in self.hurt:
+                    step *= 6                    # and off damaging floors
+                nc = c + step
+                if nc < cost.get(nb, 1e18):
+                    cost[nb] = nc
+                    came[nb] = cur
+                    h = math.hypot(nb[0] - g[0], nb[1] - g[1]) * CELL
+                    heapq.heappush(openq, (nc + h, nc, nb))
         if g not in came:
             return None
         cells = []
@@ -319,8 +363,9 @@ class Map:
             cur = came[cur]
         return cells[::-1]
 
-    def walkable_line(self, a, b):
-        """Does a straight walk from cell a to cell b stay on steppable cells?"""
+    def walkable_line(self, a, b, hurt_ok=()):
+        """Does a straight walk from cell a to cell b stay on steppable cells
+        (and off damaging floors, except for the cells in hurt_ok)?"""
         (x1, y1), (x2, y2) = self.center(*a), self.center(*b)
         n = max(1, int(math.hypot(x2 - x1, y2 - y1) / (CELL / 2)))
         prev = a
@@ -329,16 +374,43 @@ class Map:
             if c != prev:
                 if not self.can_step(prev, c) or self.clearance(*c) < RADIUS + 6:
                     return False
+                if self.cell_sector[c] in self.hurt and c not in hurt_ok:
+                    return False
                 prev = c
+        return True
+
+    def safe_walk(self, p, q):
+        """Would a straight run from p toward q keep off drops and damaging
+        floors? (Running into a wall is fine: the player just stops there.)"""
+        a = self.cell(*p)
+        if a not in self.cell_sector:
+            return False
+        start = self.cell_sector[a]
+        n = max(1, int(math.hypot(q[0] - p[0], q[1] - p[1]) / (CELL / 2)))
+        prev = a
+        for k in range(1, n + 1):
+            c = self.cell(p[0] + (q[0] - p[0]) * k / n, p[1] + (q[1] - p[1]) * k / n)
+            if c == prev:
+                continue
+            if (prev, c) in self.tele_blocked or c not in self.cell_sector:
+                return False
+            if not self.can_step(prev, c):
+                return True
+            sec = self.cell_sector[c]
+            if (sec in self.hurt and start not in self.hurt) or (
+                    self.sectors[sec][0] < self.sectors[start][0] - 24):
+                return False
+            prev = c
         return True
 
     def waypoints(self, cells):
         """Shorten a cell path into straight legs, as map coordinates."""
+        hurt_ok = {c for c in cells if self.cell_sector[c] in self.hurt}
         out = [cells[0]]
         i = 0
         while i < len(cells) - 1:
             j = len(cells) - 1
-            while j > i + 1 and not self.walkable_line(cells[i], cells[j]):
+            while j > i + 1 and not self.walkable_line(cells[i], cells[j], hurt_ok):
                 j -= 1
             out.append(cells[j])
             i = j

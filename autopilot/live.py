@@ -31,9 +31,12 @@ class Died(Exception):
 MELEE = {"demon", "spectre", "lost soul"}
 PROJECTILES = {"imp", "cacodemon", "baron of hell", "hell knight", "arachnotron",
                "mancubus", "revenant"}
-WEAPON_KEYS = {"pistol": "2", "shotgun": "3", "chaingun": "4", "rocket launcher": "5"}
+TOUGH = {"demon", "spectre", "cacodemon", "baron of hell", "hell knight"}
+WEAPON_KEYS = {"pistol": "2", "shotgun": "3", "chaingun": "4", "rocket launcher": "5",
+               "plasma rifle": "6"}
 AMMO_OF = {"pistol": "bullets", "shotgun": "shells", "chaingun": "bullets",
-           "rocket launcher": "rockets"}
+           "rocket launcher": "rockets", "plasma rifle": "cells"}
+AUTOMATIC = {"chaingun", "plasma rifle"}
 
 
 class Live:
@@ -53,6 +56,10 @@ class Live:
         self.kite = False     # back away from melee monsters between shots
         self.dodge = False    # strafe between shots at monsters that throw fireballs
         self.engage = 900     # how far away a monster in sight gets shot at while moving
+        self.on_calm = None   # called while walking with no monster in sight
+        self.safe_move = None # safe_move((x, y), (x2, y2)): may dodging run that way?
+        self.ignored = []     # [(type, x, y, until tic)]: monsters our shots don't reach
+        self.history = []     # the last few statuses, for saying what went wrong
         self.moves = []
         self._start()
 
@@ -111,6 +118,9 @@ class Live:
         self.tic = end
         self.moves.append(text)
         self.status = self._read()
+        self.history = self.history[-11:] + [self.status]
+        if self.status["dead"]:
+            raise Died()     # (and never press use, which would restart the level)
         return self.status
 
     def close(self):
@@ -142,18 +152,33 @@ class Live:
         out = []
         for m in s["monsters_in_sight"]:
             d = math.hypot(m["x"] - s["x"], m["y"] - s["y"])
-            if d < maxd:
+            if d < maxd and not any(
+                    m["type"] == t and math.hypot(m["x"] - x, m["y"] - y) < 96 and s["tic"] < until
+                    for t, x, y, until in self.ignored):
                 out.append((d, m))
         return sorted(out, key=lambda t: t[0])
 
-    def pick_weapon(self, dist=0):
+    def same_monster(self, m):
+        """m (from an earlier status) as it is now, or None if out of sight."""
+        near = [(math.hypot(n["x"] - m["x"], n["y"] - m["y"]), i, n)
+                for i, n in enumerate(self.status["monsters_in_sight"]) if n["type"] == m["type"]]
+        near = [c for c in near if c[0] < 64]
+        return min(near)[2] if near else None
+
+    def pick_weapon(self, dist=0, target=""):
         """Switch to the preferred weapon, if weapon_prefs asks for it.
 
         Beyond 350 units the shotgun's spread wastes shells, so it's skipped
-        for a weapon with aimed bullets if there is one.
+        for a weapon with aimed bullets if there is one. Rockets (if in
+        weapon_prefs) are saved for tough monsters, from where the blast
+        can't reach the player.
         """
         s = self.status
-        prefs = self.weapon_prefs
+        prefs = list(self.weapon_prefs)
+        if "rocket launcher" in prefs:
+            prefs.remove("rocket launcher")
+            if target in TOUGH and dist > 250:
+                prefs.insert(0, "rocket launcher")
         if dist > 350 and any(w in s["weapons"] and w != "shotgun" for w in prefs):
             prefs = [w for w in prefs if w != "shotgun"]
         for w in prefs:
@@ -165,45 +190,76 @@ class Live:
     def fight(self, maxd=900):
         """Shoot the nearest monster in sight until none are left within maxd."""
         fired = 0
+        target, misses = None, 0
         while True:
             if self.status["dead"]:
                 raise Died()
+            if target:
+                now = self.same_monster(target)
+                misses = misses + 1 if now and now["health"] >= target["health"] else 0
+                if misses >= 6:
+                    # In sight but never hit: across a gap, behind bars or out of reach.
+                    self.log(f"can't hit that {target['type']}; leaving it")
+                    self.ignored.append((now["type"], now["x"], now["y"], self.status["tic"] + 700))
+                    target, misses = None, 0
             ts = self.threats(maxd)
             if not ts or fired > 60:
                 return fired
             d, m = ts[0]
+            if target is None or m["type"] != target["type"] or math.hypot(
+                    m["x"] - target["x"], m["y"] - target["y"]) > 64:
+                misses = 0
+            target = m
             if fired == 0:
                 self.log(f"engaging {m['type']} at {d:.0f}")
             if self.weapon_prefs:
-                self.pick_weapon(d)
+                self.pick_weapon(d, m["type"])
             s = self.status
-            aim = self.aim_text(bearing(s["x"], s["y"], m["x"], m["y"]))
-            if s["weapon"] == "chaingun":
+            facing = bearing(s["x"], s["y"], m["x"], m["y"])
+            aim = self.aim_text(facing)
+            if s["weapon"] in AUTOMATIC:
                 self.do(aim + "hold fire 8t")
             else:
                 # One aimed shot per weapon cycle: a pistol shot fired from rest
                 # goes where you aim, a held trigger sprays.
-                cycle = 37 if s["weapon"] == "shotgun" else 20
+                cycle = {"shotgun": 37, "rocket launcher": 22}.get(s["weapon"], 20)
+                move = f"wait {cycle - 5}t"
                 if self.kite and m["type"] in MELEE and d < 250:
                     # Demons bite; a running player outpaces them.
-                    self.do(aim + f"hold fire 4t; hold back+run {cycle - 5}t")
+                    move = self._move_if_safe(facing, [("back", 180)], cycle - 5) or move
                 elif self.dodge and m["type"] in PROJECTILES:
                     # Fireballs are slow enough to sidestep.
-                    side = "strafeleft" if fired % 2 else "straferight"
-                    self.do(aim + f"hold fire 4t; hold {side}+run {cycle - 5}t")
-                else:
-                    self.do(aim + f"hold fire 4t; wait {cycle - 5}t")
+                    sides = [("strafeleft", 90), ("straferight", -90)]
+                    move = self._move_if_safe(facing, sides[::-1] if fired % 2 else sides,
+                                              cycle - 5) or move
+                self.do(aim + "hold fire 4t; " + move)
             fired += 1
             if self.status["ammo"] == 0:
                 if self.weapon_prefs:
-                    self.pick_weapon(d)
+                    self.pick_weapon(d, m["type"])
                     if self.status["ammo"] != 0:
                         continue
                 self.log("out of ammo!")
                 return fired
 
-    def goto(self, x, y, tol=24, final=True, maxd=None):
-        """Head for (x, y), fighting on the way. Returns False if stuck."""
+    def _move_if_safe(self, facing, options, tics):
+        """Move text for the first of options [(keys, angle from facing)]
+        that safe_move allows (running for `tics`), or None."""
+        s = self.status
+        reach = 12 * tics + 100          # how far running that long (and coasting) goes
+        for keys, off in options:
+            a = math.radians(facing + off)
+            to = (s["x"] + reach * math.cos(a), s["y"] + reach * math.sin(a))
+            if self.safe_move is None or self.safe_move((s["x"], s["y"]), to):
+                return f"hold {keys}+run {tics}t"
+        return None
+
+    def goto(self, x, y, tol=24, final=True, maxd=None, replan=False):
+        """Head for (x, y), fighting on the way. Returns False if stuck.
+
+        With replan, it also returns (True) as soon as a fight has moved the
+        player off the way, so the caller can plan again from there.
+        """
         if maxd is None:
             maxd = self.engage
         last = None
@@ -212,7 +268,12 @@ class Live:
         for _ in range(200):
             if self.status["dead"]:
                 raise Died()
-            self.fight(maxd)
+            before = (self.status["x"], self.status["y"])
+            if self.fight(maxd) and replan and math.hypot(
+                    self.status["x"] - before[0], self.status["y"] - before[1]) > 48:
+                return True
+            if self.on_calm and not self.status["monsters_in_sight"]:
+                self.on_calm()
             s = self.status
             dist = math.hypot(x - s["x"], y - s["y"])
             if dist <= tol:
@@ -244,6 +305,17 @@ class Live:
             else:
                 stuck = 0
             last = (s2["x"], s2["y"])
+        return False
+
+    def walk_through(self, x, y, bursts=8):
+        """Walk at (x, y) until the player is suddenly somewhere else, as
+        after a teleporter. Returns False if that doesn't happen."""
+        for _ in range(bursts):
+            s = self.status
+            self.do(self.aim_text(bearing(s["x"], s["y"], x, y)) + "hold forward 4t")
+            if math.hypot(self.status["x"] - s["x"], self.status["y"] - s["y"]) > 64:
+                self.do("wait 18t")    # (a teleport freezes the player briefly)
+                return True
         return False
 
     def settle(self):

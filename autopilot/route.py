@@ -22,6 +22,15 @@ def first_door_crossing(door_lines, p, q):
     return best
 
 
+def through_line(m, li, p, d=24):
+    """The point d units behind line li, level with p."""
+    (ax, ay), (bx, by) = m.V[m.lines[li][0]], m.V[m.lines[li][1]]
+    dx, dy = bx - ax, by - ay
+    n = math.hypot(dx, dy)
+    t = max(0.1, min(0.9, ((p[0] - ax) * dx + (p[1] - ay) * dy) / n ** 2))
+    return ax + t * dx - dy / n * d, ay + t * dy + dx / n * d
+
+
 def lift_ahead(m, cells, heights):
     """The first lift on the path that needs riding: (sector, first, last) cell
     indices of the run through it, or None. Dropping onto or off a lift needs
@@ -151,6 +160,16 @@ def travel(L, m, goal, arrive=30, max_legs=60, live_heights=False, on_leg=None,
     on_leg, if given, is called before each leg (to pick things up on the way).
     With ride_lifts off, a route that needs a lift ride fails instead.
     """
+    lifts = dict(m.lifts)      # (lifts given up on are only given up for this trip)
+    try:
+        return _travel(L, m, goal, arrive, max_legs, live_heights, on_leg, ride_lifts)
+    finally:
+        if m.lifts != lifts:
+            m.lifts = lifts
+            m.clear, m.drop = {}, {}
+
+
+def _travel(L, m, goal, arrive, max_legs, live_heights, on_leg, ride_lifts):
     door_lines = [(i, m.V[l[0]], m.V[l[1]]) for i, l in enumerate(m.lines)
                   if l[3] in DOOR_SPECIALS
                   or (l[3] in KEY_DOOR_SPECIALS and l[6] != -1
@@ -175,6 +194,19 @@ def travel(L, m, goal, arrive=30, max_legs=60, live_heights=False, on_leg=None,
         if not cells:
             L.log("no path!")
             return None
+        jump = next((k for k in range(len(cells) - 1)
+                     if max(abs(cells[k][0] - cells[k + 1][0]),
+                            abs(cells[k][1] - cells[k + 1][1])) > 1), None)
+        if jump is not None:
+            entry = m.center(*cells[jump])
+            if math.hypot(entry[0] - here[0], entry[1] - here[1]) < 40:
+                li = m.tele_jumps[cells[jump]][cells[jump + 1]]
+                L.log(f"taking the teleporter (line {li})")
+                if not L.walk_through(*through_line(m, li, entry)):
+                    L.log("the teleporter didn't take us anywhere")
+                    return None
+                continue
+            cells = cells[:jump + 1]      # walk to the teleporter first
         lift = lift_ahead(m, cells, heights) if m.lifts and heights else None
         if lift and not ride_lifts:
             return None
@@ -213,7 +245,7 @@ def travel(L, m, goal, arrive=30, max_legs=60, live_heights=False, on_leg=None,
             continue
 
         L.log(f"leg {leg}: -> ({nxt[0]:.0f},{nxt[1]:.0f})")
-        if not L.goto(nxt[0], nxt[1], tol=24 if final else 40, final=final):
+        if not L.goto(nxt[0], nxt[1], tol=24 if final else 40, final=final, replan=True):
             return None
     L.log("ran out of legs")
     return None
