@@ -56,6 +56,7 @@ class Live:
         self.kite = False     # back away from melee monsters between shots
         self.dodge = False    # strafe between shots at monsters that throw fireballs
         self.engage = 900     # how far away a monster in sight gets shot at while moving
+        self.pass_by = 450    # ... unless it throws fireballs and is further than this
         self.on_calm = None   # called while walking with no monster in sight
         self.safe_move = None # safe_move((x, y), (x2, y2)): may dodging run that way?
         self.ignored = []     # [(type, x, y, until tic)]: monsters our shots don't reach
@@ -147,11 +148,16 @@ class Live:
             return ""
         return f"aim {'left' if d > 0 else 'right'} {min(abs(d), 179.9):.1f}; "
 
-    def threats(self, maxd):
+    def threats(self, maxd, moving=False):
+        """Monsters in sight within maxd, nearest first. When moving, ones
+        throwing fireballs from far off are left alone: a moving player is
+        hard to hit, and standing to shoot back lets the rest catch up."""
         s = self.status
         out = []
         for m in s["monsters_in_sight"]:
             d = math.hypot(m["x"] - s["x"], m["y"] - s["y"])
+            if moving and m["type"] in PROJECTILES and d > self.pass_by:
+                continue
             if d < maxd and not any(
                     m["type"] == t and math.hypot(m["x"] - x, m["y"] - y) < 96 and s["tic"] < until
                     for t, x, y, until in self.ignored):
@@ -187,7 +193,7 @@ class Live:
                     self.do(f"tap {WEAPON_KEYS[w]}; wait 30t")   # lower one, raise the other
                 return
 
-    def fight(self, maxd=900):
+    def fight(self, maxd=900, moving=False):
         """Shoot the nearest monster in sight until none are left within maxd."""
         fired = 0
         target, misses = None, 0
@@ -202,7 +208,7 @@ class Live:
                     self.log(f"can't hit that {target['type']}; leaving it")
                     self.ignored.append((now["type"], now["x"], now["y"], self.status["tic"] + 700))
                     target, misses = None, 0
-            ts = self.threats(maxd)
+            ts = self.threats(maxd, moving)
             if not ts or fired > 60:
                 return fired
             d, m = ts[0]
@@ -228,10 +234,12 @@ class Live:
                     # Demons bite; a running player outpaces them.
                     move = self._move_if_safe(facing, [("back", 180)], cycle - 5) or move
                 elif self.dodge and m["type"] in PROJECTILES:
-                    # Fireballs are slow enough to sidestep.
+                    # Fireballs are slow enough to sidestep, and a short step
+                    # clears them (without wandering off the way).
                     sides = [("strafeleft", 90), ("straferight", -90)]
-                    move = self._move_if_safe(facing, sides[::-1] if fired % 2 else sides,
-                                              cycle - 5) or move
+                    step = min(12, cycle - 5)
+                    move = self._move_if_safe(facing, sides[::-1] if fired % 2 else sides, step)
+                    move = move + f"; wait {cycle - 5 - step}t" if move else f"wait {cycle - 5}t"
                 self.do(aim + "hold fire 4t; " + move)
             fired += 1
             if self.status["ammo"] == 0:
@@ -268,8 +276,10 @@ class Live:
         for _ in range(200):
             if self.status["dead"]:
                 raise Died()
+            if self.status["state"] != "level":
+                return True        # (walked over an exit line)
             before = (self.status["x"], self.status["y"])
-            if self.fight(maxd) and replan and math.hypot(
+            if self.fight(maxd, moving=True) and replan and math.hypot(
                     self.status["x"] - before[0], self.status["y"] - before[1]) > 48:
                 return True
             if self.on_calm and not self.status["monsters_in_sight"]:

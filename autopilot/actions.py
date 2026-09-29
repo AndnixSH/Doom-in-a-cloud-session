@@ -48,7 +48,8 @@ class Run:
     def collect(self, x, y, name="", ride_lifts=True):
         """Walk to (x, y) and stand on it."""
         L = self.L
-        r = travel(L, self.m, (x, y), arrive=40, live_heights=True, ride_lifts=ride_lifts)
+        r = travel(L, self.m, (x, y), arrive=40, live_heights=True, ride_lifts=ride_lifts,
+                   near=40)
         if r != "arrived":
             L.log(f"could not reach {name} ({x},{y}): {r}")
             return False
@@ -56,11 +57,11 @@ class Run:
         L.log(f"collected {name}" if name else f"at ({x},{y})")
         return True
 
-    def go(self, x, y, name=""):
+    def go(self, x, y, name="", near=0):
         """Like collect(), but picking up useful things near the way."""
         L = self.L
         r = travel(L, self.m, (x, y), arrive=40, live_heights=True,
-                   on_leg=self.grab_nearby)
+                   on_leg=self.grab_nearby, near=near)
         if r != "arrived":
             L.log(f"could not reach {name} ({x},{y}): {r}")
             return False
@@ -80,7 +81,9 @@ class Run:
             here = (s["x"], s["y"])
 
             def reach(it):
-                return radius * 2.5 if it["type"] in HEALTH | ALWAYS and s["health"] < 50 else radius
+                if it["type"] in HEALTH | ALWAYS and s["health"] < 50:
+                    return radius * (6 if s["health"] < 25 else 2.5)
+                return radius
 
             cands = sorted(((math.hypot(it["x"] - here[0], it["y"] - here[1]), it)
                             for it in L.items()
@@ -95,11 +98,9 @@ class Run:
                     continue
                 if len(cells) * 16 > 1.8 * reach(it):
                     continue            # too far round for now
-                before = L.status["items"]
                 self.collect(it["x"], it["y"], ride_lifts=False)
-                if (L.status["items"] == before
-                        and math.hypot(L.status["x"] - it["x"], L.status["y"] - it["y"]) > 30):
-                    self.skip.add((it["x"], it["y"]))
+                if it in L.items():
+                    self.skip.add((it["x"], it["y"]))    # still there: out of reach
                 got = True
                 break
             if not got:

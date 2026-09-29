@@ -320,8 +320,12 @@ class Map:
                     return cc
         return c
 
-    def path(self, start, goal):
-        """A* from start to goal; returns the list of cells, or None."""
+    def path(self, start, goal, near=0):
+        """A* from start to goal; returns the list of cells, or None.
+
+        With near, any cell within that distance of goal will do (to pick
+        up something from next to the ledge it's on, say).
+        """
         s, g = self.nearest_ok(*start), self.nearest_ok(*goal)
         openq = [(0, 0, s)]
         came = {s: None}
@@ -329,6 +333,10 @@ class Map:
         while openq:
             _, c, cur = heapq.heappop(openq)
             if cur == g:
+                break
+            if near and math.hypot(self.center(*cur)[0] - goal[0],
+                                   self.center(*cur)[1] - goal[1]) <= near:
+                g = cur
                 break
             if c > cost[cur]:
                 continue
@@ -347,7 +355,7 @@ class Map:
                 if dd < 40:
                     step *= 1 + (40 - dd) / 10   # and away from drop-offs
                 if self.cell_sector[nb] in self.hurt:
-                    step *= 6                    # and off damaging floors
+                    step *= 25                   # and well off damaging floors
                 nc = c + step
                 if nc < cost.get(nb, 1e18):
                     cost[nb] = nc
@@ -380,27 +388,41 @@ class Map:
         return True
 
     def safe_walk(self, p, q):
-        """Would a straight run from p toward q keep off drops and damaging
-        floors? (Running into a wall is fine: the player just stops there.)"""
-        a = self.cell(*p)
-        if a not in self.cell_sector:
-            return False
-        start = self.cell_sector[a]
-        n = max(1, int(math.hypot(q[0] - p[0], q[1] - p[1]) / (CELL / 2)))
-        prev = a
-        for k in range(1, n + 1):
-            c = self.cell(p[0] + (q[0] - p[0]) * k / n, p[1] + (q[1] - p[1]) * k / n)
-            if c == prev:
-                continue
-            if (prev, c) in self.tele_blocked or c not in self.cell_sector:
-                return False
-            if not self.can_step(prev, c):
-                return True
-            sec = self.cell_sector[c]
-            if (sec in self.hurt and start not in self.hurt) or (
-                    self.sectors[sec][0] < self.sectors[start][0] - 24):
-                return False
-            prev = c
+        """Would a straight run from p toward q keep off drops, damaging
+        floors and teleporters? Following the map lines it crosses: a wall
+        or a step too high stops the player, which is fine."""
+        n = math.hypot(q[0] - p[0], q[1] - p[1])
+        if n < 1:
+            return True
+        near = set()
+        for k in range(int(n // 64) + 2):
+            f = min(1, k * 64 / n)
+            near.update(self.near_lines(p[0] + (q[0] - p[0]) * f, p[1] + (q[1] - p[1]) * f))
+        crossings = []
+        for idx in near:
+            v1, v2, fl, sp, tag, s1, s2 = self.lines[idx]
+            (ax, ay), (bx, by) = self.V[v1], self.V[v2]
+            if segs_cross(p[0], p[1], q[0], q[1], ax, ay, bx, by):
+                den = (p[0] - q[0]) * (ay - by) - (p[1] - q[1]) * (ax - bx)
+                t = ((p[0] - ax) * (ay - by) - (p[1] - ay) * (ax - bx)) / den if den else 0
+                crossings.append((t, idx))
+        start = self.sector_at(*p)
+        floor = self.sectors[start][0]
+        for t, idx in sorted(crossings):
+            v1, v2, fl, sp, tag, s1, s2 = self.lines[idx]
+            if s2 == -1 or fl & 1:
+                return True                        # a wall
+            f = t + 2 / n
+            after = self.sector_at(p[0] + (q[0] - p[0]) * f, p[1] + (q[1] - p[1]) * f)
+            fa, ca = self.sectors[after][0], self.sectors[after][1]
+            if ca - fa < 56 or fa - floor > 24:
+                return True                        # too low to get under, or a step up
+            (ax, ay), (bx, by) = self.V[v1], self.V[v2]
+            if sp in TELEPORT_SPECIALS and (bx - ax) * (p[1] - ay) - (by - ay) * (p[0] - ax) < 0:
+                return False                       # a teleporter, from the front
+            if fa < self.sectors[start][0] - 24 or (after in self.hurt and start not in self.hurt):
+                return False                       # a drop, or a damaging floor
+            floor = fa
         return True
 
     def waypoints(self, cells):

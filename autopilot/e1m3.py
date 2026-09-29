@@ -11,6 +11,7 @@ from level import main
 
 ROUTE = [
     ("press", 361, "the door switch (tag 3)"),
+    ("get", (-60, 1768), "the soulsphere"),
     ("press", 515, "the lift switch (tag 5)"),
     ("press", 494, "the door switch (tag 8)"),
     ("press", 647, "the switch that lowers the blue key"),

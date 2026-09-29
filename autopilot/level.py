@@ -82,10 +82,14 @@ def do_step(r, step):
         (a, _), (b, _) = r.line_stand(what, 24), r.line_stand(what, -24)
         ok = r.go(*a, name=name or f"line {what}") and L.goto(*b, tol=10, final=True)
     elif kind == "get":
-        ok = r.go(*what, name=name)
+        ok = r.go(*what, name=name, near=40)
     elif kind == "exit":
-        stand, mid = r.line_stand(what)
-        ok = r.go(*stand, name="the exit") and r.press_line(what, "the exit switch")
+        if r.m.lines[what][3] in (52, 124):          # an exit line to walk over
+            (a, _), (b, _) = r.line_stand(what, 24), r.line_stand(what, -24)
+            r.go(*a, name="the exit") and L.goto(*b, tol=10, final=True)
+        else:                                        # an exit switch
+            stand, mid = r.line_stand(what)
+            r.go(*stand, name="the exit") and r.press_line(what, "the exit switch")
         L.do("wait 1s")
         ok = L.status["state"] != "level"
     L.fight(900)
