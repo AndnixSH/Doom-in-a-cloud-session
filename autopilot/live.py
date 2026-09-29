@@ -62,7 +62,7 @@ class Live:
         keys = Path(self.tmp.name) / "prefix.txt"
         keys.write_text("".join(f"{t} {p} {k}\n" for t, p, k in events))
         cmd = [doom.BINARY, "-iwad", self.wad, "-keys", keys, "-maxtics", end,
-               "-interactive", *self.warp_args]
+               "-fastuntil", end, "-interactive", *self.warp_args]
         self.p = subprocess.Popen([str(c) for c in cmd], stdin=subprocess.PIPE,
                                   stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
                                   text=True, cwd=self.tmp.name)

@@ -25,6 +25,8 @@
 //   -smoothcam T    draw the view from a camera that eases toward the
 //                   player's angle over about T tics instead of snapping to
 //                   it (the game itself still uses the real angle)
+//   -fastuntil N    draw nothing and write no frames before gametic N, to
+//                   replay a long prefix fast (the game plays out the same)
 //   -maxtics N      stop once gametic reaches N (35 tics = 1 second;
 //                   default 30 seconds)
 //   -interactive    at -maxtics, print the status and wait for commands on
@@ -79,6 +81,7 @@ static int max_tics = 35 * 30;
 static int frame_no = 0;
 static int interactive = 0;
 
+static int fast_until = 0;        // -fastuntil: no 3D view before this gametic
 static double cam_smooth = 0;     // -smoothcam: smoothing time in tics, 0 = off
 static double cam_angle, cam_vel; // camera yaw in degrees, and degrees per tic
 static mobj_t *cam_mo = NULL;
@@ -410,6 +413,10 @@ void DG_Init(void)
         max_tics = atoi(value);
     }
 
+    if ((value = ArgValue("-fastuntil")) != NULL)
+    {
+        fast_until = atoi(value);
+    }
     if ((value = ArgValue("-smoothcam")) != NULL)
     {
         cam_smooth = atof(value);
@@ -432,7 +439,7 @@ void DG_Init(void)
 
 void DG_DrawFrame(void)
 {
-    if (frames_dir != NULL && frame_no % frame_every == 0)
+    if (frames_dir != NULL && frame_no % frame_every == 0 && gametic >= fast_until)
     {
         char path[4096];
 
@@ -441,7 +448,7 @@ void DG_DrawFrame(void)
         WritePPM(path, 2);
     }
 
-    if (frame_pipe != NULL && frame_no % frame_every == 0)
+    if (frame_pipe != NULL && frame_no % frame_every == 0 && gametic >= fast_until)
     {
         int32_t header[2] = { frame_no, gametic };
 
@@ -482,15 +489,19 @@ void __wrap_R_RenderPlayerView(player_t *player)
 
     if (cam_smooth <= 0 || mo == NULL)
     {
-        __real_R_RenderPlayerView(player);
+        if (gametic >= fast_until)
+        {
+            __real_R_RenderPlayerView(player);
+        }
         return;
     }
 
     real = mo->angle;
     target = real * (360.0 / 4294967296.0);
 
-    // A new level, a respawn or a teleport starts over from the real view.
-    if (mo != cam_mo || abs(mo->x - cam_x) > 64 * FRACUNIT
+    // A new level, a respawn, a teleport or fast-forwarding starts over from
+    // the real view.
+    if (mo != cam_mo || gametic < fast_until || abs(mo->x - cam_x) > 64 * FRACUNIT
      || abs(mo->y - cam_y) > 64 * FRACUNIT)
     {
         cam_mo = mo;
@@ -513,9 +524,29 @@ void __wrap_R_RenderPlayerView(player_t *player)
     cam_x = mo->x;
     cam_y = mo->y;
 
+    if (gametic < fast_until)
+    {
+        return;
+    }
+
     mo->angle = (angle_t) (int64_t) (cam_angle * (4294967296.0 / 360.0));
     __real_R_RenderPlayerView(player);
     mo->angle = real;
+}
+
+void __real_I_FinishUpdate(void);
+
+// Also linked in place of the original: while fast-forwarding, skip turning
+// Doom's 8-bit screen into the 32-bit frame nobody will look at.
+void __wrap_I_FinishUpdate(void)
+{
+    if (gametic < fast_until)
+    {
+        DG_DrawFrame();
+        return;
+    }
+
+    __real_I_FinishUpdate();
 }
 
 void DG_SleepMs(uint32_t ms)

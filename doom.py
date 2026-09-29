@@ -337,6 +337,10 @@ def play(args):
             cmd += warp_args(level) + ["-skill", args.skill]
         if args.smooth:
             cmd += ["-smoothcam", SMOOTH_TICS]
+        # Nothing before the frames we keep (or the final screenshot) needs
+        # drawing, and skipping it makes replaying a long session much faster.
+        first = max(new_from - 1, 0 if args.title else 1)
+        cmd += ["-fastuntil", first if (args.gif or args.video) else end]
         writers = []
         if args.gif:
             writers.append(GifWriter(args.gif, args.scale, args.every))
@@ -348,7 +352,6 @@ def play(args):
             # long run never piles up on disk. In a session, only show what the
             # newest moves did. When warping, skip the level-start wipe: it
             # melts from uninitialised memory.
-            first = max(new_from - 1, 0 if args.title else 1)
             read_fd, write_fd = os.pipe()
             cmd += ["-framefd", write_fd, "-every", 1 if args.video else args.every]
             reader = threading.Thread(target=read_frames, args=(read_fd, first, writers))
