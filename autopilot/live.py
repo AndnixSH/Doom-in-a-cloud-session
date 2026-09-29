@@ -62,6 +62,8 @@ class Live:
         self.safe_move = None # safe_move((x, y), (x2, y2)): may dodging run that way?
         self.near_drop = None # near_drop((x, y), (x2, y2)): walk, don't run, that way?
         self.ignored = []     # [(type, x, y, until tic)]: monsters our shots don't reach
+        self.trail = []       # places walked through lately, to back off along
+        self.back_off = 3     # this many monsters in sight: fight backing along the trail
         self.history = []     # the last few statuses, for saying what went wrong
         self.moves = []
         self._start()
@@ -83,6 +85,7 @@ class Live:
         """Go back to just after the first n recorded moves (by replaying them)."""
         self.close()
         self.moves = self.moves[:n]
+        self.trail, self.ignored = [], []     # (they were about the discarded moves)
         self._start()
 
     def _query(self, command):
@@ -229,7 +232,19 @@ class Live:
             s = self.status
             facing = bearing(s["x"], s["y"], m["x"], m["y"])
             aim = self.aim_text(facing)
-            if s["weapon"] in AUTOMATIC:
+            crowd = len(ts) >= self.back_off
+            back = self._trail_move(facing) if crowd else None
+            if back:
+                # Outnumbered: back off the way we came, still shooting, so
+                # they come round the corner a few at a time.
+                if fired == 0 or fired % 8 == 0:
+                    self.log(f"{len(ts)} monsters in sight: backing off")
+                if s["weapon"] in AUTOMATIC:
+                    self.do(aim + f"hold fire+{back}+run 8t")
+                else:
+                    cycle = {"shotgun": 37, "rocket launcher": 22}.get(s["weapon"], 20)
+                    self.do(aim + f"hold fire 4t; hold {back}+run {cycle - 5}t")
+            elif s["weapon"] in AUTOMATIC:
                 self.do(aim + "hold fire 8t")
             else:
                 # One aimed shot per weapon cycle: a pistol shot fired from rest
@@ -255,6 +270,20 @@ class Live:
                         continue
                 self.log("out of ammo!")
                 return fired
+
+    def _trail_move(self, facing):
+        """Keys that move toward the last place on the trail (at least 48
+        away), while still facing `facing`; None if the trail is used up."""
+        s = self.status
+        while self.trail and math.hypot(self.trail[-1][0] - s["x"], self.trail[-1][1] - s["y"]) < 48:
+            self.trail.pop()
+        if not self.trail:
+            return None
+        tx, ty = self.trail[-1]
+        rel = angnorm(bearing(s["x"], s["y"], tx, ty) - facing)
+        keys = ["forward", "forward+strafeleft", "strafeleft", "back+strafeleft", "back",
+                "back+straferight", "straferight", "forward+straferight"]
+        return keys[int(((rel + 22.5) % 360) // 45)]
 
     def _move_if_safe(self, facing, options, tics):
         """Move text for the first of options [(keys, angle from facing)]
@@ -306,6 +335,9 @@ class Live:
                 n = max(2, min(8, int(dist / 12)))
                 self.do(aim + f"hold forward {n}t; wait 4t")
             s2 = self.status
+            if not self.trail or math.hypot(s2["x"] - self.trail[-1][0],
+                                            s2["y"] - self.trail[-1][1]) > 64:
+                self.trail = self.trail[-40:] + [(s2["x"], s2["y"])]
             if last and math.hypot(s2["x"] - last[0], s2["y"] - last[1]) < 3:
                 stuck += 1
                 bumps += 1

@@ -1,24 +1,24 @@
 #!/usr/bin/env python3
 """E1M6, straight after E1M5. See level.py.
 
-The order is one a god-mode scout found. The yellow key is a trap: taking
-it shuts door 56 behind you (and lets out a closet of monsters), but the
-switch that opens that door works again from the key's side. The exit is
-behind the yellow door.
+The keys and switches are ones a god-mode scout found. The yellow key is a
+trap: taking it shuts door 56 behind you (and lets out a closet of
+monsters), but the switch that opens that door works again from the key's
+side. The exit is behind the yellow door, across a pit that switch 1530
+raises: that is left until last, so the way there isn't the long way round.
 """
 
 from level import main
 
 ROUTE = [
-    ("cross", 295, "the line that raises the pit floor (tag 1)"),
-    ("cross", 106, "the line that lowers a floor (tag 5)"),
+    ("get", (-672, 1184), "the soulsphere"),
     ("get", (-2000, 544), "the blue key"),
     ("get", (-1600, -1504), "the red key"),
-    ("press", 1530, "the switch that raises the pit floor again (tag 1)"),
     ("press", 1464, "the door switch (tag 3)"),
     ("press", 2578, "the door switch (tag 9)"),
     ("get", (144, -480), "the yellow key"),
     ("press", 2785, "the switch that opens door 56 again (tag 3)"),
+    ("press", 1530, "the switch that raises the pit floor (tag 1)"),
     ("exit", 1546),
 ]
 

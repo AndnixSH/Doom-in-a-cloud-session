@@ -15,6 +15,7 @@ ROUTE = [
     ("press", 2538, "the floor switch (tag 7)"),
     ("press", 2619, "the door switch (tag 9)"),
     ("press", 1181, "the door switch (tag 17)"),
+    ("get", (2664, 1088), "the blue armor"),
     ("press", 1090, "the floor switch (tag 18)"),
     ("get", (3104, 992), "the blue key"),
     ("cross", 4153, "the floor trigger (tag 59)"),
