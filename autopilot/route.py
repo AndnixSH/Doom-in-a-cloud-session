@@ -159,7 +159,7 @@ def ride_lift(L, m, sec, before, board, after):
 
 
 def travel(L, m, goal, arrive=30, max_legs=150, live_heights=False, on_leg=None,
-           ride_lifts=True, near=0):
+           ride_lifts=True, near=0, stop=None):
     """Head for goal, re-planning after every leg.
 
     Returns "arrived" within `arrive` units of goal, "left level" if the
@@ -169,18 +169,19 @@ def travel(L, m, goal, arrive=30, max_legs=150, live_heights=False, on_leg=None,
     on_leg, if given, is called before each leg (to pick things up on the way).
     With ride_lifts off, a route that needs a lift ride fails instead.
     With near, getting that close to goal is enough (see Map.path).
+    stop, if given, is checked each leg: once it's true, that counts as arriving.
     """
     lifts = dict(m.lifts)      # (lifts given up on are only given up for this trip)
     try:
         return _travel(L, m, goal, max(arrive, near), max_legs, live_heights, on_leg,
-                       ride_lifts, near)
+                       ride_lifts, near, stop)
     finally:
         if m.lifts != lifts:
             m.lifts = lifts
             m.clear, m.drop = {}, {}
 
 
-def _travel(L, m, goal, arrive, max_legs, live_heights, on_leg, ride_lifts, near):
+def _travel(L, m, goal, arrive, max_legs, live_heights, on_leg, ride_lifts, near, stop):
     door_lines = [(i, m.V[l[0]], m.V[l[1]]) for i, l in enumerate(m.lines)
                   if l[3] in DOOR_SPECIALS
                   or (l[3] in KEY_DOOR_SPECIALS and l[6] != -1
@@ -197,6 +198,8 @@ def _travel(L, m, goal, arrive, max_legs, live_heights, on_leg, ride_lifts, near
             return "left level"
         here = (s["x"], s["y"])
         if math.hypot(goal[0] - here[0], goal[1] - here[1]) < arrive and m.in_reach(here, goal):
+            return "arrived"
+        if stop and stop():
             return "arrived"
         if live_heights:
             now = L.sectors()

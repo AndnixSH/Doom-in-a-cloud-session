@@ -13,6 +13,8 @@ from level import main
 ROUTE = [
     ("get", (-672, 1184), "the soulsphere"),
     ("get", (-2000, 544), "the blue key"),
+    ("get", (-1616, 640), "the armor on the way"),
+    ("get", (-1048, -384), "a medikit on the way"),
     ("get", (-1600, -1504), "the red key"),
     ("press", 1464, "the door switch (tag 3)"),
     ("press", 2578, "the door switch (tag 9)"),

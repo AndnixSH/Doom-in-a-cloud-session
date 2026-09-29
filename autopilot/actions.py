@@ -62,14 +62,21 @@ class Run:
         return True
 
     def go(self, x, y, name="", near=0):
-        """Like collect(), but picking up useful things near the way."""
+        """Like collect(), but picking up useful things near the way. If
+        there's a pickup at (x, y), having got it counts as arriving."""
         L = self.L
+        here = [it for it in L.items() if math.hypot(it["x"] - x, it["y"] - y) < 8]
+
+        def got_it():
+            return bool(here) and not any(it in here for it in L.items())
+
         r = travel(L, self.m, (x, y), arrive=40, live_heights=True,
-                   on_leg=self.grab_nearby, near=near)
+                   on_leg=self.grab_nearby, near=near, stop=got_it if here else None)
         if r != "arrived":
             L.log(f"could not reach {name} ({x},{y}): {r}")
             return False
-        L.goto(x, y, tol=10, final=True)
+        if not got_it():
+            L.goto(x, y, tol=10, final=True)
         if name:
             L.log(f"reached {name}")
         return True

@@ -36,7 +36,7 @@ class Checkpoints:
     after three failed retries, falling back to the one before it.
     """
 
-    def __init__(self, L, gap=350, budget=60):
+    def __init__(self, L, gap=350, budget=150):
         self.L = L
         self.gap = gap          # tics between checkpoints while walking
         self.budget = budget    # retries allowed in the whole level
@@ -51,11 +51,17 @@ class Checkpoints:
         if last and (last["n"] == len(L.moves) or (
                 not force and last["step"] == self.step and s["tic"] - last["tic"] < self.gap)):
             return
-        self.saved.append(dict(n=len(L.moves), tic=s["tic"], step=self.step, tries=0))
+        self.saved.append(dict(n=len(L.moves), tic=s["tic"], step=self.step, tries=0,
+                               health=s["health"]))
+
+    # Retries also fight differently: (back off with this many in sight,
+    # walk past fireball throwers further than this).
+    TACTICS = [(3, 450), (2, 350), (99, 600), (4, 300)]
 
     def back(self):
-        """Rewind to the latest checkpoint with retries left; returns its step."""
-        while self.saved and self.saved[-1]["tries"] >= 3:
+        """Rewind to the latest checkpoint with retries left; returns its step.
+        (One nearly dead gets a single retry before falling back further.)"""
+        while self.saved and self.saved[-1]["tries"] >= (3 if self.saved[-1]["health"] >= 30 else 1):
             self.saved.pop()
         if not self.saved or self.budget <= 0:
             return None
@@ -63,6 +69,7 @@ class Checkpoints:
         cp["tries"] += 1
         self.budget -= 1
         self.L.rewind(cp["n"])
+        self.L.back_off, self.L.pass_by = self.TACTICS[cp["tries"] % len(self.TACTICS)]
         self.L.do(f"wait {7 * cp['tries']}t")
         self.L.log(f"rewound to tic {cp['tic']} (route step {cp['step']}), retry {cp['tries']}")
         return cp["step"]
@@ -135,6 +142,7 @@ def follow(r, route, start=0, progress=None):
         if L.status["state"] != "level" and not L.status["dead"]:
             return True
         if ok:
+            L.back_off, L.pass_by = Checkpoints.TACTICS[0]
             L.log(f"step {i} done after {len(L.moves)} moves")
             if progress:
                 progress(i)
