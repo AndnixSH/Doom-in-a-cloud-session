@@ -14,6 +14,9 @@ import struct
 CELL = 16
 RADIUS = 18                                  # player radius 16, plus a little margin
 DOOR_SPECIALS = {1, 31, 117, 118}            # doors anyone can open
+S_LIFT_SPECIALS = {21, 62, 122, 123}         # switches that lower a lift
+W_LIFT_SPECIALS = {10, 88, 120, 121}         # lines that lower a lift when crossed
+HURT_SPECIALS = {4, 5, 7, 11, 16}            # sector specials for damaging floors
 KEY_DOOR_SPECIALS = {26, 27, 28, 32, 33, 34}
 
 
@@ -45,7 +48,8 @@ def read_map(wad_path, mapname):
 
 
 class Map:
-    def __init__(self, wad_path, mapname, keys=()):
+    def __init__(self, wad_path, mapname, keys=(), lifts=False, avoid_hurt=False,
+                 one_way_doors=False):
         lumps = read_map(wad_path, mapname)
         self.V = lumps["vertexes"]
         self.lines = lumps["linedefs"]
@@ -56,6 +60,11 @@ class Map:
         self.ssectors = lumps["ssectors"]
         self.segs = lumps["segs"]
 
+        self.lifts = self._find_lifts() if lifts else {}
+        self.one_way_doors = one_way_doors
+        # Damaging floors (nukage and the like) cost extra to cross, if asked.
+        self.hurt = ({i for i, sec in enumerate(self.sectors) if sec[5] in HURT_SPECIALS}
+                     if avoid_hurt else set())
         self.set_keys(keys)
 
         # Lines bucketed into 128-unit blocks, padded by a block each way.
@@ -79,12 +88,41 @@ class Map:
         self.clear = {}   # cell -> (distance to walls, distance to step-ups)
         self.drop = {}    # cell -> distance to drop-offs
 
+    def _find_lifts(self):
+        """Lift sectors: {sector: {"low", "high", "triggers": [(line, special)]}}.
+
+        A lift rests at its own floor and lowers to its lowest neighbour's.
+        With lifts on, the planner treats a lift as a link between the two:
+        it can be boarded at the bottom and left at either level.
+        """
+        by_tag = {}
+        for idx, l in enumerate(self.lines):
+            if l[4] and l[3] in S_LIFT_SPECIALS | W_LIFT_SPECIALS:
+                by_tag.setdefault(l[4], []).append((idx, l[3]))
+        neighbours = {}
+        for l in self.lines:
+            if l[6] != -1:
+                a, b = self.sides[l[5]][5], self.sides[l[6]][5]
+                if a != b:
+                    neighbours.setdefault(a, set()).add(b)
+                    neighbours.setdefault(b, set()).add(a)
+        lifts = {}
+        for i, sec in enumerate(self.sectors):
+            if sec[6] in by_tag:
+                high = sec[0]
+                low = min([self.sectors[n][0] for n in neighbours.get(i, ())] + [high])
+                if high - low > 24:
+                    lifts[i] = {"low": low, "high": high, "triggers": by_tag[sec[6]]}
+        return lifts
+
     def set_keys(self, keys):
         """Door specials the player can open; door sectors behind them count as open."""
         self.door_sectors = set()
+        self.door_entries = {}    # door sector -> sectors it can be opened from
         for v1, v2, fl, sp, tag, s1, s2 in self.lines:
             if (sp in DOOR_SPECIALS or (sp in KEY_DOOR_SPECIALS and sp in keys)) and s2 != -1:
                 self.door_sectors.add(self.sides[s2][5])
+                self.door_entries.setdefault(self.sides[s2][5], set()).add(self.sides[s1][5])
         self.clear = {}
         self.drop = {}
 
@@ -127,6 +165,8 @@ class Map:
         f, c = self.sectors[sec][0], self.sectors[sec][1]
         if sec in self.door_sectors and c - f < 56:
             c = f + 128   # doors open
+        if sec in self.lifts:
+            f = self.lifts[sec]["low"]   # boarded at the bottom
         return f, c
 
     def blocks(self, idx, floor, steps):
@@ -142,6 +182,8 @@ class Map:
         (fa, ca), (fb, cb) = self.floor_ceil(a), self.floor_ceil(b)
         if min(ca, cb) - max(fa, fb) < 56:
             return not steps
+        if a in self.lifts or b in self.lifts:
+            return False          # a lift's edges are level at one end of its ride
         return steps and max(fa, fb) - floor > 24
 
     def _dist(self, gx, gy, steps):
@@ -169,7 +211,7 @@ class Map:
         best = 999
         for idx in self.near_lines(x, y):
             v1, v2, fl, sp, tag, s1, s2 = self.lines[idx]
-            if s2 == -1:
+            if s2 == -1 or self.sides[s1][5] in self.lifts or self.sides[s2][5] in self.lifts:
                 continue
             fa = self.floor_ceil(self.sides[s1][5])[0]
             fb = self.floor_ceil(self.sides[s2][5])[0]
@@ -197,9 +239,13 @@ class Map:
             return False
         if cb - fb < 56:
             return False
+        if (self.one_way_doors and sb in self.door_sectors and sa != sb
+                and sa not in self.door_entries[sb]
+                and self.sectors[sb][1] - self.sectors[sb][0] < 56):
+            return False          # a closed door, from a side it doesn't open from
         if sa != sb:
-            if fb - fa > 24:
-                return False
+            if fb - fa > 24 and not (sa in self.lifts and fb - self.lifts[sa]["high"] <= 24):
+                return False      # (unless riding a lift up to it)
             if min(ca, cb) - max(fa, fb) < 56:
                 return False
         # No solid line between the two centres.
@@ -250,6 +296,8 @@ class Map:
                     dd = self.drop_dist(*nb)
                     if dd < 40:
                         step *= 1 + (40 - dd) / 10   # and away from drop-offs
+                    if self.cell_sector[nb] in self.hurt:
+                        step *= 6                    # and off damaging floors
                     nc = c + step
                     if nc < cost.get(nb, 1e18):
                         cost[nb] = nc

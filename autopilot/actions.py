@@ -6,6 +6,15 @@ import math
 
 from route import travel
 
+
+def line_stand(m, li, dist=34):
+    """A spot `dist` in front of line li's front (usable) side, and its middle."""
+    v1, v2 = m.V[m.lines[li][0]], m.V[m.lines[li][1]]
+    mx, my = (v1[0] + v2[0]) / 2, (v1[1] + v2[1]) / 2
+    dx, dy = v2[0] - v1[0], v2[1] - v1[1]
+    n = math.hypot(dx, dy)
+    return (mx + dy / n * dist, my - dx / n * dist), (mx, my)
+
 HEALTH = {2011, 2012}             # stimpack, medikit
 ALWAYS = {2013, 2014, 2015, 8}    # soulsphere, health bonus, armor bonus, backpack
 
@@ -92,12 +101,7 @@ class Run:
 
     def line_stand(self, li, dist=34):
         """A spot on the front (usable) side of line li, and the line's middle."""
-        m = self.m
-        v1, v2 = m.V[m.lines[li][0]], m.V[m.lines[li][1]]
-        mx, my = (v1[0] + v2[0]) / 2, (v1[1] + v2[1]) / 2
-        dx, dy = v2[0] - v1[0], v2[1] - v1[1]
-        n = math.hypot(dx, dy)
-        return (mx + dy / n * dist, my - dx / n * dist), (mx, my)
+        return line_stand(self.m, li, dist)
 
     def press(self, stand, switch_point, name=""):
         """Go to `stand` and press the switch at `switch_point`."""
