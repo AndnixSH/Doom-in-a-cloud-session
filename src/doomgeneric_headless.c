@@ -17,6 +17,9 @@
 //                   positive turns right)
 //   -frames DIR     write DIR/frame_FRAMENO_GAMETIC.ppm (320x200) every
 //                   -every frames
+//   -framefd N      write the same frames to file descriptor N instead, each
+//                   as two little-endian int32s (frame number, gametic) and
+//                   320x200 RGB bytes; a pipe here makes Doom wait for its reader
 //   -every N        frame interval (default 2, i.e. 17.5 fps)
 //   -shot FILE      write the final frame to FILE at full 640x400
 //   -maxtics N      stop once gametic reaches N (35 tics = 1 second;
@@ -25,6 +28,10 @@
 //                   stdin instead of exiting:
 //                     key GAMETIC PRESSED KEYCODE   queue a key event
 //                     shot FILE                     write the current frame
+//                     sectors                       print every sector's floor
+//                                                   and ceiling height, in order
+//                     items                         print the pickups left in
+//                                                   the level (by doomednum)
 //                     until GAMETIC                 run on, then report again
 //                     quit                          exit (so does end of input)
 
@@ -35,6 +42,7 @@
 #include "d_player.h"
 #include "m_argv.h"
 #include "p_local.h"
+#include "r_state.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -59,6 +67,7 @@ static int num_events = 0;
 static int next_event = 0;
 
 static const char *frames_dir = NULL;
+static FILE *frame_pipe = NULL;
 static const char *shot_path = NULL;
 static int frame_every = 2;
 static int max_tics = 35 * 30;
@@ -112,21 +121,12 @@ static void LoadKeyScript(const char *path)
 
 // Pixels are 0x00RRGGBB; step 2 samples the 640x400 buffer down to Doom's
 // native 320x200 (the buffer is a 2x pixel-doubled copy of it).
-static void WritePPM(const char *path, int step)
+static void WriteRGB(FILE *f, int step)
 {
     int w = DOOMGENERIC_RESX / step;
     int h = DOOMGENERIC_RESY / step;
     unsigned char *row = malloc(w * 3);
-    FILE *f = fopen(path, "wb");
     int x, y;
-
-    if (f == NULL)
-    {
-        fprintf(stderr, "headless: cannot write %s\n", path);
-        exit(1);
-    }
-
-    fprintf(f, "P6\n%d %d\n255\n", w, h);
 
     for (y = 0; y < h; y++)
     {
@@ -144,8 +144,22 @@ static void WritePPM(const char *path, int step)
         fwrite(row, 1, w * 3, f);
     }
 
-    fclose(f);
     free(row);
+}
+
+static void WritePPM(const char *path, int step)
+{
+    FILE *f = fopen(path, "wb");
+
+    if (f == NULL)
+    {
+        fprintf(stderr, "headless: cannot write %s\n", path);
+        exit(1);
+    }
+
+    fprintf(f, "P6\n%d %d\n255\n", DOOMGENERIC_RESX / step, DOOMGENERIC_RESY / step);
+    WriteRGB(f, step);
+    fclose(f);
 }
 
 static const char *GameStateName(void)
@@ -184,6 +198,44 @@ static const char *MonsterName(int doomednum)
         case 84:   return "wolfenstein ss";
         default:   return "monster";
     }
+}
+
+// Keycards (cards and skull keys alike), weapons owned and all ammo.
+static void PrintInventory(player_t *p)
+{
+    static const char *keys[] = { "blue", "yellow", "red" };
+    static const char *weapons[] = {
+        "fist", "pistol", "shotgun", "chaingun", "rocket launcher",
+        "plasma rifle", "bfg9000", "chainsaw", "super shotgun"
+    };
+    const char *sep = "";
+    int i;
+
+    printf(", \"keys\": [");
+    for (i = 0; i < 3; i++)
+    {
+        // it_bluecard, it_yellowcard, it_redcard, then the skulls in the same order
+        if (p->cards[i] || p->cards[i + 3])
+        {
+            printf("%s\"%s\"", sep, keys[i]);
+            sep = ", ";
+        }
+    }
+
+    sep = "";
+    printf("], \"weapons\": [");
+    for (i = 0; i < NUMWEAPONS; i++)
+    {
+        if (p->weaponowned[i])
+        {
+            printf("%s\"%s\"", sep, weapons[i]);
+            sep = ", ";
+        }
+    }
+
+    printf("], \"ammo_all\": {\"bullets\": %d, \"shells\": %d, "
+           "\"rockets\": %d, \"cells\": %d}",
+           p->ammo[am_clip], p->ammo[am_shell], p->ammo[am_misl], p->ammo[am_cell]);
 }
 
 // Living monsters the player has a line of sight to, facing or not.
@@ -246,8 +298,44 @@ static void PrintStatus(void)
                p->mo->angle * (360.0 / 4294967296.0));
     }
 
+    PrintInventory(p);
     PrintMonstersInSight(p);
     printf("}\n");
+    fflush(stdout);
+}
+
+static void PrintSectors(void)
+{
+    int i;
+
+    printf("{\"sectors\": [");
+    for (i = 0; i < numsectors; i++)
+    {
+        printf("%s[%d, %d]", i ? ", " : "",
+               sectors[i].floorheight >> FRACBITS, sectors[i].ceilingheight >> FRACBITS);
+    }
+    printf("]}\n");
+    fflush(stdout);
+}
+
+static void PrintItems(void)
+{
+    thinker_t *th;
+    const char *sep = "";
+
+    printf("{\"items\": [");
+    for (th = thinkercap.next; th != NULL && th != &thinkercap; th = th->next)
+    {
+        mobj_t *mo = (mobj_t *) th;
+
+        if (th->function.acp1 == (actionf_p1) P_MobjThinker && (mo->flags & MF_SPECIAL))
+        {
+            printf("%s{\"type\": %d, \"x\": %d, \"y\": %d}", sep,
+                   mobjinfo[mo->type].doomednum, mo->x >> FRACBITS, mo->y >> FRACBITS);
+            sep = ", ";
+        }
+    }
+    printf("]}\n");
     fflush(stdout);
 }
 
@@ -268,6 +356,14 @@ static void ReadCommands(void)
         else if (sscanf(line, "shot %4095s", path) == 1)
         {
             WritePPM(path, 1);
+        }
+        else if (strncmp(line, "sectors", 7) == 0)
+        {
+            PrintSectors();
+        }
+        else if (strncmp(line, "items", 5) == 0)
+        {
+            PrintItems();
         }
         else if (sscanf(line, "until %d", &tic) == 1)
         {
@@ -305,6 +401,15 @@ void DG_Init(void)
     }
 
     frames_dir = ArgValue("-frames");
+    if ((value = ArgValue("-framefd")) != NULL)
+    {
+        frame_pipe = fdopen(atoi(value), "wb");
+        if (frame_pipe == NULL)
+        {
+            fprintf(stderr, "headless: cannot write to file descriptor %s\n", value);
+            exit(1);
+        }
+    }
     shot_path = ArgValue("-shot");
     interactive = M_CheckParm("-interactive") > 0;
     singletics = true;
@@ -319,6 +424,14 @@ void DG_DrawFrame(void)
         snprintf(path, sizeof(path), "%s/frame_%06d_%06d.ppm",
                  frames_dir, frame_no, gametic);
         WritePPM(path, 2);
+    }
+
+    if (frame_pipe != NULL && frame_no % frame_every == 0)
+    {
+        int32_t header[2] = { frame_no, gametic };
+
+        fwrite(header, sizeof(header), 1, frame_pipe);
+        WriteRGB(frame_pipe, 2);
     }
 
     frame_no++;

@@ -17,9 +17,11 @@ import json
 import os
 import re
 import shutil
+import struct
 import subprocess
 import sys
 import tempfile
+import threading
 import urllib.request
 import zipfile
 from pathlib import Path
@@ -212,48 +214,82 @@ def warp_args(level):
     sys.exit(f"Bad level {level!r} (try E1M1 or MAP01)")
 
 
-def write_gif(frames, path, scale):
-    """frames: list of (frame number at 35 fps, Path to PPM), in order."""
-    from PIL import Image
+FRAME_W, FRAME_H = 320, 200
 
-    images = []
-    for _, ppm in frames:
-        im = Image.open(ppm)
-        if scale != 1:
-            im = im.resize((im.width * scale, im.height * scale), Image.NEAREST)
+
+class GifWriter:
+    """Collects frames (every `every`-th one) and writes an animated GIF."""
+
+    def __init__(self, path, scale, every):
+        self.path, self.scale, self.every = path, scale, every
+        self.frames = []
+
+    def add(self, frame_no, rgb):
+        from PIL import Image
+
+        if frame_no % self.every:
+            return
+        im = Image.frombytes("RGB", (FRAME_W, FRAME_H), rgb)
+        if self.scale != 1:
+            im = im.resize((FRAME_W * self.scale, FRAME_H * self.scale), Image.NEAREST)
         # Doom draws with a 256-colour palette, so this is lossless.
-        images.append(im.convert("P", palette=Image.Palette.ADAPTIVE, colors=256))
+        self.frames.append((frame_no, im.convert("P", palette=Image.Palette.ADAPTIVE,
+                                                 colors=256)))
 
-    # GIF delays are in 10 ms steps; round cumulatively so timing doesn't drift.
-    tics = [t for t, _ in frames]
-    tics.append(tics[-1] + TICRATE)  # hold the last frame for a second
-    stamps = [round(t * 1000 / TICRATE, -1) for t in tics]
-    durations = [max(10, b - a) for a, b in zip(stamps, stamps[1:])]
+    def close(self):
+        if not self.frames:
+            sys.exit("No frames to put in the GIF")
+        # GIF delays are in 10 ms steps; round cumulatively so timing doesn't drift.
+        tics = [t for t, _ in self.frames]
+        tics.append(tics[-1] + TICRATE)  # hold the last frame for a second
+        stamps = [round(t * 1000 / TICRATE, -1) for t in tics]
+        durations = [max(10, b - a) for a, b in zip(stamps, stamps[1:])]
+        images = [im for _, im in self.frames]
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        images[0].save(self.path, save_all=True, append_images=images[1:],
+                       duration=durations, loop=0, optimize=True)
 
-    path.parent.mkdir(parents=True, exist_ok=True)
-    images[0].save(path, save_all=True, append_images=images[1:],
-                   duration=durations, loop=0, optimize=True)
+
+class VideoWriter:
+    """Streams every frame into ffmpeg: a 640x400 MP4 at 35 fps."""
+
+    def __init__(self, path):
+        import imageio_ffmpeg
+
+        path.parent.mkdir(parents=True, exist_ok=True)
+        self.ffmpeg = subprocess.Popen(
+            [imageio_ffmpeg.get_ffmpeg_exe(), "-y", "-loglevel", "error",
+             "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{FRAME_W}x{FRAME_H}",
+             "-r", str(TICRATE), "-i", "-",
+             # Doubled with nearest-neighbour scaling so the pixels stay sharp.
+             "-vf", "scale=640:400:flags=neighbor", "-c:v", "libx264", "-preset", "slow",
+             "-crf", "26", "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(path)],
+            stdin=subprocess.PIPE)
+
+    def add(self, frame_no, rgb):
+        self.ffmpeg.stdin.write(rgb)
+
+    def close(self):
+        self.ffmpeg.stdin.close()
+        if self.ffmpeg.wait() != 0:
+            sys.exit("ffmpeg failed to write the video")
 
 
-def write_video(frames, path):
-    """frames: every frame at 35 fps, as (frame number, Path to PPM), in order."""
-    import imageio_ffmpeg
-    from PIL import Image
-
-    path.parent.mkdir(parents=True, exist_ok=True)
-    ffmpeg = subprocess.Popen(
-        [imageio_ffmpeg.get_ffmpeg_exe(), "-y", "-loglevel", "error",
-         "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", "320x200", "-r", str(TICRATE),
-         "-i", "-",
-         # Doubled with nearest-neighbour scaling so the pixels stay sharp.
-         "-vf", "scale=640:400:flags=neighbor", "-c:v", "libx264", "-preset", "slow",
-         "-crf", "26", "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(path)],
-        stdin=subprocess.PIPE)
-    for _, ppm in frames:
-        ffmpeg.stdin.write(Image.open(ppm).convert("RGB").tobytes())
-    ffmpeg.stdin.close()
-    if ffmpeg.wait() != 0:
-        sys.exit("ffmpeg failed to write the video")
+def read_frames(fd, first, writers):
+    """Hand frames from Doom's -framefd pipe to the writers, from gametic `first` on."""
+    size = FRAME_W * FRAME_H * 3
+    with os.fdopen(fd, "rb") as pipe:
+        while True:
+            header = pipe.read(8)
+            if len(header) < 8:
+                return
+            frame_no, gametic = struct.unpack("<ii", header)
+            rgb = pipe.read(size)
+            if len(rgb) < size:
+                return
+            if gametic >= first:
+                for w in writers:
+                    w.add(frame_no, rgb)
 
 
 def play(args):
@@ -298,36 +334,44 @@ def play(args):
                "-maxtics", end + TAIL_TICS, "-shot", tmp / "last.ppm"]
         if not args.title:
             cmd += warp_args(level) + ["-skill", args.skill]
-        if args.gif or args.video:
-            (tmp / "frames").mkdir()
-            cmd += ["-frames", tmp / "frames", "-every", 1 if args.video else args.every]
+        writers = []
+        if args.gif:
+            writers.append(GifWriter(args.gif, args.scale, args.every))
+        if args.video:
+            writers.append(VideoWriter(args.video))
+        reader = None
+        if writers:
+            # Frames come through a pipe, so Doom waits for the writers and a
+            # long run never piles up on disk. In a session, only show what the
+            # newest moves did. When warping, skip the level-start wipe: it
+            # melts from uninitialised memory.
+            first = max(new_from - 1, 0 if args.title else 1)
+            read_fd, write_fd = os.pipe()
+            cmd += ["-framefd", write_fd, "-every", 1 if args.video else args.every]
+            reader = threading.Thread(target=read_frames, args=(read_fd, first, writers))
 
-        proc = subprocess.run([str(c) for c in cmd], cwd=tmp, text=True,
-                              capture_output=True, timeout=600)
-        status_lines = [l for l in proc.stdout.splitlines() if l.startswith("{")]
+        with open(tmp / "out.txt", "w+") as out, open(tmp / "err.txt", "w+") as err:
+            proc = subprocess.Popen([str(c) for c in cmd], cwd=tmp, stdout=out, stderr=err,
+                                    pass_fds=(write_fd,) if writers else ())
+            if reader:
+                os.close(write_fd)   # the pipe ends when Doom closes its copy
+                reader.start()
+                reader.join()
+            proc.wait()
+            out.seek(0)
+            err.seek(0)
+            stdout, stderr = out.read(), err.read()
+        status_lines = [l for l in stdout.splitlines() if l.startswith("{")]
         if proc.returncode != 0 or not status_lines:
-            sys.stderr.write(proc.stdout[-2000:] + proc.stderr[-2000:])
+            sys.stderr.write(stdout[-2000:] + stderr[-2000:])
             sys.exit(f"Doom exited with code {proc.returncode}")
         status = json.loads(status_lines[-1])
+        for w in writers:
+            w.close()
 
         from PIL import Image
         args.shot.parent.mkdir(parents=True, exist_ok=True)
         Image.open(tmp / "last.ppm").save(args.shot)
-
-        if args.gif or args.video:
-            # In a session, only show what the newest moves did. When warping,
-            # skip the level-start wipe: it melts from uninitialised memory.
-            first = max(new_from - 1, 0 if args.title else 1)
-            frames = []
-            for ppm in sorted((tmp / "frames").glob("frame_*.ppm")):
-                _, frame_no, gametic = ppm.stem.split("_")
-                if int(gametic) >= first:
-                    frames.append((int(frame_no), ppm))
-            if args.gif:
-                write_gif([f for f in frames if f[0] % args.every == 0],
-                          args.gif, args.scale)
-            if args.video:
-                write_video(frames, args.video)
 
     if session:
         session.parent.mkdir(parents=True, exist_ok=True)
@@ -347,7 +391,8 @@ def main():
 
     p = sub.add_parser("play", help="run a sequence of moves")
     p.add_argument("moves", nargs="*", help='e.g. "hold forward 2s; tap fire"')
-    p.add_argument("-f", "--file", type=Path, help="read moves from a file")
+    p.add_argument("-f", "--file", type=Path, action="append", default=[],
+                   help="read moves from a file (repeat to play several in a row)")
     p.add_argument("--wad", default="freedoom1",
                    help="freedoom1, freedoom2 or a path to any IWAD (default: freedoom1)")
     p.add_argument("--level", help="E1M1 (Doom 1 IWADs) or MAP01 (Doom 2 IWADs)")
@@ -371,8 +416,8 @@ def main():
     if args.command == "build":
         build()
     else:
-        if args.file:
-            args.moves.append(args.file.read_text())
+        # Files play first, then any moves given on the command line.
+        args.moves[:0] = [path.read_text() for path in args.file]
         play(args)
 
 

@@ -56,11 +56,7 @@ class Map:
         self.ssectors = lumps["ssectors"]
         self.segs = lumps["segs"]
 
-        # Door sectors are the back sectors of door lines.
-        self.door_sectors = set()
-        for v1, v2, fl, sp, tag, s1, s2 in self.lines:
-            if (sp in DOOR_SPECIALS or (sp in KEY_DOOR_SPECIALS and sp in keys)) and s2 != -1:
-                self.door_sectors.add(self.sides[s2][5])
+        self.set_keys(keys)
 
         # Lines bucketed into 128-unit blocks, padded by a block each way.
         self.B = 128
@@ -82,6 +78,22 @@ class Map:
                 self.cell_sector[gx, gy] = self.sector_at(*self.center(gx, gy))
         self.clear = {}   # cell -> (distance to walls, distance to step-ups)
         self.drop = {}    # cell -> distance to drop-offs
+
+    def set_keys(self, keys):
+        """Door specials the player can open; door sectors behind them count as open."""
+        self.door_sectors = set()
+        for v1, v2, fl, sp, tag, s1, s2 in self.lines:
+            if (sp in DOOR_SPECIALS or (sp in KEY_DOOR_SPECIALS and sp in keys)) and s2 != -1:
+                self.door_sectors.add(self.sides[s2][5])
+        self.clear = {}
+        self.drop = {}
+
+    def update_heights(self, heights):
+        """Take current [floor, ceiling] pairs from the engine (live mode's `sectors`)."""
+        for i, (f, c) in enumerate(heights):
+            self.sectors[i] = (f, c) + tuple(self.sectors[i][2:])
+        self.clear = {}
+        self.drop = {}
 
     def center(self, gx, gy):
         # The half-unit offset keeps centres off map lines, which sit on whole units.

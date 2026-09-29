@@ -46,11 +46,14 @@ python3 doom.py play "hold forward 3s; turn left 6; hold fire 2s" --gif out/run.
 {"tic": 181, "state": "level", "episode": 1, "map": 1, "health": 100, "armor": 0,
  "weapon": "pistol", "ammo": 45, "kills": 1, "total_kills": 29, "items": 0,
  "secrets": 0, "dead": false, "x": 466, "y": 256, "angle": 5.3,
+ "keys": [], "weapons": ["fist", "pistol"],
+ "ammo_all": {"bullets": 45, "shells": 0, "rockets": 0, "cells": 0},
  "monsters_in_sight": []}
 ```
 
 `monsters_in_sight` lists every living monster the player has a clear line
-to, facing or not, with its type, position and health.
+to, facing or not, with its type, position and health. `keys`, `weapons` and
+`ammo_all` are what the status bar shows.
 
 To re-render the demo above:
 `python3 doom.py play --title -f examples/demo.txt --gif media/demo.gif`.
@@ -59,7 +62,13 @@ To re-render the demo above:
 exit switch (34% kills, finished in 0:44). [Watch it](media/e1m1-complete.mp4),
 or re-render it with
 `python3 doom.py play --title -f examples/e1m1-complete.txt --video media/e1m1-complete.mp4`.
-The [autopilot](#autopilot) recorded it.
+
+`examples/e1m2-complete.txt` carries straight on through E1M2, starting from
+the 8% health E1M1 ended on, and kills all 93 monsters on the way to the exit.
+It gathers all three keycards and finishes on 102% health, with 78% of items
+and 42% of secrets, in 7:21 (par is 1:15):
+`python3 doom.py play --title -f examples/e1m1-complete.txt -f examples/e1m2-complete.txt`.
+The [autopilot](#autopilot) recorded both.
 
 ## How it works
 
@@ -75,12 +84,13 @@ implements them without a screen or a real clock:
   uses for `-timedemo`): each frame builds input for exactly one tic (1/35 s)
   and runs it. Scripted key events are posted straight into Doom's event
   queue on the tic they're due.
-- **Output.** Frames are written as PPM images, and when the run ends the
-  final frame and a JSON status line are written out.
+- **Output.** Frames go out through a pipe, which Doom waits on, so even a
+  long run never piles up on disk. When the run ends, the final frame and a
+  JSON status line are written out.
 
 `doom.py` compiles the move language below into key events, runs the binary,
-and turns the frames into a GIF (lossless, since Doom only uses 256 colours)
-and a PNG.
+and turns the frames into a GIF (lossless, since Doom only uses 256 colours),
+an MP4, and a PNG of the last frame.
 
 ## Move language
 
@@ -129,6 +139,8 @@ at `-maxtics` and then waits:
 key GAMETIC PRESSED KEYCODE   queue a key event (PRESSED: 0 up, 1 down, 2 mouse turn)
 until GAMETIC                 run to that tic, then print the status again
 shot FILE                     write the current frame as a PPM
+sectors                       print every sector's current floor and ceiling height
+items                         print the pickups still in the level
 quit                          exit
 ```
 
@@ -139,26 +151,37 @@ session or a moves file.
 
 ## Autopilot
 
-`autopilot/e1m1.py` plays E1M1 by itself through live mode and writes the
-run out as a moves file:
+`autopilot/` plays levels by itself through live mode and writes each run out
+as a moves file. There is a script per level, since each one follows a route
+written for that level; the parts in between are general:
 
 ```sh
-python3 autopilot/e1m1.py                                  # writes out/e1m1-autopilot.txt
-python3 autopilot/e1m1.py --out examples/e1m1-complete.txt # regenerates the example
+python3 autopilot/e1m1.py   # ~10 s, writes out/e1m1-autopilot.txt
+python3 autopilot/e1m2.py   # ~2.5 min, carries on from examples/e1m1-complete.txt
+python3 autopilot/e1m2.py --out examples/e1m2-complete.txt   # regenerates the example
 ```
 
 - `nav.py` reads the map from the WAD and plans with A* on a 16-unit grid,
   using Doom's movement rules: steps of at most 24 units, 56 units of
-  headroom, and ledges you can drop off but not climb.
-- `live.py` drives the game: it follows the route in short running bursts,
-  re-aiming with `aim` each time. It opens doors with `use`, and shoots
-  anything in `monsters_in_sight` within 900 units, one aimed shot per
-  pistol cycle.
-- `e1m1.py` goes through the menus, re-plans after every leg, and presses the
-  exit switch. It takes about 10 seconds.
+  headroom, and ledges you can drop off but not climb. Keycards it holds make
+  their doors count as open, and it can take current floor and ceiling heights
+  from the engine, so switched doors and lowered floors count too.
+- `route.py` follows a planned route leg by leg, re-planning after each one
+  and opening doors on the way.
+- `live.py` drives the game: it moves in short running bursts, re-aiming with
+  `aim` each time, and shoots anything in `monsters_in_sight` with one aimed
+  shot per weapon cycle. For E1M2 it also picks the weapon by distance
+  (shotgun close up), backs away from demons, sidesteps fireballs, and can
+  rewind to a checkpoint.
+- `actions.py` has the rest: detours for health, armor and ammo near the
+  route, pressing switches (by line number), and riding lifts.
 
-It has only been tried on E1M1, which needs no keycards. It doesn't pick up
-keys, ride lifts, or look for health, and it finishes on 8% health.
+The E1M2 route took several tries to settle: it died to an ambush of demons
+and imps until it picked up health first and learned to back away from
+demons, and it died in a hall of imps until it hurried past them to the
+soulsphere. The recorded run has no cheats, just the moves above, but it is
+tool-assisted: the route was scripted with knowledge of the map, and it
+survives because those deaths were tried and fixed first.
 
 ## Options
 
@@ -173,7 +196,7 @@ keys, ride lifts, or look for health, and it finishes on 8% health.
 | `--scale` | `1` | GIF scale factor (frames are 320×200) |
 | `--video` | | write a 640×400 MP4 of the run at 35 fps |
 | `--shot` | `out/last.png` | PNG of the final frame, 640×400 |
-| `-f FILE` | | read moves from a file |
+| `-f FILE` | | read moves from a file; repeat to play several in a row (files play before any moves on the command line) |
 
 ## Credits
 
