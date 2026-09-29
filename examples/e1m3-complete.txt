@@ -1,0 +1,2363 @@
+# All of E1M3, carrying on from the level
+# before it, to the exit. Replay with
+# python3 doom.py play --title -f examples/e1m1-complete.txt -f examples/e1m2-complete.txt -f examples/e1m3-complete.txt
+#
+# Recorded by autopilot/e1m3.py: a route of switches and keys for
+# this level, with the shared autopilot doing the walking, doors, lifts,
+# pickups and fighting. Result: 80 of 97 kills, 100% health left.
+
+tap use
+wait 1s
+tap use
+wait 1s
+tap use
+wait 2s
+
+aim left 47.9; hold forward 5t; wait 4t
+aim right 1.3; hold forward 4t; wait 4t
+aim left 12.4; hold forward 3t; wait 4t
+aim left 9.2; hold forward 2t; wait 4t
+aim right 98.4; hold forward+run 3t
+aim right 3.3; hold forward+run 3t
+aim right 3.4; hold forward+run 3t
+aim right 3.2; hold forward+run 3t
+wait 12t
+aim left 97.3; tap use; wait 1s
+wait 12t
+aim right 25.0; tap use; wait 1s
+aim right 9.2; hold forward+run 3t
+aim right 0.5; hold forward+run 3t
+aim right 1.8; hold forward+run 3t
+aim right 4.2; hold forward+run 3t
+aim right 5.6; hold forward+run 3t
+aim right 5.3; hold forward+run 3t
+aim right 0.6; hold forward+run 3t
+tap use; wait 1s
+aim right 27.3; hold fire 4t; wait 32t
+aim left 20.8; hold fire 4t; wait 32t
+tap 2; wait 30t
+aim right 40.1; hold fire 4t; wait 15t
+tap 3; wait 30t
+aim left 1.3; hold fire 4t; wait 32t
+aim left 45.3; hold forward+run 3t
+hold strafeleft 6t
+hold forward+run 3t
+hold forward+run 3t
+aim right 128.6; hold forward 8t; wait 4t
+aim left 99.6; hold fire 4t; wait 32t
+aim right 99.6; hold forward 6t; wait 4t
+aim right 0.5; hold forward 4t; wait 4t
+aim right 5.8; hold forward 4t; wait 4t
+aim right 3.5; hold forward 2t; wait 4t
+aim left 164.9; hold forward 8t; wait 4t
+aim left 2.9; hold forward 8t; wait 4t
+aim left 2.2; hold forward 5t; wait 4t
+wait 12t
+aim right 153.3; tap use; wait 1s
+aim left 119.1; hold forward 2t; wait 4t
+aim left 1.0; hold forward 2t; wait 4t
+aim right 11.4; hold forward 4t; wait 4t
+aim right 4.0; hold forward 2t; wait 4t
+aim right 3.9; hold forward 2t; wait 4t
+aim left 45.2; hold forward 8t; wait 4t
+aim left 11.5; hold forward 4t; wait 4t
+aim left 0.7; hold forward 4t; wait 4t
+aim left 9.1; hold forward 2t; wait 4t
+aim left 2.0; hold forward+run 12t
+aim left 6.4; hold forward+run 11t
+aim left 9.2; hold forward+run 5t
+aim left 7.2; hold forward+run 3t
+aim right 1.0; hold forward+run 3t
+aim right 4.7; hold forward+run 3t
+aim right 11.9; hold forward+run 3t
+aim right 49.6; hold fire 4t; wait 32t
+aim right 14.7; hold forward+run 10t
+hold forward 8t; wait 4t
+hold forward 8t; wait 4t
+aim right 1.0; hold forward 2t; wait 4t
+wait 12t
+tap use; wait 1s
+wait 12t
+aim left 3.2; tap use; wait 1s
+hold forward+run 12t
+aim left 0.7; hold forward+run 11t
+aim left 1.6; hold forward+run 11t
+aim left 1.3; hold forward+run 11t
+hold forward+run 11t
+tap use; wait 1s
+hold forward+run 11t
+hold forward 8t; wait 4t
+aim right 83.5; hold fire 4t; wait 32t
+aim left 83.6; hold forward 3t; wait 4t
+hold forward 2t; wait 4t
+aim right 10.2; hold forward 3t; wait 4t
+aim right 4.3; hold forward 2t; wait 4t
+aim right 109.5; hold forward 8t; wait 4t
+aim right 5.7; hold forward 8t; wait 4t
+aim right 3.7; hold forward 6t; wait 4t
+aim right 6.1; hold forward 2t; wait 4t
+aim left 27.3; hold forward 2t; wait 4t
+aim left 32.3; hold forward 2t; wait 4t
+aim right 5.2; hold forward+run 8t
+aim left 1.7; hold forward+run 4t
+aim left 1.2; hold forward+run 3t
+aim left 1.6; hold forward+run 3t
+aim left 43.6; hold fire 4t; wait 32t
+aim left 97.4; hold fire 4t; wait 32t
+aim right 2.1; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim right 9.5; hold forward+run 6t
+aim right 0.4; hold forward+run 4t
+aim right 0.4; hold forward+run 3t
+aim right 0.6; hold forward+run 3t
+hold forward+run 3t
+aim left 24.8; hold forward 6t; wait 4t
+aim left 118.4; hold forward 2t; wait 4t
+aim left 14.4; hold forward 2t; wait 4t
+aim right 100.3; hold forward 2t; wait 4t
+aim right 26.2; hold forward 2t; wait 4t
+aim left 176.6; hold forward+run 3t
+aim left 0.9; hold forward+run 3t
+aim left 1.2; hold forward+run 3t
+aim left 0.9; hold forward+run 3t
+aim left 1.8; hold forward+run 3t
+aim right 43.7; hold forward+run 3t
+aim right 44.8; hold forward+run 3t
+aim right 49.1; hold forward+run 3t
+aim right 39.5; hold forward+run 3t
+aim right 28.0; hold forward+run 3t
+aim right 25.5; hold forward+run 3t
+aim left 57.3; hold forward+run 7t
+aim left 6.1; hold forward+run 3t
+aim left 1.5; hold forward+run 3t
+aim left 0.5; hold forward+run 3t
+aim left 1.7; hold forward+run 3t
+aim right 69.4; hold forward+run 3t
+aim right 35.0; hold forward+run 3t
+aim right 35.6; hold forward+run 3t
+aim right 33.6; hold forward+run 3t
+aim right 31.0; hold forward+run 3t
+aim left 84.4; hold forward 4t; wait 4t
+aim left 69.3; hold forward 2t; wait 4t
+aim right 25.6; hold forward 3t; wait 4t
+aim left 2.0; hold forward 2t; wait 4t
+aim left 68.4; hold forward+run 3t
+aim left 3.6; hold forward+run 3t
+aim left 1.2; hold forward+run 3t
+aim left 0.6; hold forward+run 3t
+aim left 1.2; hold forward+run 3t
+aim right 87.8; hold forward 8t; wait 4t
+aim right 48.9; hold forward 8t; wait 4t
+aim right 26.2; hold forward 5t; wait 4t
+aim right 24.0; hold forward 3t; wait 4t
+aim right 41.6; hold forward 2t; wait 4t
+wait 12t
+aim left 162.3; tap use; wait 1s
+aim right 18.9; hold fire 4t; wait 32t
+tap 2; wait 30t
+aim right 9.3; hold fire 4t; wait 15t
+aim left 0.6; hold fire 4t; wait 15t
+tap 3; wait 30t
+hold fire 4t; wait 32t
+aim left 13.6; hold forward 8t; wait 4t
+hold forward 8t; wait 4t
+aim right 5.0; hold forward 8t; wait 4t
+aim right 4.9; hold forward 8t; wait 4t
+aim right 4.1; hold forward 8t; wait 4t
+aim right 2.4; hold forward 8t; wait 4t
+aim right 0.5; hold forward 8t; wait 4t
+tap use; wait 1s
+aim right 10.4; hold fire 4t; wait 32t
+aim left 14.4; hold fire 4t; wait 32t
+aim right 4.1; hold forward 8t; wait 4t
+aim left 0.4; hold forward 4t; wait 4t
+aim right 0.6; hold forward 2t; wait 4t
+aim right 14.3; hold forward 2t; wait 4t
+aim right 15.6; hold forward 2t; wait 4t
+aim left 127.3; hold forward 5t; wait 4t
+aim left 14.0; hold forward 4t; wait 4t
+aim left 13.4; hold forward 2t; wait 4t
+aim right 163.6; hold forward+run 6t
+aim right 1.4; hold forward+run 5t
+aim right 1.4; hold forward+run 3t
+aim right 1.5; hold forward+run 3t
+aim right 2.3; hold forward+run 3t
+aim right 36.9; hold forward+run 5t
+aim right 9.7; hold forward+run 3t
+aim right 0.5; hold forward+run 3t
+aim right 1.0; hold forward+run 3t
+aim right 1.6; hold forward+run 3t
+aim left 45.8; hold forward+run 3t
+aim left 37.4; hold forward+run 3t
+aim left 49.5; hold forward+run 3t
+aim left 32.4; hold forward+run 3t
+aim left 23.8; hold forward+run 3t
+aim left 23.6; hold forward+run 3t
+aim right 117.6; hold forward 5t; wait 4t
+aim right 41.2; hold forward 5t; wait 4t
+hold forward 3t; wait 4t
+aim right 71.0; hold forward 2t; wait 4t
+aim right 37.0; hold forward 2t; wait 4t
+aim right 43.4; hold forward 2t; wait 4t
+wait 12t
+aim right 150.6; tap use; wait 1s
+aim left 16.5; hold forward 3t; wait 4t
+aim right 0.6; hold forward 2t; wait 4t
+aim right 21.9; hold forward 3t; wait 4t
+aim right 6.2; hold forward 2t; wait 4t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+aim left 48.9; hold fire 4t; hold straferight+run 12t; wait 20t
+aim left 13.6; hold fire 4t; hold straferight+run 12t; wait 20t
+wait 5t
+wait 5t
+tap 2; wait 30t
+aim left 23.3; hold fire 4t; hold straferight+run 12t; wait 3t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+aim left 6.0; hold fire 4t; hold strafeleft+run 12t; wait 3t
+aim right 10.2; hold fire 4t; hold straferight+run 12t; wait 3t
+aim left 12.7; hold fire 4t; hold strafeleft+run 12t; wait 3t
+aim right 10.8; hold fire 4t; hold straferight+run 12t; wait 3t
+wait 5t
+aim left 57.8; hold forward 8t; wait 4t
+hold forward 8t; wait 4t
+aim right 58.4; hold fire 4t; hold straferight+run 12t; wait 3t
+aim left 13.6; hold fire 4t; hold straferight+run 12t; wait 3t
+aim left 0.7; hold fire 4t; hold straferight+run 12t; wait 3t
+aim left 91.0; hold forward 8t; wait 4t
+aim left 5.5; hold forward 7t; wait 4t
+aim right 13.8; hold forward 2t; wait 4t
+aim right 124.3; hold forward+run 3t
+aim right 3.4; hold forward+run 3t
+aim right 2.7; hold forward+run 3t
+aim right 3.2; hold forward+run 3t
+aim right 48.4; hold forward 4t; wait 4t
+aim right 86.0; hold forward 3t; wait 4t
+aim right 25.2; hold forward 4t; wait 4t
+aim right 8.7; hold forward 3t; wait 4t
+aim right 6.0; hold forward 2t; wait 4t
+aim right 10.2; hold forward 2t; wait 4t
+aim right 136.7; hold forward 8t; wait 4t
+aim right 4.1; hold forward 7t; wait 4t
+aim right 3.8; hold forward 3t; wait 4t
+aim right 2.5; hold forward 2t; wait 4t
+wait 12t
+aim right 114.8; tap use; wait 1s
+wait 1s
+aim right 75.1; hold forward+run 6t
+hold forward+run 5t
+hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+aim right 35.9; hold forward 5t; wait 4t
+aim right 119.9; hold forward 5t; wait 4t
+aim right 19.8; hold forward 5t; wait 4t
+aim right 13.1; hold forward 3t; wait 4t
+aim right 14.3; hold forward 2t; wait 4t
+aim left 134.3; hold forward 3t; wait 4t
+aim left 16.1; hold forward 2t; wait 4t
+aim left 12.6; hold forward 2t; wait 4t
+aim right 30.7; hold forward+run 3t
+aim right 0.7; hold forward+run 3t
+aim right 0.3; hold forward+run 3t
+aim right 1.1; hold forward+run 3t
+aim right 19.8; hold forward+run 3t
+aim right 47.6; hold forward+run 9t
+aim right 18.6; hold forward+run 5t
+aim right 2.1; hold forward+run 3t
+hold forward+run 3t
+aim right 0.8; hold forward+run 3t
+aim right 1.1; hold forward+run 3t
+aim left 95.5; hold forward 8t; wait 4t
+aim left 171.7; hold fire 4t; wait 15t
+hold fire 4t; wait 15t
+aim right 129.5; hold forward 8t; wait 4t
+aim left 0.6; hold forward 7t; wait 4t
+hold forward 2t; wait 4t
+wait 12t
+aim right 48.8; tap use; wait 1s
+aim left 7.4; hold forward+run 7t
+aim left 0.4; hold forward+run 5t
+aim left 0.5; hold forward+run 3t
+aim left 1.4; hold forward+run 3t
+aim left 1.5; hold forward+run 3t
+aim left 36.0; hold forward+run 8t
+aim left 17.0; hold forward+run 3t
+aim left 12.0; hold forward+run 3t
+aim left 22.7; hold forward+run 3t
+aim left 26.5; hold forward+run 3t
+aim right 20.0; hold forward+run 5t
+aim right 1.2; hold forward+run 3t
+aim right 1.8; hold forward+run 3t
+aim right 4.3; hold forward+run 3t
+aim left 10.2; hold forward+run 3t
+aim left 51.7; hold fire 4t; wait 15t
+aim left 2.7; hold fire 4t; wait 15t
+aim right 2.0; hold fire 4t; wait 15t
+aim left 2.9; hold fire 4t; wait 15t
+aim right 4.1; hold forward+run 12t
+hold forward+run 12t
+hold forward+run 12t
+tap 3; wait 30t
+aim left 68.2; hold fire 4t; hold back+run 32t
+aim right 23.3; hold fire 4t; hold back+run 32t
+aim right 36.6; hold forward+run 3t
+aim right 3.8; hold forward+run 3t
+hold forward+run 3t
+aim right 0.4; hold forward+run 3t
+aim right 1.0; hold forward+run 3t
+aim right 6.5; hold forward+run 4t
+aim right 2.6; hold forward+run 3t
+aim right 3.8; hold forward+run 3t
+aim left 56.6; hold fire 4t; hold back+run 32t
+aim right 47.3; hold forward+run 10t
+aim right 10.6; hold forward+run 8t
+aim right 4.1; hold forward+run 4t
+aim left 4.1; hold forward+run 3t
+aim left 4.3; hold forward+run 3t
+aim left 4.3; hold forward+run 3t
+aim left 35.0; hold fire 4t; hold strafeleft+run 12t; wait 20t
+hold fire 4t; hold straferight+run 12t; wait 20t
+aim left 12.6; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim right 60.5; hold forward+run 3t
+aim left 0.5; hold forward+run 3t
+aim left 34.3; hold forward+run 12t
+aim left 4.4; hold forward+run 12t
+aim left 3.4; hold forward+run 7t
+hold forward+run 7t
+tap use; wait 1s
+aim right 0.8; hold forward+run 7t
+hold strafeleft 6t
+aim right 3.4; hold forward+run 7t
+aim right 5.5; hold forward+run 5t
+aim right 4.4; hold forward+run 3t
+aim right 3.8; hold forward+run 3t
+aim right 7.2; hold forward+run 3t
+aim right 50.2; hold forward+run 3t
+aim right 32.6; hold forward+run 3t
+aim right 18.2; hold forward+run 3t
+aim left 4.2; hold forward+run 3t
+aim left 4.5; hold forward+run 3t
+aim left 6.1; hold forward+run 3t
+aim left 9.0; hold forward+run 3t
+aim left 38.9; hold forward 6t; wait 4t
+aim left 62.6; hold forward 3t; wait 4t
+aim left 25.5; hold forward 2t; wait 4t
+aim left 3.0; hold forward 2t; wait 4t
+aim left 107.7; hold forward 2t; wait 4t
+aim left 9.5; hold forward 2t; wait 4t
+wait 12t
+aim right 148.0; tap use; wait 1s
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+aim right 19.2; hold forward 2t; wait 4t
+aim right 1.6; hold forward 2t; wait 4t
+aim left 17.7; hold forward 3t; wait 4t
+aim left 5.9; hold forward 2t; wait 4t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+tap 2; wait 30t
+hold fire 4t; hold strafeleft+run 12t; wait 3t
+tap 3; wait 30t
+aim right 6.5; hold fire 4t; hold straferight+run 12t; wait 20t
+aim left 16.0; hold fire 4t; hold strafeleft+run 12t; wait 20t
+wait 5t
+aim right 40.2; hold forward 5t; wait 4t
+aim left 0.4; hold forward 3t; wait 4t
+aim right 0.4; hold forward 2t; wait 4t
+aim left 10.5; hold forward+run 3t
+aim left 21.1; hold forward 8t; wait 4t
+aim left 8.9; hold forward 6t; wait 4t
+aim left 1.0; hold forward 4t; wait 4t
+hold forward 2t; wait 4t
+aim left 4.2; hold forward 2t; wait 4t
+aim left 2.2; hold forward 2t; wait 4t
+aim right 13.2; hold forward 6t; wait 4t
+aim right 3.2; hold forward 3t; wait 4t
+aim right 16.4; hold fire 8t
+aim left 9.7; hold fire 8t
+aim right 11.5; hold fire 8t
+aim left 19.3; hold fire 8t
+aim right 7.2; hold fire 8t
+aim left 7.1; hold fire 8t
+aim left 4.6; hold fire 8t
+aim right 9.2; hold fire 8t
+aim left 1.5; hold fire 8t
+aim left 10.9; hold fire 8t
+aim right 7.4; hold fire 8t
+hold fire 8t
+aim left 5.9; hold fire 8t
+aim right 10.3; hold fire 8t
+aim right 28.7; hold forward 2t; wait 4t
+aim left 11.3; hold fire 8t
+aim left 17.6; hold fire 8t
+aim left 2.7; hold fire 8t
+aim left 3.9; hold fire 8t
+aim left 2.5; hold fire 8t
+aim left 2.5; hold fire 8t
+hold fire 8t
+aim left 7.4; hold fire 8t
+aim right 25.1; hold fire 8t
+hold fire 8t
+aim right 170.1; hold forward+run 7t
+hold forward+run 4t
+hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+wait 12t
+aim left 154.6; tap use; wait 1s
+aim left 37.9; hold forward 2t; wait 4t
+aim right 1.1; hold forward 2t; wait 4t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+aim right 17.9; hold forward 2t; wait 4t
+aim right 1.4; hold forward 2t; wait 4t
+aim right 12.2; hold forward+run 3t
+aim right 1.3; hold forward+run 3t
+wait 12t
+aim right 131.9; tap use; wait 1s
+aim left 53.0; hold forward+run 4t
+aim left 0.7; hold forward+run 4t
+aim left 1.3; hold forward+run 4t
+aim left 0.9; hold forward+run 3t
+aim left 1.3; hold forward+run 3t
+aim left 0.6; hold forward+run 3t
+aim left 2.0; hold forward+run 3t
+aim left 53.4; hold forward 5t; wait 4t
+tap 3; wait 30t
+aim left 43.9; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim right 92.4; hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+aim right 0.5; hold forward+run 3t
+aim left 78.5; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim right 81.8; hold forward+run 3t
+hold forward+run 3t
+aim left 79.9; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim right 18.6; hold forward 4t; wait 4t
+aim right 1.4; hold forward 2t; wait 4t
+aim right 2.5; hold forward 2t; wait 4t
+aim left 31.0; hold forward 4t; wait 4t
+aim left 9.9; hold forward 2t; wait 4t
+aim left 15.9; hold forward 2t; wait 4t
+aim left 157.6; hold forward 8t; wait 4t
+aim left 1.3; hold forward 7t; wait 4t
+aim left 1.6; hold forward 3t; wait 4t
+aim right 8.2; hold forward 3t; wait 4t
+aim right 11.1; hold forward 2t; wait 4t
+aim right 78.0; hold forward 8t; wait 4t
+aim right 9.4; hold forward 8t; wait 4t
+aim left 2.3; hold forward 8t; wait 4t
+aim left 4.2; hold forward 6t; wait 4t
+aim left 4.1; hold forward 3t; wait 4t
+wait 12t
+aim left 2.7; tap use; wait 1s
+aim right 0.4; hold forward+run 3t
+aim right 0.8; hold forward+run 3t
+aim left 19.3; hold forward+run 3t
+aim left 59.5; hold forward 6t; wait 4t
+aim left 44.7; hold forward 4t; wait 4t
+aim left 12.1; hold forward 2t; wait 4t
+aim left 14.7; hold forward 2t; wait 4t
+wait 10t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+aim right 82.1; hold forward 2t; wait 4t
+aim right 2.0; hold forward 2t; wait 4t
+aim right 18.7; hold forward+run 3t
+aim right 31.4; hold forward+run 3t
+aim right 6.9; hold forward+run 3t
+aim right 11.7; hold forward+run 3t
+aim left 57.8; hold forward+run 3t
+aim left 17.7; hold forward+run 3t
+aim left 29.4; hold forward+run 3t
+aim right 21.7; hold forward+run 12t
+aim left 5.8; hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+aim right 0.8; hold forward+run 3t
+aim right 25.0; hold forward+run 12t
+aim left 3.1; hold forward+run 8t
+aim left 10.5; hold forward+run 3t
+aim left 7.1; hold forward+run 3t
+aim left 14.2; hold forward+run 3t
+aim left 9.1; hold forward+run 3t
+aim left 1.9; hold forward+run 3t
+aim right 3.8; hold forward+run 3t
+aim right 5.6; hold forward+run 3t
+aim right 7.1; hold forward+run 3t
+aim right 60.2; hold forward+run 3t
+aim right 27.6; hold forward+run 3t
+aim right 14.0; hold forward+run 5t
+aim right 1.6; hold forward+run 3t
+aim right 1.0; hold forward+run 3t
+aim right 0.7; hold forward+run 3t
+aim right 2.1; hold forward+run 3t
+aim right 40.6; hold forward+run 10t
+aim right 19.4; hold forward+run 3t
+aim right 11.7; hold forward+run 3t
+aim right 17.3; hold forward+run 3t
+aim right 36.2; hold forward+run 3t
+aim left 49.6; hold forward 3t; wait 4t
+aim left 164.6; hold forward 2t; wait 4t
+aim left 3.8; hold forward 3t; wait 4t
+aim right 0.8; hold forward 2t; wait 4t
+wait 12t
+aim right 166.1; tap use; wait 1s
+aim right 1.6; hold forward+run 12t
+hold forward+run 12t
+hold forward+run 12t
+hold forward+run 12t
+hold forward+run 8t
+aim left 0.5; hold forward+run 3t
+aim right 40.2; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim left 174.2; hold fire 4t; wait 32t
+aim left 147.2; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim left 58.1; hold fire 4t; hold straferight+run 12t; wait 20t
+tap 4; wait 30t
+aim right 9.4; hold fire 8t
+aim left 1.1; hold fire 8t
+aim left 116.7; hold forward 6t; wait 4t
+tap 3; wait 30t
+aim right 62.9; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim right 70.7; hold forward 3t; wait 4t
+aim left 0.4; hold forward 3t; wait 4t
+aim right 7.7; hold forward 3t; wait 4t
+aim right 4.1; hold forward 2t; wait 4t
+aim left 103.7; hold forward 8t; wait 4t
+aim left 10.0; hold forward 6t; wait 4t
+aim left 10.2; hold forward 3t; wait 4t
+aim right 12.1; hold forward 3t; wait 4t
+aim right 2.2; hold forward 2t; wait 4t
+aim right 103.1; hold forward 8t; wait 4t
+aim right 1.4; hold forward 8t; wait 4t
+aim right 1.4; hold forward 7t; wait 4t
+aim right 1.8; hold forward 2t; wait 4t
+aim right 60.3; hold fire 4t; hold back+run 32t
+aim left 35.4; hold fire 4t; hold back+run 32t
+aim left 9.4; hold fire 4t; hold back+run 32t
+aim left 32.6; hold forward+run 8t
+aim left 3.9; hold forward 8t; wait 4t
+aim left 5.0; hold forward 8t; wait 4t
+aim left 7.6; hold forward 3t; wait 4t
+aim right 68.4; hold forward 2t; wait 4t
+aim right 39.6; hold forward 2t; wait 4t
+aim right 38.6; hold forward 2t; wait 4t
+aim right 42.6; hold forward 2t; wait 4t
+aim left 155.0; hold forward+run 12t
+aim left 1.3; hold forward+run 12t
+aim left 1.4; hold forward+run 3t
+aim left 1.1; hold forward+run 3t
+aim left 2.1; hold forward+run 3t
+tap 4; wait 30t
+aim right 39.0; hold fire 8t
+tap 3; wait 30t
+aim left 1.9; hold fire 4t; hold straferight+run 12t; wait 20t
+aim right 109.1; hold forward+run 3t
+aim right 2.8; hold forward+run 3t
+aim right 49.6; hold forward 2t; wait 4t
+aim right 112.6; hold forward 2t; wait 4t
+aim right 14.1; hold forward 6t; wait 4t
+aim left 0.6; hold forward 7t; wait 4t
+aim left 1.1; hold forward 5t; wait 4t
+aim left 2.6; hold forward 2t; wait 4t
+wait 12t
+aim left 122.7; tap use; wait 1s
+tap 4; wait 30t
+aim left 85.6; hold fire 8t
+aim left 2.9; hold fire 8t
+aim right 2.6; hold fire 8t
+aim right 0.9; hold fire 8t
+aim right 0.8; hold fire 8t
+aim right 84.0; hold forward 5t; wait 4t
+hold forward 3t; wait 4t
+aim right 3.1; hold forward 3t; wait 4t
+aim right 6.7; hold forward 3t; wait 4t
+aim right 5.7; hold forward 2t; wait 4t
+aim left 6.0; hold forward 3t; wait 4t
+aim right 0.4; hold forward 2t; wait 4t
+aim left 0.8; hold forward 2t; wait 4t
+aim left 84.6; hold forward 5t; wait 4t
+aim left 13.4; hold forward 4t; wait 4t
+aim left 8.4; hold forward 2t; wait 4t
+aim right 23.7; hold forward 6t; wait 4t
+aim right 7.4; hold forward 2t; wait 4t
+aim right 11.9; hold forward 2t; wait 4t
+aim right 29.7; hold forward 4t; wait 4t
+aim right 20.0; hold forward 2t; wait 4t
+aim right 10.1; hold forward 2t; wait 4t
+wait 12t
+aim right 42.5; tap use; wait 1s
+wait 1s
+wait 14t
+aim left 18.9; hold forward 3t; wait 4t
+aim left 0.6; hold forward 2t; wait 4t
+hold forward 2t; wait 4t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+aim left 12.4; hold forward 2t; wait 4t
+aim right 1.1; hold forward 2t; wait 4t
+aim left 0.3; hold forward 2t; wait 4t
+aim right 2.3; tap use; wait 1s
+aim right 2.4; hold forward 2t; wait 4t
+aim right 0.4; hold forward 2t; wait 4t
+aim left 19.6; hold forward+run 3t
+aim left 0.4; hold forward+run 3t
+aim left 0.6; hold forward+run 3t
+aim left 0.5; hold forward+run 3t
+aim left 1.3; hold forward+run 3t
+aim right 1.2; hold forward+run 3t
+aim left 0.3; hold forward+run 3t
+aim right 47.8; hold forward 8t; wait 4t
+aim right 32.4; hold forward 8t; wait 4t
+aim right 22.9; hold forward 6t; wait 4t
+aim left 3.0; hold forward 3t; wait 4t
+aim left 62.3; hold forward 3t; wait 4t
+aim left 31.6; hold forward 2t; wait 4t
+aim left 42.1; hold forward 2t; wait 4t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+tap 3; wait 30t
+aim right 116.1; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim right 48.6; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim left 141.6; hold fire 4t; wait 32t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+aim left 147.8; hold forward 4t; wait 4t
+hold forward 3t; wait 4t
+aim left 0.9; hold forward 2t; wait 4t
+aim left 103.3; hold forward+run 3t
+aim left 3.7; hold forward+run 3t
+aim left 3.1; hold forward+run 3t
+aim right 2.6; hold forward+run 3t
+aim right 4.4; hold forward+run 3t
+aim right 5.3; hold forward+run 3t
+aim right 43.5; hold forward+run 3t
+aim right 13.8; hold forward+run 3t
+aim right 17.9; hold forward+run 3t
+aim right 15.5; hold forward+run 3t
+aim left 26.0; hold forward+run 3t
+aim left 2.8; hold forward+run 3t
+aim left 3.4; hold forward+run 3t
+aim left 6.6; hold forward+run 3t
+aim right 36.2; hold forward 8t; wait 4t
+aim right 25.7; hold forward 5t; wait 4t
+aim right 8.6; hold forward 2t; wait 4t
+aim right 29.2; hold forward 2t; wait 4t
+wait 12t
+aim left 62.4; tap use; wait 1s
+wait 1s
+aim left 171.1; hold forward+run 5t
+hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+aim left 0.3; hold forward+run 3t
+hold forward+run 3t
+aim left 43.1; hold forward+run 9t
+aim left 13.9; hold forward+run 4t
+aim left 3.1; hold forward+run 3t
+aim left 2.9; hold forward+run 3t
+aim left 5.0; hold forward+run 3t
+aim left 40.0; hold forward 8t; wait 4t
+aim left 36.5; hold forward 5t; wait 4t
+aim left 11.5; hold forward 2t; wait 4t
+aim left 19.6; hold forward 4t; wait 4t
+aim left 19.8; hold forward 2t; wait 4t
+wait 10t
+wait 5t
+hold forward 2t; wait 4t
+aim left 0.6; hold forward 2t; wait 4t
+aim left 14.4; hold forward+run 12t
+hold forward+run 12t
+aim left 0.5; hold forward+run 12t
+aim left 0.6; hold forward+run 3t
+hold forward+run 3t
+aim left 0.9; hold forward+run 3t
+aim right 41.6; hold forward+run 3t
+aim right 13.8; hold forward+run 3t
+aim right 17.6; hold forward+run 3t
+aim right 33.7; hold forward+run 3t
+aim right 41.8; hold forward+run 3t
+aim right 31.1; hold forward+run 3t
+aim right 19.8; hold forward+run 3t
+aim right 11.8; hold forward+run 3t
+aim right 6.9; hold forward+run 3t
+aim right 4.6; hold forward+run 4t
+aim right 3.6; hold forward+run 4t
+aim right 2.8; hold forward+run 3t
+aim left 4.0; hold forward+run 3t
+aim left 10.4; hold forward+run 3t
+aim left 19.8; hold forward+run 3t
+aim left 31.8; hold forward+run 3t
+aim left 29.9; hold forward+run 3t
+aim left 14.0; hold forward+run 3t
+aim left 4.1; hold forward+run 3t
+aim right 1.5; hold forward+run 3t
+aim right 8.2; hold forward+run 3t
+aim right 17.7; hold forward+run 3t
+aim right 28.8; hold forward+run 3t
+aim right 24.1; hold forward+run 3t
+aim right 12.0; hold forward+run 3t
+aim right 2.2; hold forward+run 3t
+aim left 3.6; hold forward+run 3t
+aim left 11.6; hold forward+run 3t
+aim left 21.8; hold forward+run 3t
+aim left 26.9; hold forward+run 3t
+aim left 14.2; hold forward+run 3t
+aim left 0.8; hold forward+run 3t
+aim right 5.9; hold forward+run 3t
+aim right 13.6; hold forward+run 3t
+aim right 19.9; hold forward+run 3t
+aim right 17.3; hold forward+run 3t
+aim right 8.9; hold forward+run 3t
+aim right 1.9; hold forward+run 3t
+aim left 5.1; hold forward+run 3t
+aim left 11.4; hold forward+run 3t
+aim left 17.3; hold forward+run 3t
+aim left 17.6; hold forward+run 3t
+aim left 10.2; hold forward+run 3t
+aim left 3.4; hold forward+run 3t
+wait 14t
+aim left 103.2; hold forward+run 3t
+aim left 0.6; hold forward+run 3t
+aim left 1.1; hold forward+run 3t
+aim left 1.5; hold forward+run 3t
+aim right 46.5; hold forward+run 5t
+aim right 12.6; hold forward+run 3t
+aim right 10.0; hold forward+run 3t
+aim right 14.8; hold forward+run 3t
+aim right 32.3; hold forward+run 3t
+aim right 73.2; hold forward 2t; wait 4t
+aim right 33.3; hold forward 2t; wait 4t
+aim right 3.7; hold forward 2t; wait 4t
+wait 12t
+aim left 132.9; tap use; wait 1s
+aim left 28.0; hold forward 2t; wait 4t
+aim left 1.8; hold forward 2t; wait 4t
+aim right 29.3; hold forward 3t; wait 4t
+aim right 11.6; hold forward 2t; wait 4t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+aim left 68.3; hold forward 2t; wait 4t
+aim right 0.8; hold forward 2t; wait 4t
+aim left 52.3; hold forward+run 12t
+aim left 2.1; hold forward+run 7t
+aim left 2.1; hold forward+run 3t
+aim left 1.4; hold forward+run 3t
+aim left 0.5; hold forward+run 3t
+aim left 1.6; hold forward+run 3t
+aim right 6.8; hold forward+run 3t
+wait 12t
+aim right 81.6; tap use; wait 1s
+aim left 32.4; hold forward+run 3t
+aim left 13.3; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim right 40.8; hold forward+run 11t
+aim right 0.4; hold forward+run 6t
+aim right 3.4; hold fire 4t; wait 32t
+aim right 5.8; hold forward+run 3t
+aim left 1.2; hold forward+run 3t
+aim left 3.9; hold forward+run 3t
+aim left 6.2; hold forward+run 3t
+aim left 48.0; hold forward 7t; wait 4t
+aim left 63.4; hold forward 4t; wait 4t
+aim left 32.2; hold forward 4t; wait 4t
+aim left 23.3; hold forward 3t; wait 4t
+aim right 109.9; hold forward+run 12t
+aim right 3.2; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim right 3.2; hold forward+run 12t
+hold forward+run 7t
+hold forward+run 3t
+hold forward+run 3t
+aim right 0.3; hold forward+run 3t
+aim left 61.6; hold fire 4t; wait 32t
+aim left 29.8; hold fire 4t; wait 32t
+tap 4; wait 30t
+aim left 1.9; hold fire 8t
+aim left 3.5; hold forward+run 3t
+aim left 59.9; hold fire 8t
+tap 3; wait 30t
+aim left 7.7; hold fire 4t; hold straferight+run 12t; wait 20t
+tap 4; wait 30t
+aim left 11.9; hold fire 8t
+aim left 6.0; hold fire 8t
+hold fire 8t
+aim right 161.3; hold forward 5t; wait 4t
+hold forward 3t; wait 4t
+hold forward 2t; wait 4t
+aim right 103.6; hold forward+run 3t
+aim right 6.1; hold forward+run 3t
+aim right 3.1; hold forward+run 3t
+aim right 1.4; hold forward+run 3t
+aim right 99.7; hold forward 8t; wait 4t
+aim right 17.5; hold forward 8t; wait 4t
+aim right 8.0; hold forward 8t; wait 4t
+aim right 8.1; hold forward 5t; wait 4t
+aim left 17.6; hold forward 4t; wait 4t
+aim left 15.7; hold forward 2t; wait 4t
+aim left 26.5; hold forward 3t; wait 4t
+aim left 25.3; hold forward 2t; wait 4t
+aim right 23.9; hold forward 3t; wait 4t
+hold forward 2t; wait 4t
+aim left 171.9; hold forward+run 3t
+aim left 0.8; hold forward+run 3t
+aim left 0.5; hold forward+run 3t
+hold forward+run 3t
+aim left 41.2; hold forward+run 3t
+tap 3; wait 30t
+aim left 66.6; hold fire 4t; wait 32t
+aim left 7.8; hold forward+run 4t
+hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+aim left 27.9; hold forward+run 3t
+aim left 28.2; hold forward 8t; wait 4t
+aim left 16.9; hold forward 8t; wait 4t
+aim right 4.9; hold forward 8t; wait 4t
+aim right 6.6; hold forward 8t; wait 4t
+aim right 6.1; hold forward 2t; wait 4t
+aim left 11.1; hold forward 3t; wait 4t
+aim left 7.6; hold forward 2t; wait 4t
+aim left 158.0; hold forward+run 7t
+aim left 1.0; hold forward+run 5t
+aim left 0.9; hold forward+run 3t
+aim left 0.6; hold forward+run 3t
+aim left 1.2; hold forward+run 3t
+aim right 32.0; hold forward+run 3t
+aim right 55.7; hold forward+run 12t
+aim right 20.6; hold forward+run 7t
+aim right 15.7; hold forward+run 3t
+aim right 11.7; hold forward+run 3t
+aim right 19.5; hold forward+run 3t
+aim right 11.6; hold forward+run 9t
+aim right 16.8; hold forward 8t; wait 4t
+aim right 17.4; hold forward 5t; wait 4t
+aim right 11.6; hold forward 3t; wait 4t
+aim right 129.7; hold forward+run 9t
+aim right 3.4; hold forward+run 6t
+aim right 2.4; hold forward+run 3t
+aim right 1.8; hold forward+run 3t
+aim right 2.0; hold forward+run 3t
+aim left 1.3; hold forward+run 3t
+aim left 3.6; hold forward+run 3t
+aim left 24.3; hold forward+run 3t
+aim left 7.1; hold forward+run 3t
+aim left 8.7; hold forward+run 3t
+hold forward+run 3t
+aim right 9.7; hold forward+run 3t
+aim right 35.8; hold forward+run 3t
+aim right 10.9; hold forward+run 3t
+aim right 13.4; hold forward+run 3t
+aim right 11.3; hold forward+run 3t
+aim left 4.4; hold forward+run 3t
+aim left 8.1; hold forward+run 3t
+aim left 10.7; hold forward+run 3t
+aim left 47.8; hold forward+run 3t
+aim left 18.7; hold forward+run 3t
+aim left 25.2; hold forward+run 3t
+aim left 38.4; hold forward 5t; wait 4t
+aim left 18.8; hold forward 3t; wait 4t
+wait 12t
+aim left 64.9; tap use; wait 1s
+wait 1s
+aim right 99.6; hold forward+run 3t
+aim right 0.5; hold forward+run 3t
+aim left 30.9; hold forward+run 3t
+aim left 41.6; hold forward+run 12t
+aim left 1.5; hold forward+run 12t
+aim left 1.2; hold forward+run 3t
+aim left 1.3; hold forward+run 3t
+aim left 20.1; hold forward 4t; wait 3t
+aim left 76.4; hold forward 4t; wait 3t
+aim right 54.6; hold forward+run 3t
+aim right 4.2; hold forward 6t; wait 3t
+aim right 15.5; hold forward+run 3t
+aim right 4.9; hold forward+run 3t
+aim right 6.6; hold forward+run 3t
+aim left 34.5; hold forward 5t; wait 4t
+aim left 25.2; hold forward 3t; wait 4t
+aim right 2.6; hold forward 3t; wait 4t
+aim left 9.3; hold forward 2t; wait 4t
+aim right 161.2; hold forward 5t; wait 4t
+aim right 6.6; hold forward 4t; wait 4t
+aim right 4.8; hold forward 2t; wait 4t
+aim left 29.5; hold forward 3t; wait 4t
+aim left 9.8; hold forward 2t; wait 4t
+aim left 137.3; hold fire 4t; hold straferight+run 12t; wait 20t
+aim left 17.0; hold fire 4t; wait 32t
+aim left 159.7; hold fire 4t; wait 32t
+aim right 5.7; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim right 154.3; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim right 58.9; hold forward 6t; wait 4t
+aim left 40.4; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim right 75.2; hold forward 4t; wait 4t
+aim right 1.4; hold forward 3t; wait 4t
+aim left 22.2; hold forward 4t; wait 4t
+aim left 11.1; hold forward 2t; wait 4t
+aim right 31.8; hold forward 4t; wait 4t
+aim right 9.3; hold forward 2t; wait 4t
+aim right 6.4; hold forward 2t; wait 4t
+aim left 2.8; hold forward 2t; wait 4t
+aim left 5.7; tap use; wait 1s
+tap 4; wait 30t
+aim left 169.8; hold fire 8t
+aim left 10.9; hold fire 8t
+aim right 177.8; hold forward 2t; wait 4t
+hold straferight 6t
+aim left 28.1; hold forward 2t; wait 4t
+aim left 19.2; hold forward 2t; wait 4t
+aim right 1.2; hold forward 2t; wait 4t
+aim right 8.6; hold forward 2t; wait 4t
+aim right 18.6; hold forward 2t; wait 4t
+aim right 18.9; hold forward 2t; wait 4t
+aim right 14.2; hold forward 2t; wait 4t
+aim right 2.8; hold forward 2t; wait 4t
+aim right 167.4; hold forward 6t; wait 3t
+aim right 0.4; hold forward 6t; wait 3t
+hold forward 6t; wait 3t
+aim right 0.6; hold forward 6t; wait 3t
+tap 3; wait 30t
+aim left 146.5; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim right 136.1; hold forward+run 3t
+hold forward+run 3t
+aim left 0.3; hold forward+run 3t
+hold forward+run 3t
+aim left 0.5; hold forward+run 3t
+aim right 61.2; hold forward+run 3t
+aim right 15.8; hold forward+run 3t
+aim right 17.2; hold forward+run 3t
+aim right 21.2; hold forward+run 3t
+aim right 29.9; hold forward+run 3t
+aim right 44.2; hold forward+run 3t
+aim right 45.3; hold forward+run 3t
+aim right 35.2; hold forward+run 3t
+aim right 29.8; hold forward+run 3t
+aim left 126.1; hold forward+run 11t
+aim left 1.4; hold forward+run 11t
+aim right 5.5; hold forward+run 10t
+aim right 4.9; hold forward 8t; wait 4t
+aim right 8.2; hold forward 7t; wait 4t
+aim right 164.0; hold forward 8t; wait 4t
+aim right 3.1; hold forward 8t; wait 4t
+aim right 3.0; hold forward 4t; wait 4t
+aim right 15.8; hold forward 2t; wait 4t
+aim left 1.9; hold forward 3t; wait 4t
+aim right 4.6; hold forward 2t; wait 4t
+wait 5t
+wait 5t
+wait 5t
+aim right 160.6; hold forward 8t; wait 4t
+aim right 0.4; hold forward 8t; wait 4t
+aim right 0.5; hold forward 8t; wait 4t
+aim right 0.9; hold forward 3t; wait 4t
+aim right 6.0; hold forward 3t; wait 4t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+aim right 7.5; hold forward 2t; wait 4t
+aim right 2.0; hold forward 2t; wait 4t
+aim left 56.4; hold forward+run 3t
+aim left 3.7; hold forward+run 3t
+aim right 101.4; hold forward+run 5t
+aim right 10.2; hold forward+run 4t
+aim right 7.5; hold forward+run 3t
+aim right 6.6; hold forward+run 3t
+aim right 8.7; hold forward+run 3t
+aim right 18.8; hold forward+run 3t
+aim right 6.3; hold forward 5t; wait 4t
+aim right 117.9; hold forward 3t; wait 4t
+aim right 24.1; hold forward 4t; wait 4t
+aim right 10.8; hold forward 4t; wait 4t
+aim right 10.1; hold forward 2t; wait 4t
+aim left 154.5; hold forward 2t; wait 4t
+aim left 10.7; hold forward 2t; wait 4t
+aim left 8.1; hold forward 2t; wait 4t
+aim left 13.0; hold forward 2t; wait 4t
+aim left 89.4; hold forward 7t; wait 4t
+aim left 10.6; hold forward 5t; wait 4t
+aim left 13.6; hold forward 2t; wait 4t
+wait 12t
+aim right 19.5; tap use; wait 1s
+aim right 3.8; hold forward+run 3t
+hold forward+run 3t
+aim left 0.4; hold forward+run 3t
+aim right 0.6; hold forward+run 3t
+aim left 18.3; hold forward+run 3t
+aim left 11.6; hold forward+run 3t
+aim left 7.5; hold forward+run 8t
+aim left 13.1; hold forward 6t; wait 3t
+aim left 33.8; hold forward 5t; wait 3t
+aim right 87.5; hold forward+run 12t
+aim right 8.8; hold forward+run 5t
+aim right 6.0; hold forward+run 3t
+aim right 6.5; hold forward+run 3t
+aim right 20.4; hold forward+run 11t
+aim right 19.1; hold forward 6t; wait 3t
+aim right 38.5; hold forward 5t; wait 3t
+aim left 77.0; hold forward 6t; wait 3t
+aim left 7.6; hold forward 6t; wait 3t
+aim left 4.0; hold forward 6t; wait 3t
+aim left 3.9; hold forward+run 3t
+aim left 53.6; hold forward+run 10t
+aim left 11.2; hold forward+run 5t
+aim left 8.2; hold forward+run 3t
+aim left 10.0; hold forward+run 3t
+aim right 4.9; hold forward+run 12t
+aim left 3.7; hold forward+run 8t
+aim left 4.6; hold forward+run 3t
+aim left 5.8; hold forward+run 3t
+aim left 5.0; hold forward+run 12t
+aim left 2.6; hold forward+run 12t
+aim left 2.4; hold forward+run 11t
+aim left 8.4; hold forward 8t; wait 4t
+aim left 149.1; hold forward 3t; wait 4t
+aim left 9.9; hold forward 2t; wait 4t
+aim left 13.4; hold forward 2t; wait 4t
+wait 12t
+aim left 172.8; tap use; wait 1s
+wait 12t
+aim left 1.3; tap use; wait 1s
+hold forward+run 8t
+hold forward+run 6t
+hold forward+run 6t
+tap use; wait 1s
+hold forward+run 6t
+aim left 0.4; hold forward+run 4t
+aim left 0.4; hold forward+run 3t
+aim left 0.8; hold forward+run 3t
+aim left 2.2; hold forward+run 3t
+aim left 35.8; hold forward+run 8t
+aim left 16.4; hold forward+run 3t
+aim left 11.8; hold forward+run 3t
+aim left 21.8; hold forward+run 3t
+aim left 28.1; hold forward+run 3t
+aim right 20.0; hold forward+run 6t
+aim right 2.3; hold forward+run 3t
+aim right 2.2; hold forward+run 3t
+aim right 4.3; hold forward+run 3t
+aim left 57.5; hold forward+run 12t
+aim left 3.8; hold forward+run 12t
+aim left 5.9; hold forward+run 11t
+aim right 1.0; hold forward+run 3t
+aim right 0.7; hold forward+run 3t
+aim left 12.9; hold forward+run 12t
+aim left 4.9; hold forward+run 7t
+aim left 5.2; hold forward 8t; wait 4t
+aim left 146.3; hold forward 2t; wait 4t
+aim left 18.1; hold forward 4t; wait 4t
+aim left 5.0; hold forward 4t; wait 4t
+aim left 5.4; hold forward 3t; wait 4t
+aim left 158.8; hold forward 2t; wait 4t
+aim left 6.3; hold forward 2t; wait 4t
+aim left 5.0; hold forward 2t; wait 4t
+aim left 5.8; hold forward 2t; wait 4t
+aim left 102.6; hold forward 6t; wait 4t
+aim left 11.2; hold forward 4t; wait 4t
+aim left 14.3; hold forward 2t; wait 4t
+aim left 62.7; hold forward+run 12t
+aim left 2.4; hold forward+run 12t
+aim left 2.1; hold forward+run 6t
+aim left 2.1; hold forward+run 3t
+aim left 2.6; hold forward+run 3t
+aim right 47.3; hold forward+run 6t
+aim right 14.0; hold forward+run 3t
+aim left 4.3; hold forward+run 3t
+aim left 4.2; hold forward+run 3t
+aim left 5.1; hold forward+run 3t
+aim left 5.9; hold forward+run 3t
+aim left 6.3; hold forward+run 6t
+aim left 5.9; hold forward+run 3t
+aim left 5.1; hold forward+run 3t
+aim left 13.3; hold forward+run 3t
+aim right 86.8; hold forward+run 12t
+aim right 8.2; hold forward+run 8t
+aim right 2.8; hold forward+run 3t
+aim right 2.4; hold forward+run 3t
+aim left 51.2; hold forward+run 6t
+aim left 18.6; hold forward+run 3t
+aim left 14.3; hold forward+run 3t
+aim left 19.6; hold forward+run 3t
+aim left 33.4; hold forward+run 3t
+aim left 50.5; hold forward+run 3t
+wait 12t
+aim right 75.7; tap use; wait 1s
+hold forward+run 12t
+hold forward+run 10t
+hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+aim left 33.4; hold forward+run 3t
+aim left 20.3; hold forward+run 3t
+aim left 40.8; hold forward+run 3t
+aim left 56.2; hold forward+run 3t
+aim left 35.2; hold forward+run 3t
+aim left 22.1; hold forward+run 3t
+aim left 19.8; hold forward+run 3t
+aim right 142.0; hold forward+run 3t
+aim right 7.2; hold forward+run 3t
+aim right 2.4; hold forward+run 3t
+aim right 0.5; hold forward+run 3t
+aim right 0.5; hold forward+run 3t
+aim right 0.7; hold forward+run 3t
+aim left 49.4; hold forward+run 6t
+aim left 16.2; hold forward+run 3t
+aim left 12.6; hold forward+run 3t
+aim left 22.8; hold forward 6t; wait 3t
+aim left 5.3; hold forward 6t; wait 3t
+aim left 11.9; hold forward 5t; wait 3t
+aim right 1.7; hold forward 5t; wait 3t
+aim left 154.6; hold forward 6t; wait 3t
+aim left 3.6; hold forward+run 3t
+aim left 0.4; hold forward+run 3t
+aim left 1.3; hold forward+run 3t
+aim left 0.8; hold forward+run 3t
+aim right 16.3; hold forward+run 3t
+aim right 53.2; hold forward 5t; wait 4t
+aim right 74.7; hold forward 5t; wait 4t
+aim right 27.9; hold forward 5t; wait 4t
+aim right 16.8; hold forward 3t; wait 4t
+aim right 19.4; hold forward 2t; wait 4t
+aim right 37.8; hold forward 2t; wait 4t
+aim right 148.7; hold forward+run 11t
+aim right 3.8; hold forward+run 8t
+aim right 1.9; hold forward 8t; wait 4t
+aim left 40.3; hold forward 2t; wait 4t
+aim left 116.3; hold forward 2t; wait 4t
+aim left 18.6; hold forward 2t; wait 4t
+aim left 7.5; hold forward 2t; wait 4t
+aim left 5.4; hold forward 2t; wait 4t
+aim left 9.7; hold forward 2t; wait 4t
+aim left 61.8; hold forward+run 12t
+aim left 2.9; hold forward+run 8t
+aim left 1.3; hold forward+run 3t
+aim right 3.2; hold forward+run 3t
+aim right 3.0; hold forward+run 3t
+aim right 4.8; hold forward+run 3t
+aim right 38.2; hold forward+run 8t
+aim right 15.8; hold forward 8t; wait 4t
+aim right 45.3; hold forward 5t; wait 4t
+aim right 55.1; hold forward 3t; wait 4t
+aim right 34.9; hold forward 2t; wait 4t
+aim right 23.1; hold forward 2t; wait 4t
+aim right 21.1; hold forward 2t; wait 4t
+wait 12t
+aim right 157.4; tap use; wait 1s
+aim right 7.0; hold forward+run 12t
+hold forward+run 12t
+hold forward+run 10t
+hold forward 8t; wait 4t
+aim right 179.1; hold forward 2t; wait 4t
+aim right 2.2; hold forward 3t; wait 4t
+aim left 0.3; hold forward 2t; wait 4t
+wait 12t
+aim right 178.2; tap use; wait 1s
+aim right 0.8; hold forward+run 12t
+hold forward+run 12t
+hold forward+run 12t
+hold forward+run 12t
+hold forward+run 8t
+hold forward+run 3t
+hold forward+run 3t
+aim left 44.1; hold forward+run 5t
+aim left 22.1; hold forward+run 3t
+aim left 9.5; hold forward+run 3t
+aim left 0.4; hold forward+run 3t
+aim right 1.8; hold forward+run 3t
+aim right 3.8; hold forward+run 3t
+aim right 7.5; hold forward+run 3t
+aim right 14.2; hold forward+run 3t
+aim right 46.3; hold forward 8t; wait 4t
+aim right 23.5; hold forward 8t; wait 4t
+aim right 15.6; hold forward 8t; wait 4t
+aim right 20.2; hold forward 3t; wait 4t
+aim left 56.0; hold forward 2t; wait 4t
+aim left 38.4; hold forward 2t; wait 4t
+aim left 70.6; hold forward 2t; wait 4t
+aim left 25.9; hold forward 2t; wait 4t
+aim left 134.6; hold forward+run 10t
+aim left 1.3; hold forward+run 6t
+aim left 0.9; hold forward+run 3t
+aim left 1.0; hold forward+run 3t
+aim left 35.7; hold forward+run 9t
+aim left 16.2; hold forward+run 3t
+aim right 1.0; hold forward+run 3t
+aim right 2.8; hold forward+run 3t
+aim right 2.1; hold forward+run 3t
+aim right 45.3; hold forward+run 3t
+aim right 20.3; hold forward+run 3t
+aim right 30.9; hold forward+run 3t
+aim right 46.5; hold forward 4t; wait 3t
+aim right 44.7; hold forward 6t; wait 3t
+aim right 17.6; hold forward 6t; wait 3t
+aim right 14.8; hold forward+run 3t
+aim left 132.4; hold forward+run 6t
+aim left 7.4; hold forward+run 5t
+aim left 5.3; hold forward 6t; wait 3t
+tap 4; wait 30t
+aim right 65.3; hold fire 8t
+tap 3; wait 30t
+aim left 1.4; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim left 95.7; hold forward+run 8t
+hold forward+run 4t
+aim left 0.5; hold forward+run 3t
+aim left 0.6; hold forward+run 3t
+aim left 0.5; hold forward+run 3t
+aim left 40.0; hold forward+run 7t
+aim left 16.6; hold forward 6t; wait 3t
+aim left 34.9; hold forward 6t; wait 3t
+aim left 12.8; hold forward 4t; wait 3t
+aim right 76.6; hold forward+run 3t
+aim right 9.6; hold forward+run 3t
+aim right 20.6; hold forward 2t; wait 4t
+aim right 119.9; hold forward 2t; wait 4t
+aim right 18.4; hold forward 3t; wait 4t
+aim right 7.2; hold forward 2t; wait 4t
+aim right 6.4; hold forward 2t; wait 4t
+wait 12t
+aim left 154.4; tap use; wait 1s
+hold forward+run 3t
+hold forward+run 3t
+aim right 0.4; hold forward+run 3t
+aim left 0.4; hold forward+run 3t
+aim right 49.9; hold forward+run 4t
+aim right 12.7; hold forward+run 3t
+aim right 11.6; hold forward+run 3t
+aim right 17.1; hold forward+run 3t
+aim right 11.2; hold forward+run 3t
+aim left 26.4; hold forward 8t; wait 4t
+aim left 9.3; hold forward 8t; wait 4t
+aim left 11.7; hold forward 3t; wait 4t
+aim left 131.2; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim right 84.6; hold forward 3t; wait 4t
+aim right 1.9; hold forward 2t; wait 4t
+aim right 50.0; hold forward 3t; wait 4t
+aim right 14.6; hold forward 2t; wait 4t
+aim right 22.5; hold forward 2t; wait 4t
+aim right 157.9; hold forward+run 12t
+hold forward+run 7t
+aim right 0.6; hold forward+run 3t
+hold forward+run 3t
+aim right 0.5; hold forward+run 3t
+aim right 24.3; hold forward+run 10t
+aim right 17.0; hold forward+run 3t
+aim right 14.9; hold forward+run 3t
+aim right 4.7; hold forward+run 3t
+aim right 4.5; hold forward+run 3t
+aim left 3.5; hold forward+run 3t
+aim left 22.5; hold forward 6t; wait 4t
+aim left 83.9; hold forward 2t; wait 4t
+aim left 49.2; hold forward 2t; wait 4t
+aim left 16.6; hold forward 3t; wait 4t
+aim left 13.8; hold forward 2t; wait 4t
+aim left 14.2; hold forward 2t; wait 4t
+wait 7t
+aim left 6.7; hold forward+run 3t
+aim left 0.9; hold forward+run 3t
+aim left 0.5; hold forward+run 3t
+aim left 0.8; hold forward+run 3t
+aim right 9.8; hold forward+run 7t
+aim right 3.7; hold forward+run 3t
+aim right 3.6; hold forward+run 3t
+aim right 28.1; hold forward 5t; wait 4t
+aim right 118.9; hold forward 4t; wait 4t
+aim right 19.6; hold forward 5t; wait 4t
+aim right 10.0; hold forward 4t; wait 4t
+aim right 9.2; hold forward 2t; wait 4t
+wait 12t
+aim left 164.3; tap use; wait 1s
+aim right 9.3; hold forward+run 3t
+aim left 0.4; hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+aim right 0.8; hold forward+run 3t
+aim left 8.7; hold forward+run 3t
+aim left 15.3; hold forward+run 3t
+aim left 46.1; hold forward 6t; wait 3t
+aim left 79.7; hold forward 6t; wait 3t
+aim left 25.5; hold forward 6t; wait 3t
+aim left 17.4; hold forward 4t; wait 3t
+aim right 72.7; hold forward 3t; wait 3t
+aim right 39.1; hold forward 2t; wait 4t
+aim right 57.3; hold forward 2t; wait 4t
+aim right 15.7; hold forward 2t; wait 4t
+aim right 8.7; hold forward 2t; wait 4t
+aim left 20.3; hold forward+run 3t
+aim left 0.4; hold forward+run 3t
+hold forward+run 3t
+aim left 0.6; hold forward+run 3t
+aim right 11.1; hold forward+run 3t
+aim left 3.4; hold forward+run 3t
+aim right 13.2; hold forward+run 3t
+aim right 27.9; hold forward+run 4t
+aim right 13.4; hold forward+run 3t
+aim right 15.0; hold forward+run 3t
+aim right 27.4; hold forward+run 3t
+aim right 29.4; hold forward 5t; wait 4t
+aim right 75.2; hold forward 5t; wait 4t
+aim right 9.6; hold forward 5t; wait 4t
+aim left 4.1; hold forward 3t; wait 4t
+aim right 66.4; hold forward 2t; wait 4t
+aim right 49.2; hold forward 2t; wait 4t
+aim right 70.2; hold forward 2t; wait 4t
+wait 12t
+aim right 94.6; tap use; wait 1s
+aim left 11.3; hold forward 3t; wait 4t
+aim right 1.5; hold forward 2t; wait 4t
+aim right 7.8; hold forward 3t; wait 4t
+aim right 2.1; hold forward 2t; wait 4t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+aim left 52.8; hold forward 3t; wait 4t
+aim left 0.9; hold forward 2t; wait 4t
+aim left 22.5; hold forward+run 4t
+aim left 1.0; hold forward+run 3t
+aim left 0.5; hold forward+run 3t
+aim right 1.9; hold forward+run 3t
+aim right 2.4; hold forward+run 3t
+aim right 28.2; hold forward+run 3t
+aim right 18.6; hold forward 5t; wait 3t
+aim right 106.0; hold forward 4t; wait 3t
+aim right 27.6; hold forward 5t; wait 3t
+aim right 14.0; hold forward+run 3t
+aim right 94.1; hold forward 6t; wait 3t
+aim right 34.0; hold forward 5t; wait 3t
+aim right 8.0; hold forward 5t; wait 3t
+aim right 15.5; hold forward 2t; wait 4t
+wait 12t
+aim right 69.2; tap use; wait 1s
+aim left 151.0; hold forward 8t; wait 4t
+aim left 2.0; hold forward 8t; wait 4t
+aim left 2.2; hold forward 8t; wait 4t
+aim left 1.8; hold forward 8t; wait 4t
+aim left 0.8; hold forward 8t; wait 4t
+aim left 1.2; hold forward 6t; wait 4t
+aim left 0.8; hold forward 2t; wait 4t
+aim left 2.6; hold forward 3t; wait 4t
+aim left 2.9; hold forward 2t; wait 4t
+aim right 169.8; hold forward+run 3t
+aim right 1.6; hold forward+run 3t
+aim right 1.5; hold forward+run 3t
+aim left 62.1; hold forward 4t; wait 4t
+aim left 60.1; hold forward 2t; wait 4t
+aim left 103.3; hold forward 2t; wait 4t
+aim left 18.9; hold forward 2t; wait 4t
+wait 12t
+aim right 177.3; tap use; wait 1s
+aim right 17.1; hold forward 2t; wait 4t
+aim left 1.4; hold forward 2t; wait 4t
+aim right 0.3; hold forward 2t; wait 4t
+aim left 26.4; hold forward 2t; wait 4t
+aim left 11.6; hold forward 2t; wait 4t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+aim right 3.0; hold forward 2t; wait 4t
+hold forward 2t; wait 4t
+aim right 1.9; hold forward 2t; wait 4t
+aim right 2.3; tap use; wait 1s
+aim right 2.3; hold forward 2t; wait 4t
+aim left 0.4; hold forward 2t; wait 4t
+aim left 42.6; hold forward+run 11t
+aim left 1.9; hold forward+run 6t
+aim left 1.4; hold forward+run 3t
+aim left 1.5; hold forward+run 3t
+aim left 38.7; hold forward+run 12t
+aim left 5.0; hold forward+run 12t
+hold forward+run 12t
+aim left 0.4; hold forward+run 12t
+aim left 1.3; hold forward 7t; wait 4t
+aim left 176.2; hold forward 3t; wait 4t
+aim left 4.1; hold forward 2t; wait 4t
+wait 12t
+aim left 171.3; tap use; wait 1s
+aim left 2.6; hold forward+run 12t
+hold forward+run 12t
+hold forward+run 10t
+hold forward 8t; wait 4t
+aim right 179.4; hold forward 2t; wait 4t
+aim left 0.3; hold forward 3t; wait 4t
+hold forward 2t; wait 4t
+wait 12t
+aim left 179.2; tap use; wait 1s
+aim right 114.8; hold forward+run 5t
+hold forward+run 4t
+hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+aim right 17.4; hold forward+run 10t
+aim right 12.6; hold forward+run 3t
+aim right 13.6; hold forward+run 3t
+aim right 43.4; hold forward+run 3t
+aim right 4.4; hold forward+run 3t
+aim right 5.1; hold forward+run 3t
+aim right 38.9; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim right 53.2; hold fire 4t; wait 32t
+aim left 29.0; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim right 40.8; hold forward+run 9t
+hold forward 8t; wait 4t
+aim right 0.7; hold forward 7t; wait 4t
+aim right 15.1; hold forward 4t; wait 4t
+aim right 22.1; hold forward 2t; wait 4t
+aim right 140.7; hold forward+run 5t
+aim right 1.4; hold forward+run 4t
+aim right 0.7; hold forward+run 3t
+aim right 0.7; hold forward+run 3t
+aim right 1.1; hold forward+run 3t
+aim left 17.3; hold forward 8t; wait 4t
+aim left 52.0; hold forward 2t; wait 4t
+aim left 79.3; hold forward 2t; wait 4t
+aim left 25.6; hold forward 2t; wait 4t
+aim left 12.4; hold forward 2t; wait 4t
+aim right 175.6; hold forward 2t; wait 4t
+aim right 10.9; hold forward 2t; wait 4t
+aim left 166.2; hold forward+run 5t
+aim left 0.5; hold forward+run 4t
+aim left 0.5; hold forward+run 3t
+aim left 0.5; hold forward+run 3t
+aim left 1.0; hold forward+run 3t
+aim left 16.3; hold forward+run 12t
+aim left 10.2; hold forward+run 3t
+aim left 7.0; hold forward+run 3t
+aim left 41.7; hold forward+run 3t
+aim left 25.4; hold forward+run 3t
+aim left 32.6; hold forward+run 3t
+aim left 36.1; hold forward+run 3t
+aim left 33.5; hold forward+run 3t
+aim left 29.9; hold forward+run 3t
+aim left 30.2; hold forward+run 3t
+aim right 119.1; hold forward+run 11t
+aim right 7.9; hold forward+run 7t
+aim right 4.5; hold forward 8t; wait 4t
+wait 12t
+aim right 7.6; tap use; wait 1s
+aim left 22.7; hold forward+run 6t
+hold forward+run 4t
+hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+aim left 40.6; hold forward+run 3t
+aim left 42.0; hold forward+run 3t
+aim left 60.7; hold forward+run 3t
+aim left 34.8; hold forward+run 3t
+aim left 20.2; hold forward+run 3t
+aim left 18.7; hold forward+run 3t
+aim left 17.1; hold forward+run 3t
+aim left 20.4; hold forward+run 3t
+aim right 162.8; hold forward+run 3t
+aim right 5.8; hold forward+run 3t
+aim right 0.5; hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+aim right 0.5; hold forward+run 3t
+aim right 0.7; hold forward+run 3t
+aim left 20.5; hold forward+run 3t
+aim left 37.2; hold forward+run 4t
+aim left 13.6; hold forward+run 3t
+aim left 11.9; hold forward+run 3t
+aim left 10.8; hold forward+run 3t
+aim right 2.1; hold forward+run 3t
+aim right 68.6; hold forward 6t; wait 3t
+aim right 19.6; hold forward+run 3t
+aim right 4.5; hold forward+run 3t
+aim right 1.1; hold forward+run 3t
+aim right 1.0; hold forward+run 3t
+aim right 1.6; hold forward+run 3t
+aim left 46.2; hold forward+run 3t
+aim left 56.2; hold forward 7t; wait 4t
+aim left 19.5; hold forward 6t; wait 4t
+aim left 1.2; hold forward 4t; wait 4t
+aim right 20.3; hold forward 4t; wait 4t
+aim right 15.6; hold forward 2t; wait 4t
+aim left 9.4; hold forward 3t; wait 4t
+aim right 2.6; hold forward 2t; wait 4t
+aim left 8.8; hold forward 4t; wait 4t
+aim left 3.8; hold forward 2t; wait 4t
+aim right 1.5; hold forward 4t; wait 4t
+aim left 1.5; hold forward 2t; wait 4t
+aim left 175.4; hold forward+run 8t
+hold forward+run 6t
+aim left 0.4; hold forward+run 3t
+aim left 0.5; hold forward+run 3t
+aim left 0.4; hold forward+run 3t
+aim left 0.4; hold forward+run 3t
+aim left 0.6; hold forward+run 3t
+aim left 1.2; hold forward+run 3t
+aim right 30.7; hold forward+run 3t
+aim right 40.8; hold forward+run 3t
+aim right 22.5; hold forward+run 4t
+hold forward+run 3t
+aim right 0.4; hold forward+run 3t
+hold forward+run 3t
+aim right 0.5; hold forward+run 3t
+aim left 49.1; hold forward+run 4t
+aim left 14.8; hold forward+run 3t
+aim left 14.2; hold forward+run 3t
+aim right 0.9; hold forward+run 3t
+aim right 4.6; hold forward+run 3t
+aim right 12.4; hold forward+run 3t
+aim right 55.3; hold forward+run 6t
+aim right 13.8; hold forward+run 4t
+aim right 10.0; hold forward+run 3t
+aim right 10.0; hold forward+run 3t
+aim right 16.6; hold forward+run 3t
+aim right 122.2; hold forward+run 6t
+aim right 7.8; hold forward+run 7t
+aim right 6.0; hold forward+run 4t
+aim right 5.2; hold forward+run 3t
+aim right 0.7; hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+aim right 0.8; hold forward+run 3t
+aim left 23.4; hold forward+run 3t
+aim left 44.0; hold forward+run 3t
+aim left 16.3; hold forward+run 3t
+aim left 16.7; hold forward+run 3t
+aim left 5.3; hold forward+run 3t
+aim left 1.4; hold forward+run 3t
+aim left 1.9; hold forward+run 3t
+aim right 96.1; hold forward+run 3t
+aim right 10.1; hold forward+run 3t
+aim right 0.9; hold forward+run 3t
+aim right 0.5; hold forward+run 3t
+aim right 1.3; hold forward+run 3t
+aim left 34.2; hold forward+run 3t
+aim left 47.7; hold forward+run 3t
+aim left 53.5; hold forward+run 3t
+aim right 30.1; hold forward+run 11t
+aim right 4.5; hold forward+run 4t
+aim right 3.3; hold forward+run 3t
+aim right 1.2; hold forward+run 3t
+aim right 0.4; hold forward+run 3t
+aim left 34.0; hold forward+run 3t
+aim left 18.2; hold forward 8t; wait 4t
+aim left 0.4; hold forward 7t; wait 4t
+aim left 0.8; hold forward 2t; wait 4t
+wait 12t
+aim right 0.6; tap use; wait 1s
+aim right 1.3; hold forward 8t; wait 4t
+aim left 0.4; hold forward 8t; wait 4t
+hold forward 6t; wait 4t
+aim left 0.3; hold forward 2t; wait 4t
+aim left 31.9; hold forward 3t; wait 4t
+aim left 28.0; hold forward 2t; wait 4t
+aim right 99.7; hold forward 5t; wait 4t
+aim right 25.5; hold forward 4t; wait 4t
+aim right 26.2; hold forward 2t; wait 4t
+aim left 22.7; hold forward 3t; wait 4t
+aim right 1.8; hold forward 2t; wait 4t
+aim right 112.5; hold forward 8t; wait 4t
+aim right 7.1; hold forward 8t; wait 4t
+aim right 7.6; hold forward 4t; wait 4t
+aim left 15.2; hold forward 3t; wait 4t
+aim right 32.2; hold forward+run 3t
+aim right 4.7; hold forward+run 3t
+aim right 5.5; hold forward+run 3t
+wait 12t
+aim left 139.6; tap use; wait 1s
+aim right 95.1; hold forward+run 5t
+hold forward+run 4t
+hold forward+run 3t
+hold forward+run 3t
+aim right 0.5; hold forward+run 3t
+aim right 35.4; hold forward+run 3t
+aim right 14.7; hold forward+run 9t
+aim right 1.8; hold forward+run 5t
+aim right 1.3; hold forward+run 3t
+aim left 0.3; hold forward+run 3t
+aim left 0.6; hold forward+run 3t
+hold forward+run 3t
+aim left 0.6; hold forward+run 3t
+aim right 20.9; hold forward+run 3t
+aim right 54.2; hold forward+run 5t
+aim right 11.4; hold forward+run 3t
+aim right 0.3; hold forward+run 3t
+hold forward+run 3t
+aim right 0.3; hold forward+run 3t
+hold forward+run 3t
+aim left 46.5; hold forward+run 5t
+aim left 16.9; hold forward+run 3t
+aim left 14.7; hold forward+run 3t
+aim right 2.7; hold forward+run 3t
+aim right 6.0; hold forward+run 3t
+aim right 58.7; hold forward+run 7t
+aim right 13.4; hold forward+run 4t
+aim right 8.5; hold forward+run 3t
+aim right 8.5; hold forward+run 3t
+aim right 13.7; hold forward+run 3t
+aim right 25.8; hold forward+run 3t
+aim right 28.1; hold forward+run 3t
+aim right 44.5; hold forward+run 3t
+aim right 49.6; hold forward+run 3t
+aim right 32.9; hold forward+run 3t
+aim right 25.1; hold forward+run 3t
+aim left 151.7; hold forward+run 12t
+aim left 1.2; hold forward+run 12t
+hold forward+run 12t
+hold forward+run 12t
+tap use; wait 1s
+hold forward+run 12t
+hold forward+run 12t
+hold forward+run 12t
+hold forward+run 12t
+hold forward+run 12t
+hold forward+run 12t
+tap use; wait 1s
+hold forward+run 12t
+hold forward+run 10t
+hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+aim left 14.0; hold forward+run 3t
+aim left 8.1; hold forward+run 3t
+aim right 17.3; hold forward+run 3t
+aim right 10.0; hold forward+run 3t
+aim right 16.0; hold forward+run 3t
+aim right 43.4; hold forward 3t; wait 4t
+aim right 85.3; hold forward 4t; wait 4t
+aim right 18.1; hold forward 6t; wait 4t
+aim right 10.6; hold forward 4t; wait 4t
+aim right 12.0; hold forward 2t; wait 4t
+wait 12t
+aim left 138.9; tap use; wait 1s
+aim left 6.5; hold forward+run 3t
+tap 3; wait 30t
+aim right 46.3; hold fire 4t; wait 32t
+aim left 8.5; hold fire 4t; wait 32t
+tap 4; wait 30t
+aim right 6.4; hold fire 8t
+tap 3; wait 30t
+aim left 4.7; hold fire 4t; hold straferight+run 12t; wait 20t
+aim left 90.1; hold forward+run 4t
+hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+aim right 0.4; hold forward+run 3t
+aim right 18.4; hold forward+run 3t
+aim right 86.9; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim right 36.1; hold forward+run 3t
+hold forward+run 3t
+aim left 0.6; hold forward+run 3t
+aim left 0.6; hold forward+run 3t
+aim left 0.6; hold forward+run 3t
+aim left 32.6; hold forward+run 12t
+aim left 13.7; hold forward+run 5t
+aim left 1.5; hold forward+run 3t
+aim left 0.6; hold forward+run 3t
+aim right 28.3; hold forward+run 3t
+aim right 53.3; hold forward 6t; wait 4t
+aim right 71.2; hold forward 6t; wait 4t
+aim right 24.8; hold forward 6t; wait 4t
+aim right 18.6; hold forward 3t; wait 4t
+aim right 19.3; hold forward 2t; wait 4t
+aim left 83.4; hold forward 2t; wait 4t
+aim left 29.5; hold forward 2t; wait 4t
+aim left 39.5; hold forward 2t; wait 4t
+aim right 4.0; hold forward+run 3t
+aim left 1.8; hold forward+run 3t
+aim left 2.8; hold forward+run 3t
+aim right 23.2; hold forward 5t; wait 4t
+aim right 4.1; hold forward 3t; wait 4t
+aim left 67.4; hold forward 7t; wait 4t
+aim left 24.1; hold forward 4t; wait 4t
+aim left 32.7; hold forward 2t; wait 4t
+aim left 45.0; hold fire 4t; wait 32t
+aim right 15.3; hold forward 2t; wait 4t
+aim left 0.4; hold forward 2t; wait 4t
+aim right 2.2; hold forward 2t; wait 4t
+aim right 5.8; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim right 2.4; hold fire 4t; hold straferight+run 12t; wait 20t
+aim left 58.4; hold forward 2t; wait 4t
+aim right 25.8; hold forward 8t; wait 4t
+aim right 1.4; hold forward 8t; wait 4t
+aim right 1.2; hold forward 6t; wait 4t
+aim right 2.3; hold forward 2t; wait 4t
+aim left 6.5; hold forward 3t; wait 4t
+aim left 2.9; hold forward 2t; wait 4t
+aim right 77.4; hold forward 6t; wait 4t
+aim right 18.0; hold forward 4t; wait 4t
+aim right 14.8; hold forward 2t; wait 4t
+aim right 21.4; hold forward 2t; wait 4t
+aim left 116.9; hold forward 3t; wait 4t
+aim left 16.2; hold forward 3t; wait 4t
+aim left 10.0; hold forward 4t; wait 4t
+aim left 8.9; hold forward 2t; wait 4t
+aim left 13.5; hold forward 2t; wait 4t
+aim left 170.3; hold forward+run 12t
+hold forward+run 7t
+hold forward+run 3t
+hold forward+run 3t
+aim right 1.4; hold forward+run 3t
+aim left 151.1; hold forward 8t; wait 4t
+aim left 6.4; hold forward 8t; wait 4t
+aim left 4.0; hold forward 8t; wait 4t
+aim left 6.6; hold forward 2t; wait 4t
+aim right 41.6; hold forward 3t; wait 4t
+aim right 27.7; hold forward 2t; wait 4t
+aim right 66.1; hold forward 2t; wait 4t
+aim right 55.9; hold forward 8t; wait 4t
+aim right 0.6; hold forward 8t; wait 4t
+aim right 0.4; hold forward 7t; wait 4t
+hold forward 2t; wait 4t
+wait 12t
+tap use; wait 1s
+tap 4; wait 30t
+aim right 3.2; hold fire 8t
+aim right 1.1; hold fire 8t
+hold fire 8t
+aim left 5.4; hold forward+run 12t
+tap 3; wait 30t
+aim right 72.8; hold fire 4t; wait 32t
+aim left 20.1; hold fire 4t; wait 32t
+aim left 87.6; hold fire 4t; wait 32t
+aim right 87.6; hold forward 5t; wait 4t
+aim right 0.3; hold forward 3t; wait 4t
+aim left 0.7; hold forward 2t; wait 4t
+aim left 86.4; hold forward+run 12t
+aim left 4.0; hold forward+run 7t
+aim left 3.6; hold forward+run 3t
+aim left 3.4; hold forward+run 3t
+aim right 42.8; hold forward+run 3t
+aim right 13.0; hold forward+run 3t
+aim right 17.8; hold forward+run 3t
+aim right 32.0; hold forward+run 3t
+aim left 0.7; hold forward+run 12t
+aim right 14.0; hold forward 8t; wait 4t
+aim right 26.5; hold forward 6t; wait 4t
+aim right 42.2; hold forward 2t; wait 4t
+aim right 63.2; hold forward 4t; wait 4t
+aim right 1.8; hold forward 2t; wait 4t
+aim left 0.7; hold forward 2t; wait 4t
+wait 12t
+aim left 130.2; tap use; wait 1s
+aim left 33.5; hold forward 4t; wait 4t
+hold forward 3t; wait 4t
+hold forward 2t; wait 4t
+aim right 25.7; hold forward 2t; wait 4t
+aim right 15.5; hold forward 2t; wait 4t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+aim left 54.2; hold forward 2t; wait 4t
+aim right 0.8; hold forward 2t; wait 4t
+aim left 24.4; hold forward+run 3t
+aim left 1.3; hold forward+run 3t
+aim left 0.5; hold forward+run 3t
+aim left 1.1; hold forward+run 3t
+aim left 58.6; hold fire 4t; wait 32t
+aim left 49.6; hold fire 4t; wait 32t
+aim right 22.9; hold fire 4t; wait 32t
+aim right 2.6; hold forward 8t; wait 4t
+hold forward 8t; wait 4t
+hold forward 7t; wait 4t
+aim left 0.9; hold forward 2t; wait 4t
+aim right 25.3; hold forward 2t; wait 4t
+aim right 31.1; hold fire 4t; wait 32t
+aim right 9.8; hold fire 4t; wait 32t
+aim right 12.7; hold fire 4t; wait 32t
+aim right 74.2; hold forward 2t; wait 4t
+aim left 155.3; hold forward 5t; wait 4t
+aim left 2.9; hold forward 3t; wait 4t
+aim left 4.8; hold forward 2t; wait 4t
+aim left 27.5; hold forward+run 3t
+aim left 3.8; hold forward+run 3t
+aim right 55.7; hold forward 3t; wait 4t
+aim right 72.1; hold forward 2t; wait 4t
+aim right 18.3; hold forward 2t; wait 4t
+aim right 1.8; hold forward 2t; wait 4t
+aim left 6.2; hold forward 2t; wait 4t
+aim left 8.8; hold forward 2t; wait 4t
+aim left 9.7; hold forward 2t; wait 4t
+aim left 3.1; hold forward 2t; wait 4t
+aim left 11.3; hold forward 2t; wait 4t
+aim left 10.9; hold forward 2t; wait 4t
+aim left 11.0; hold forward 2t; wait 4t
+aim left 11.5; tap use; wait 1s
+aim left 10.9; hold forward 2t; wait 4t
+hold strafeleft 6t
+aim right 48.3; hold forward 2t; wait 4t
+aim right 24.7; hold forward 2t; wait 4t
+aim right 9.7; hold forward 2t; wait 4t
+aim left 1.2; hold forward 2t; wait 4t
+aim left 6.4; hold forward 2t; wait 4t
+aim left 8.8; hold forward 2t; wait 4t
+aim left 4.7; hold forward 2t; wait 4t
+aim left 6.3; hold forward 2t; wait 4t
+aim left 12.1; hold forward 2t; wait 4t
+aim left 20.9; hold forward 2t; wait 4t
+aim left 141.0; hold forward+run 3t
+hold forward+run 3t
+aim right 0.8; hold forward+run 3t
+hold forward+run 3t
+wait 12t
+aim right 142.9; tap use; wait 1s
+aim right 6.3; hold forward+run 3t
+aim left 3.4; hold forward+run 3t
+aim left 7.3; hold forward+run 3t
+aim left 45.1; hold forward+run 3t
+aim left 10.7; hold forward+run 3t
+aim left 1.7; hold forward+run 3t
+aim right 0.5; hold forward+run 3t
+aim right 1.8; hold forward+run 3t
+aim right 1.8; hold forward+run 3t
+aim right 2.3; hold forward+run 3t
+aim right 1.9; hold forward+run 3t
+aim right 1.2; hold forward+run 3t
+aim right 0.6; tap use; wait 1s
+aim left 3.2; hold fire 4t; wait 32t
+aim right 4.4; hold forward+run 3t
+aim right 25.9; hold fire 4t; wait 32t
+aim left 26.8; hold forward+run 3t
+aim right 19.4; hold forward+run 3t
+aim right 3.4; hold forward+run 3t
+aim right 7.3; hold forward+run 3t
+aim right 46.4; hold fire 4t; wait 32t
+aim right 66.7; hold fire 4t; wait 32t
+aim left 17.4; hold forward+run 6t
+hold forward+run 4t
+hold forward+run 3t
+tap 4; wait 30t
+aim right 21.6; hold fire 8t
+aim right 30.1; hold fire 8t
+aim right 5.5; hold forward+run 3t
+hold forward+run 3t
+aim left 0.3; hold forward+run 3t
+aim right 0.4; hold forward+run 3t
+aim right 28.2; hold forward 5t; wait 4t
+aim right 112.0; hold forward 2t; wait 4t
+aim right 26.1; hold forward 4t; wait 4t
+aim right 12.0; hold forward 3t; wait 4t
+aim right 9.6; hold forward 2t; wait 4t
+aim left 53.2; hold forward 2t; wait 4t
+aim left 24.8; hold forward 2t; wait 4t
+aim right 164.4; hold forward 8t; wait 4t
+hold forward 8t; wait 4t
+aim left 0.6; hold forward 4t; wait 4t
+aim left 38.9; hold forward 3t; wait 4t
+aim left 35.7; hold forward 2t; wait 4t
+aim left 65.6; hold forward 2t; wait 4t
+aim left 48.4; hold forward 2t; wait 4t
+aim right 18.9; hold forward+run 3t
+aim right 3.1; hold forward+run 3t
+aim right 9.8; hold forward+run 3t
+aim right 59.3; hold forward+run 4t
+aim right 10.3; hold forward+run 3t
+aim right 7.6; hold forward+run 3t
+aim right 7.9; hold forward+run 3t
+aim right 11.1; hold forward+run 3t
+aim right 23.2; hold forward+run 3t
+aim right 12.7; hold forward 5t; wait 4t
+aim right 98.0; hold forward 4t; wait 4t
+aim right 10.7; hold forward 5t; wait 4t
+aim right 0.5; hold forward 4t; wait 4t
+aim right 0.4; hold forward 2t; wait 4t
+aim right 0.3; hold forward 2t; wait 4t
+aim right 35.3; hold forward 8t; wait 4t
+aim right 3.3; hold forward 8t; wait 4t
+aim right 2.6; hold forward 6t; wait 4t
+aim right 4.1; hold forward 2t; wait 4t
+aim right 133.8; hold forward+run 8t
+aim right 3.1; hold forward 8t; wait 4t
+aim right 4.9; hold forward 8t; wait 4t
+aim right 15.2; hold forward 2t; wait 4t
+aim right 14.3; hold forward 2t; wait 4t
+aim right 27.8; hold forward 2t; wait 4t
+aim left 167.8; hold forward 3t; wait 4t
+aim left 9.7; hold forward 3t; wait 4t
+aim left 6.8; hold forward 2t; wait 4t
+aim right 16.3; hold forward 4t; wait 4t
+aim right 3.5; hold forward 2t; wait 4t
+aim right 6.9; hold forward 4t; wait 4t
+aim right 1.3; hold forward 4t; wait 4t
+aim right 2.2; hold forward 2t; wait 4t
+aim left 129.2; hold forward+run 9t
+aim left 3.6; hold forward+run 6t
+aim left 2.8; hold forward+run 3t
+aim left 2.7; hold forward+run 3t
+aim left 6.5; hold forward+run 3t
+aim right 143.3; hold forward+run 4t
+hold forward+run 3t
+hold forward+run 3t
+aim left 0.5; hold forward+run 3t
+hold forward+run 3t
+aim left 0.5; hold forward+run 3t
+aim left 59.6; hold forward+run 3t
+aim left 27.1; hold forward+run 3t
+aim left 20.1; hold forward+run 3t
+aim right 8.9; hold forward 2t; wait 4t
+wait 12t
+aim right 8.6; tap use; wait 1s
+aim right 2.7; hold forward+run 3t
+aim right 0.4; hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+aim right 14.2; hold forward 4t; wait 4t
+aim right 20.9; hold forward 3t; wait 4t
+aim right 73.0; hold forward 2t; wait 4t
+aim left 6.2; hold forward 2t; wait 4t
+aim left 13.8; hold forward 2t; wait 4t
+aim left 10.7; hold forward 2t; wait 4t
+aim left 11.3; hold forward 2t; wait 4t
+aim left 12.6; hold forward 2t; wait 4t
+aim left 24.0; hold forward 2t; wait 4t
+aim left 4.0; hold forward 2t; wait 4t
+tap use; wait 1s
+hold forward 2t; wait 4t
+hold strafeleft 6t
+aim right 41.6; hold forward 2t; wait 4t
+aim right 31.4; hold forward 2t; wait 4t
+aim right 85.1; hold forward 7t; wait 4t
+aim right 1.9; hold forward 5t; wait 4t
+aim right 3.0; hold forward 2t; wait 4t
+wait 12t
+tap use; wait 1s
+aim left 9.8; hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+aim right 20.4; hold forward+run 3t
+aim right 17.4; hold forward+run 3t
+aim right 47.0; hold forward+run 6t
+aim right 23.4; hold forward+run 4t
+aim right 16.1; hold forward+run 3t
+aim right 12.7; hold forward+run 3t
+aim right 14.2; hold forward+run 3t
+aim right 19.2; hold forward+run 3t
+aim right 32.2; hold forward+run 3t
+aim left 14.0; hold forward+run 3t
+aim right 15.0; hold forward+run 3t
+aim left 57.6; hold forward+run 8t
+aim left 14.7; hold forward+run 3t
+aim left 9.4; hold forward+run 3t
+aim left 15.0; hold forward+run 3t
+aim right 3.8; hold forward+run 3t
+aim right 7.9; hold forward+run 3t
+aim right 55.1; hold forward 4t; wait 4t
+aim right 98.2; hold forward 4t; wait 4t
+aim right 19.8; hold forward 6t; wait 4t
+aim right 11.4; hold forward 4t; wait 4t
+aim right 12.3; hold forward 2t; wait 4t
+aim right 46.8; hold forward+run 3t
+aim right 8.4; hold forward+run 3t
+aim left 36.5; hold forward+run 3t
+aim left 18.9; hold forward+run 11t
+aim left 11.2; hold forward 8t; wait 4t
+hold forward 8t; wait 4t
+aim right 7.5; hold forward 6t; wait 4t
+aim right 12.6; hold forward 2t; wait 4t
+aim right 52.7; hold forward 2t; wait 4t
+aim right 84.3; hold forward 2t; wait 4t
+aim right 38.8; hold forward 2t; wait 4t
+wait 12t
+aim right 118.8; tap use; wait 1s
+wait 1s
+wait 7t
+wait 1s
+aim left 92.4; hold forward+run 12t
+hold forward+run 12t
+hold forward+run 9t
+hold forward+run 3t
+aim right 0.3; hold forward+run 3t
+tap 3; wait 30t
+aim left 136.2; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim right 102.6; hold fire 4t; hold back+run 32t
+aim right 37.3; hold fire 4t; hold back+run 32t
+aim left 30.7; hold forward+run 4t
+aim right 3.0; hold forward+run 4t
+aim right 6.0; hold forward+run 3t
+aim right 3.9; hold forward+run 3t
+aim right 4.4; hold forward+run 3t
+aim right 6.4; hold forward+run 3t
+aim right 0.5; hold forward+run 3t
+aim right 3.8; hold forward+run 3t
+aim right 1.2; hold forward+run 3t
+aim left 3.0; hold forward+run 3t
+aim left 38.9; hold forward 4t; wait 4t
+aim left 89.6; hold forward 2t; wait 4t
+aim left 29.1; hold forward 3t; wait 4t
+aim left 13.0; hold forward 3t; wait 4t
+aim left 11.0; hold forward 2t; wait 4t
+aim right 134.6; hold forward 2t; wait 4t
+aim right 19.1; hold forward 2t; wait 4t
+aim right 14.7; hold forward 2t; wait 4t
+aim left 70.6; hold forward 8t; wait 4t
+aim left 6.9; hold forward 6t; wait 4t
+aim left 9.8; hold forward 2t; wait 4t
+wait 12t
+aim right 12.7; tap use; wait 1s
+aim right 10.9; hold fire 4t; wait 32t
+aim left 8.6; hold fire 4t; wait 32t
+tap 4; wait 30t
+aim left 15.8; hold fire 8t
+aim right 17.1; hold forward 8t; wait 4t
+aim left 0.4; hold forward 8t; wait 4t
+tap 3; wait 30t
+aim left 79.4; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim right 19.9; hold fire 4t; hold straferight+run 12t; wait 20t
+tap 4; wait 30t
+aim left 11.2; hold fire 8t
+tap 3; wait 30t
+aim right 1.7; hold fire 4t; hold straferight+run 12t; wait 20t
+aim left 49.6; hold forward 8t; wait 4t
+aim right 6.6; hold forward 7t; wait 4t
+aim right 8.9; hold forward 6t; wait 4t
+hold forward 6t; wait 4t
+tap use; wait 1s
+aim left 0.4; hold forward 6t; wait 4t
+hold straferight 6t
+aim left 8.0; hold forward 6t; wait 4t
+aim left 6.4; hold forward 7t; wait 4t
+aim right 10.3; hold forward 6t; wait 4t
+aim right 13.5; hold forward 6t; wait 4t
+aim right 12.6; hold forward 3t; wait 4t
+aim left 1.4; hold forward 3t; wait 4t
+aim right 9.5; hold forward 2t; wait 4t
+aim right 71.9; hold forward 5t; wait 4t
+aim right 17.3; hold forward 4t; wait 4t
+aim right 22.3; hold forward 2t; wait 4t
+aim left 5.3; hold forward 2t; wait 4t
+aim right 12.1; hold forward 2t; wait 4t
+aim left 44.2; hold forward 4t; wait 4t
+aim left 15.1; hold forward 2t; wait 4t
+aim right 20.5; hold forward 3t; wait 4t
+aim right 4.1; hold forward 2t; wait 4t
+aim left 149.2; hold forward+run 10t
+aim left 2.1; hold forward+run 7t
+aim right 85.1; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim left 24.8; hold forward 2t; wait 4t
+aim right 1.6; hold forward 2t; wait 4t
+aim right 98.4; hold forward+run 3t
+aim right 1.7; hold forward+run 3t
+aim right 2.0; hold forward+run 3t
+aim right 1.8; hold forward+run 3t
+aim right 4.4; hold forward+run 3t
+aim left 70.8; hold forward 4t; wait 4t
+aim left 76.3; hold forward 5t; wait 4t
+aim left 25.3; hold forward 5t; wait 4t
+aim left 15.9; hold forward 3t; wait 4t
+aim left 1.8; hold forward 2t; wait 4t
+aim right 5.7; hold forward 2t; wait 4t
+aim left 162.9; hold forward+run 3t
+aim left 2.7; hold forward+run 3t
+aim left 121.4; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim right 31.4; hold fire 4t; hold straferight+run 12t; wait 20t
+aim left 24.4; hold fire 4t; hold strafeleft+run 12t; wait 20t
+aim right 69.0; hold forward+run 12t
+aim right 0.3; hold forward+run 12t
+aim right 3.2; hold forward+run 11t
+aim right 4.2; hold forward 8t; wait 4t
+aim left 102.3; hold fire 4t; wait 32t
+aim left 125.1; hold forward 2t; wait 4t
+wait 12t
+aim left 127.5; tap use; wait 1s
+aim right 172.8; hold forward+run 8t
+hold forward+run 5t
+hold forward+run 3t
+hold forward+run 3t
+hold forward+run 3t
+aim right 50.4; hold forward 8t; wait 4t
+aim right 83.9; hold forward 6t; wait 4t
+aim right 12.9; hold forward 7t; wait 4t
+aim left 10.0; hold forward 6t; wait 4t
+aim left 16.4; hold forward 4t; wait 4t
+aim left 20.2; hold forward 2t; wait 4t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+wait 5t
+aim left 42.1; hold forward 4t; wait 4t
+aim left 2.1; hold forward 2t; wait 4t
+aim right 0.7; hold forward 2t; wait 4t
+aim left 6.6; hold forward+run 3t
+aim left 0.7; hold forward+run 3t
+hold forward+run 3t
+aim left 1.1; hold forward+run 3t
+aim left 55.3; hold forward 5t; wait 4t
+aim left 50.2; hold forward 4t; wait 4t
+aim right 6.8; hold forward 3t; wait 4t
+aim right 15.5; hold forward 2t; wait 4t
+aim right 39.9; hold forward 3t; wait 4t
+aim right 14.5; hold forward 2t; wait 4t
+aim right 14.9; hold forward 2t; wait 4t
+aim right 118.6; hold forward+run 3t
+aim right 3.1; hold forward+run 3t
+aim right 2.5; hold forward+run 3t
+aim left 6.8; hold forward+run 3t
+wait 12t
+aim left 83.5; tap use; wait 1s
+aim right 22.3; hold forward+run 3t
+aim left 0.5; hold forward+run 3t
+hold forward+run 3t
+aim right 17.8; hold forward+run 3t
+aim right 69.6; hold forward 8t; wait 4t
+aim right 43.7; hold forward 8t; wait 4t
+aim right 26.0; hold forward 5t; wait 4t
+aim right 22.9; hold forward 3t; wait 4t
+aim left 36.7; hold forward 2t; wait 4t
+aim right 125.2; hold forward+run 3t
+aim right 2.6; hold forward+run 3t
+aim right 2.6; hold forward+run 3t
+aim right 2.1; hold forward+run 3t
+aim right 4.6; hold forward+run 3t
+wait 12t
+aim left 134.0; tap use; wait 1s
+aim right 25.9; hold forward+run 3t
+hold forward+run 3t
+aim right 0.3; hold forward+run 3t
+aim right 2.1; hold forward+run 3t
+aim right 3.5; hold forward+run 3t
+aim right 3.4; hold forward+run 3t
+aim right 2.9; hold forward+run 3t
+aim right 2.9; hold forward+run 3t
+aim right 0.7; hold forward+run 3t
+tap use; wait 1s
+hold forward+run 3t
+aim right 0.3; hold forward+run 3t
+aim left 0.7; hold forward+run 3t
+aim left 45.2; hold forward+run 3t
+aim left 47.9; hold forward+run 10t
+aim left 16.5; hold forward 8t; wait 4t
+aim left 8.0; hold forward 8t; wait 4t
+aim right 4.8; hold forward 8t; wait 4t
+aim left 0.9; hold forward 7t; wait 4t
+aim left 1.5; hold forward 2t; wait 4t
+aim left 2.8; hold forward 2t; wait 4t
+aim left 5.2; hold forward 2t; wait 4t
+aim left 152.2; hold forward+run 12t
+aim left 1.6; hold forward+run 7t
+aim left 1.2; hold forward+run 3t
+aim left 1.0; hold forward+run 3t
+aim right 17.8; hold forward+run 3t
+wait 12t
+aim right 134.4; tap use; wait 1s
+aim right 39.8; hold forward+run 3t
+hold forward+run 3t
+aim left 43.1; hold forward+run 3t
+aim left 17.8; hold forward+run 3t
+aim left 35.6; hold forward+run 3t
+aim left 12.9; hold forward+run 3t
+aim left 5.1; hold forward+run 3t
+aim left 1.4; hold forward+run 3t
+aim right 1.9; hold forward+run 3t
+aim right 3.6; hold forward+run 3t
+aim right 4.7; hold forward+run 3t
+aim right 4.8; hold forward+run 3t
+aim right 4.3; hold forward+run 3t
+aim right 4.1; hold forward+run 3t
+aim right 2.1; hold forward+run 3t
+aim right 0.7; hold forward+run 3t
+aim left 0.7; tap use; wait 1s
+aim left 2.8; hold forward+run 3t
+aim right 0.3; hold forward+run 3t
+hold forward+run 3t
+aim right 56.8; hold forward+run 3t
+aim right 25.8; hold forward+run 3t
+aim right 38.9; hold forward+run 3t
+aim left 31.8; hold forward 8t; wait 4t
+aim right 14.1; hold forward 4t; wait 4t
+aim right 48.1; hold forward 2t; wait 4t
+aim right 75.1; hold forward 2t; wait 4t
+aim right 33.5; hold forward 2t; wait 4t
+aim right 26.7; hold forward 2t; wait 4t
+wait 12t
+aim right 154.8; tap use; wait 1s
+wait 1s
+wait 3s

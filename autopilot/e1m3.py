@@ -15,8 +15,10 @@ ROUTE = [
     ("press", 515, "the lift switch (tag 5)"),
     ("press", 494, "the door switch (tag 8)"),
     ("press", 647, "the switch that lowers the blue key"),
-    ("cross", 1574, "the line that opens the doors by the key"),
     ("get", (432, 2608), "the blue key"),
+    ("cross", 1574, "the line that opens the doors by the key"),
+    ("get", (416, 2260), "a stimpack"),
+    ("get", (420, 2956), "another stimpack"),
     ("press", 614, "the stairs switch"),
     ("exit", 1367),
 ]

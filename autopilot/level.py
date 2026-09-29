@@ -78,9 +78,16 @@ def do_step(r, step):
         ok = r.go(*stand, name=name or f"switch {what}") and r.press_line(what, name or f"switch {what}")
         L.do("wait 1s")
     elif kind == "cross":
-        # Walk over a trigger line, from its front side to its back.
+        # Walk over a trigger line, from whichever side is nearer by the map
+        # (the far side can be somewhere to walk at but not stand in).
         (a, _), (b, _) = r.line_stand(what, 24), r.line_stand(what, -24)
-        ok = r.go(*a, name=name or f"line {what}") and L.goto(*b, tol=10, final=True)
+        here = (L.status["x"], L.status["y"])
+        to_a, to_b = r.m.path(here, a), r.m.path(here, b)
+        if to_b and (not to_a or len(to_b) < len(to_a)):
+            a, b = b, a
+        ok = r.go(*a, name=name or f"line {what}")
+        if ok:
+            L.goto(*b, tol=10, final=True)
     elif kind == "get":
         ok = r.go(*what, name=name, near=40)
     elif kind == "exit":
@@ -96,13 +103,16 @@ def do_step(r, step):
     return ok
 
 
-def follow(r, route):
+def follow(r, route, start=0, progress=None):
     """Do each step of the route, going back to a checkpoint after dying or
-    failing a step. Returns True once the level is over."""
+    failing a step. Returns True once the level is over.
+
+    progress, if given, is called with the step number after each step done.
+    """
     L = r.L
     cps = Checkpoints(L)
     L.on_calm = cps.mark
-    i, fresh = 0, True
+    i, fresh = start, True
     while i < len(route):
         cps.step = i
         if fresh:
@@ -118,12 +128,17 @@ def follow(r, route):
         r.m.set_keys(sum((KEY_DOORS[k] for k in L.status["keys"]), ()))
         if L.status["state"] != "level" and not L.status["dead"]:
             return True
+        if ok:
+            L.log(f"step {i} done after {len(L.moves)} moves")
+            if progress:
+                progress(i)
         if not ok:
             back = cps.back()
             if back is None:
                 L.log("out of retries")
                 return False
             r.m.set_keys(sum((KEY_DOORS[k] for k in L.status["keys"]), ()))
+            r.skip.clear()          # (what was out of reach then may not be now)
             i, fresh = back, False
             continue
         i, fresh = i + 1, True
@@ -144,6 +159,9 @@ def main(mapname, route, after, title=None):
     parser.add_argument("-q", "--quiet", action="store_true", help="don't log each step")
     parser.add_argument("--warp", action="store_true",
                         help="try the route from a pistol start instead (for testing)")
+    parser.add_argument("--resume", nargs=3, metavar=("FILE", "MOVES", "STEP"),
+                        help="carry on from the first MOVES moves of an earlier run's FILE, "
+                             "at route step STEP (the log says which move each step ended on)")
     args = parser.parse_args()
 
     wad = doom.WADS / "freedoom1.wad"
@@ -156,16 +174,30 @@ def main(mapname, route, after, title=None):
         prefix = [m for path in before for m in moves_in(path)] + TO_NEXT_LEVEL
         warp = []
 
+    earlier, first = [], 0
+    if args.resume:
+        earlier = moves_in(Path(args.resume[0]))[len(TO_NEXT_LEVEL):][:int(args.resume[1])]
+        first = int(args.resume[2])
+
     started = time.time()
-    L = Live(wad, prefix, warp_args=warp, verbose=not args.quiet,
+    L = Live(wad, prefix + earlier, warp_args=warp, verbose=not args.quiet,
              weapon_prefs=["shotgun", "chaingun", "plasma rifle", "rocket launcher", "pistol"])
+    L.prefix, L.moves = prefix, earlier
     L.kite = True
     L.dodge = True
     m = Map(wad, mapname, lifts=True, avoid_hurt=True, one_way_doors=True)
     L.safe_move = m.safe_walk
+    L.near_drop = m.near_drop
     m.set_keys(sum((KEY_DOORS[k] for k in L.status["keys"]), ()))
     r = Run(L, m)
-    done = follow(r, route)
+    def save_progress(step):
+        # (so a later run can --resume from here: FILE MOVES STEP+1)
+        partial = args.out.with_suffix(".partial")
+        partial.parent.mkdir(parents=True, exist_ok=True)
+        partial.write_text(f"# {mapname}: {len(L.moves)} moves, route step {step} done\n"
+                           + "\n".join(TO_NEXT_LEVEL + L.moves) + "\n")
+
+    done = follow(r, route, first, save_progress)
     if done:
         L.do("wait 3s")   # let the stats screen count up
     status = L.status

@@ -135,8 +135,9 @@ def ride_lift(L, m, sec, before, board, after):
         if not wait_lift(L, sec, lambda f: f <= max(floor_before + 24, info["low"] + 4)):
             L.log("the lift didn't come down")
             return False
-        L.goto(*m.center(*before), tol=16, final=True, maxd=200)
-    if not L.goto(*board, tol=14, final=True, maxd=200):
+        # Straight onto it from wherever its trigger was (it won't stay down).
+        travel(L, m, board, arrive=24, live_heights=True, ride_lifts=False)
+    if not L.goto(*board, tol=14, final=True, maxd=100):
         L.log("couldn't get onto the lift")
         return False
     # Wait until the step off is one we can take (or the lift has gone all the way).
@@ -187,6 +188,7 @@ def _travel(L, m, goal, arrive, max_legs, live_heights, on_leg, ride_lifts, near
     opened = set()
     heights = None
     lift_soon = False
+    stuck = 0
     for leg in range(max_legs):
         if on_leg and not lift_soon:
             on_leg()      # (not with a lift ride coming up: it may be timed)
@@ -194,7 +196,7 @@ def _travel(L, m, goal, arrive, max_legs, live_heights, on_leg, ride_lifts, near
         if s["state"] != "level":
             return "left level"
         here = (s["x"], s["y"])
-        if math.hypot(goal[0] - here[0], goal[1] - here[1]) < arrive:
+        if math.hypot(goal[0] - here[0], goal[1] - here[1]) < arrive and m.in_reach(here, goal):
             return "arrived"
         if live_heights:
             now = L.sectors()
@@ -202,6 +204,17 @@ def _travel(L, m, goal, arrive, max_legs, live_heights, on_leg, ride_lifts, near
                 m.update_heights(now)
                 heights = now
         cells = m.path(here, goal, near)
+        waited = 0
+        while not cells and live_heights and waited < 15:
+            # Stairs still rising, a door or lift still moving? Wait and see.
+            L.do("wait 1s")
+            waited += 1
+            now = L.sectors()
+            if now == heights:
+                break
+            m.update_heights(now)
+            heights = now
+            cells = m.path(here, goal, near)
         if not cells:
             L.log("no path!")
             return None
@@ -260,7 +273,10 @@ def _travel(L, m, goal, arrive, max_legs, live_heights, on_leg, ride_lifts, near
         # (Hurrying to a lift, which may only be down for a moment, only
         # monsters close by get fought.)
         if not L.goto(nxt[0], nxt[1], tol=24 if final else 40, final=final, replan=True,
-                      maxd=250 if lift_soon else None):
-            return None
+                      maxd=100 if lift_soon else None):
+            stuck += 1
+            if stuck > 3:
+                return None
+            L.log("stuck: planning again from here")
     L.log("ran out of legs")
     return None

@@ -309,11 +309,19 @@ class Map:
         return True
 
     def nearest_ok(self, x, y):
-        """The closest cell to (x, y) that a player fits in."""
+        """The closest cell to (x, y) that a player fits in, preferring ones
+        on the same floor (next to a ledge, the closest may be on top)."""
         c = self.cell(x, y)
-        cands = [(abs(dx) + abs(dy), (c[0] + dx, c[1] + dy))
-                 for dx in range(-4, 5) for dy in range(-4, 5)]
-        for _, cc in sorted(cands):
+        floor = self.floor_ceil(self.sector_at(x, y))[0]
+
+        def other_floor(cc):
+            return (cc not in self.cell_sector
+                    or abs(self.floor_ceil(self.cell_sector[cc])[0] - floor) > 24)
+
+        cands = [(other_floor(cc), abs(dx) + abs(dy), cc)
+                 for dx in range(-4, 5) for dy in range(-4, 5)
+                 for cc in [(c[0] + dx, c[1] + dy)]]
+        for _, _, cc in sorted(cands):
             if cc in self.cell_sector and self.clearance(*cc) >= RADIUS + 2:
                 f, ce = self.floor_ceil(self.cell_sector[cc])
                 if ce - f >= 56:
@@ -362,6 +370,13 @@ class Map:
                     came[nb] = cur
                     h = math.hypot(nb[0] - g[0], nb[1] - g[1]) * CELL
                     heapq.heappush(openq, (nc + h, nc, nb))
+        if g not in came and near:
+            # Nothing that close: the closest place reachable will do if
+            # it's near enough to reach out (or bump up) to the goal from.
+            best = min(came, key=lambda c: math.hypot(self.center(*c)[0] - goal[0],
+                                                      self.center(*c)[1] - goal[1]))
+            if math.hypot(self.center(*best)[0] - goal[0], self.center(*best)[1] - goal[1]) <= near + 32:
+                g = best
         if g not in came:
             return None
         cells = []
@@ -371,9 +386,11 @@ class Map:
             cur = came[cur]
         return cells[::-1]
 
-    def walkable_line(self, a, b, hurt_ok=()):
-        """Does a straight walk from cell a to cell b stay on steppable cells
-        (and off damaging floors, except for the cells in hurt_ok)?"""
+    def walkable_line(self, a, b, on_path=()):
+        """Does a straight walk from cell a to cell b stay on steppable cells?
+        Off the cells of the planned path (on_path), it must also keep off
+        damaging floors and well away from drops, which a running player
+        can drift over."""
         (x1, y1), (x2, y2) = self.center(*a), self.center(*b)
         n = max(1, int(math.hypot(x2 - x1, y2 - y1) / (CELL / 2)))
         prev = a
@@ -382,10 +399,35 @@ class Map:
             if c != prev:
                 if not self.can_step(prev, c) or self.clearance(*c) < RADIUS + 6:
                     return False
-                if self.cell_sector[c] in self.hurt and c not in hurt_ok:
+                if c not in on_path and (self.cell_sector[c] in self.hurt
+                                         or self.drop_dist(*c) < 40):
                     return False
                 prev = c
         return True
+
+    def in_reach(self, p, q):
+        """Is there no wall (or a step too high, or too little headroom)
+        on the straight line from p to q?"""
+        for idx in set(self.near_lines(*p)) | set(self.near_lines(*q)):
+            v1, v2, fl, sp, tag, s1, s2 = self.lines[idx]
+            (ax, ay), (bx, by) = self.V[v1], self.V[v2]
+            if not segs_cross(p[0], p[1], q[0], q[1], ax, ay, bx, by):
+                continue
+            if s2 == -1 or fl & 1:
+                return False
+            (fa, ca), (fb, cb) = self.floor_ceil(self.sides[s1][5]), self.floor_ceil(self.sides[s2][5])
+            if min(ca, cb) - max(fa, fb) < 56 or abs(fa - fb) > 24:
+                return False
+        return True
+
+    def near_drop(self, p, q, within=28):
+        """Does the straight line from p to q pass that close to a drop?"""
+        n = max(1, int(math.hypot(q[0] - p[0], q[1] - p[1]) / 8))
+        for k in range(n + 1):
+            c = self.cell(p[0] + (q[0] - p[0]) * k / n, p[1] + (q[1] - p[1]) * k / n)
+            if c in self.cell_sector and self.drop_dist(*c) < within:
+                return True
+        return False
 
     def safe_walk(self, p, q):
         """Would a straight run from p toward q keep off drops, damaging
@@ -427,12 +469,12 @@ class Map:
 
     def waypoints(self, cells):
         """Shorten a cell path into straight legs, as map coordinates."""
-        hurt_ok = {c for c in cells if self.cell_sector[c] in self.hurt}
+        on_path = set(cells)
         out = [cells[0]]
         i = 0
         while i < len(cells) - 1:
             j = len(cells) - 1
-            while j > i + 1 and not self.walkable_line(cells[i], cells[j], hurt_ok):
+            while j > i + 1 and not self.walkable_line(cells[i], cells[j], on_path):
                 j -= 1
             out.append(cells[j])
             i = j

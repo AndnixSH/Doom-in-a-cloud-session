@@ -31,6 +31,7 @@ class Died(Exception):
 MELEE = {"demon", "spectre", "lost soul"}
 PROJECTILES = {"imp", "cacodemon", "baron of hell", "hell knight", "arachnotron",
                "mancubus", "revenant"}
+DANGER = {"sergeant": 0.6, "demon": 0.8, "spectre": 0.8, "imp": 0.9}
 TOUGH = {"demon", "spectre", "cacodemon", "baron of hell", "hell knight"}
 WEAPON_KEYS = {"pistol": "2", "shotgun": "3", "chaingun": "4", "rocket launcher": "5",
                "plasma rifle": "6"}
@@ -59,6 +60,7 @@ class Live:
         self.pass_by = 450    # ... unless it throws fireballs and is further than this
         self.on_calm = None   # called while walking with no monster in sight
         self.safe_move = None # safe_move((x, y), (x2, y2)): may dodging run that way?
+        self.near_drop = None # near_drop((x, y), (x2, y2)): walk, don't run, that way?
         self.ignored = []     # [(type, x, y, until tic)]: monsters our shots don't reach
         self.history = []     # the last few statuses, for saying what went wrong
         self.moves = []
@@ -162,7 +164,8 @@ class Live:
                     m["type"] == t and math.hypot(m["x"] - x, m["y"] - y) < 96 and s["tic"] < until
                     for t, x, y, until in self.ignored):
                 out.append((d, m))
-        return sorted(out, key=lambda t: t[0])
+        # Nearest first, but shotgun guys (who hit from anywhere) count as nearer.
+        return sorted(out, key=lambda t: t[0] * DANGER.get(t[1]["type"], 1))
 
     def same_monster(self, m):
         """m (from an earlier status) as it is now, or None if out of sight."""
@@ -289,7 +292,11 @@ class Live:
             if dist <= tol:
                 return True
             aim = self.aim_text(bearing(s["x"], s["y"], x, y))
-            if dist > 220 or not final:
+            if self.near_drop and self.near_drop((s["x"], s["y"]), (x, y)):
+                # By a ledge: walk, in short steps, so as not to drift off it.
+                n = max(2, min(6, int(dist / 10)))
+                self.do(aim + f"hold forward {n}t; wait 3t")
+            elif dist > 220 or not final:
                 n = max(3, min(12, int((dist - 100) / 16.7)))
                 self.do(aim + f"hold forward+run {n}t")
             else:
