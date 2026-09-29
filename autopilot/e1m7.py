@@ -9,6 +9,8 @@ the switches open the way on; the yellow key sits on a pillar that switch
 from level import main
 
 ROUTE = [
+    ("get", (136, 40), "a stimpack"),
+    ("get", (-640, 1456), "a medikit"),
     ("press", 1807, "the door switch (tag 1)"),
     ("press", 283, "the door switch (tag 5)"),
     ("press", 2553, "the floor switch (tag 6)"),

@@ -58,10 +58,17 @@ class Checkpoints:
     # walk past fireball throwers further than this).
     TACTICS = [(3, 450), (2, 350), (99, 600), (4, 300)]
 
+    def tries_for(self, i):
+        """Retries for checkpoint i: one if nearly dead and there's a
+        healthier one to fall back to, more for the first (nothing before it)."""
+        cp = self.saved[i]
+        if cp["health"] < 30 and any(c["health"] >= 30 for c in self.saved[:i]):
+            return 1
+        return 6 if i == 0 else 3
+
     def back(self):
-        """Rewind to the latest checkpoint with retries left; returns its step.
-        (One nearly dead gets a single retry before falling back further.)"""
-        while self.saved and self.saved[-1]["tries"] >= (3 if self.saved[-1]["health"] >= 30 else 1):
+        """Rewind to the latest checkpoint with retries left; returns its step."""
+        while self.saved and self.saved[-1]["tries"] >= self.tries_for(len(self.saved) - 1):
             self.saved.pop()
         if not self.saved or self.budget <= 0:
             return None
