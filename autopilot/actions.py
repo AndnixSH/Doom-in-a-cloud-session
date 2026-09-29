@@ -36,6 +36,10 @@ def wanted(thing_type, s):
         return ammo["bullets"] < 150
     if thing_type == 2002:                   # chaingun
         return "chaingun" not in s["weapons"] or ammo["bullets"] < 150
+    if thing_type in (2010, 2046, 2003):     # rocket, box of rockets, rocket launcher
+        return "rocket launcher" not in s["weapons"] or ammo["rockets"] < 40
+    if thing_type in (2047, 17, 2004):       # cell, cell pack, plasma rifle
+        return "plasma rifle" not in s["weapons"] or ammo["cells"] < 250
     return False
 
 

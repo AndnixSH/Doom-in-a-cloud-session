@@ -180,10 +180,13 @@ class Live:
         Beyond 350 units the shotgun's spread wastes shells, so it's skipped
         for a weapon with aimed bullets if there is one. Rockets (if in
         weapon_prefs) are saved for tough monsters, from where the blast
-        can't reach the player.
+        can't reach the player, and the plasma rifle comes next for those.
         """
         s = self.status
         prefs = list(self.weapon_prefs)
+        if target in TOUGH and "plasma rifle" in prefs:
+            prefs.remove("plasma rifle")
+            prefs.insert(0, "plasma rifle")
         if "rocket launcher" in prefs:
             prefs.remove("rocket launcher")
             if target in TOUGH and dist > 250:

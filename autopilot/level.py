@@ -6,7 +6,7 @@ fighting) is the same for every level. Each level's script is a route plus
 a call to main():
 
     ROUTE = [("press", 361, "the door switch"), ("get", (432, 2608), "blue key"),
-             ("exit", 1367)]
+             ("cross", 1574, "the trigger line"), ("do", "wait 2s"), ("exit", 1367)]
     main("E1M3", ROUTE, after=["e1m1-complete.txt", "e1m2-complete.txt"])
 """
 
@@ -90,6 +90,12 @@ def do_step(r, step):
             L.goto(*b, tol=10, final=True)
     elif kind == "get":
         ok = r.go(*what, name=name, near=40)
+    elif kind == "do":
+        # Plain moves, e.g. a shot to wake monsters up.
+        if name:
+            L.log(name)
+        L.do(what)
+        ok = True
     elif kind == "exit":
         if r.m.lines[what][3] in (52, 124):          # an exit line to walk over
             (a, _), (b, _) = r.line_stand(what, 24), r.line_stand(what, -24)
@@ -199,7 +205,8 @@ def main(mapname, route, after, title=None):
 
     done = follow(r, route, first, save_progress)
     if done:
-        L.do("wait 3s")   # let the stats screen count up
+        # Let the stats screen count up (or, after E1M8, the story text show).
+        L.do("wait 20s" if L.status["state"] == "finale" else "wait 3s")
     status = L.status
     L.close()
 

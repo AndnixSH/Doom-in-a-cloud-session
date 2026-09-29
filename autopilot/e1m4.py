@@ -4,7 +4,8 @@
 The yellow key sits in a pit behind a raised bar: switch 712 opens the way
 round to switch 977, which opens the bars into the room with the key, and
 walking over the ring of lines round the key lowers it. The blue key is
-the same, far to the east (the way there is through a teleporter).
+the same, far to the east (the way there is through a teleporter, and down a
+long channel of nukage: a radiation suit on the way makes it safe).
 """
 
 from level import main
@@ -14,6 +15,7 @@ ROUTE = [
     ("press", 977, "the switch that opens the bars (tag 3)"),
     ("cross", 1885, "the ring round the yellow key"),
     ("get", (-960, 640), "the yellow key"),
+    ("get", (912, 1520), "a radiation suit for the nukage on the way"),
     ("cross", 1964, "the ring round the blue key"),
     ("get", (3456, 1472), "the blue key"),
     ("exit", 1996),
