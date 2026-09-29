@@ -61,7 +61,7 @@ To re-render the demo above:
 `examples/e1m1-complete.txt` plays all of E1M1 from the title screen to the
 exit switch (34% kills, finished in 0:44). [Watch it](media/e1m1-complete.mp4),
 or re-render it with
-`python3 doom.py play --title -f examples/e1m1-complete.txt --video media/e1m1-complete.mp4`.
+`python3 doom.py play --title -f examples/e1m1-complete.txt --smooth --video media/e1m1-complete.mp4`.
 
 `examples/e1m2-complete.txt` carries straight on through E1M2, starting from
 the 8% health E1M1 ended on, and kills all 93 monsters on the way to the exit.
@@ -87,6 +87,12 @@ implements them without a screen or a real clock:
 - **Output.** Frames go out through a pipe, which Doom waits on, so even a
   long run never piles up on disk. When the run ends, the final frame and a
   JSON status line are written out.
+- **Smooth camera (optional).** The autopilot turns with instant mouse flicks,
+  which look jumpy on video. With `--smooth`, each frame is drawn from a camera
+  that eases toward the player's real angle like a damped spring, settling in
+  about a quarter of a second. The backend does this by standing in for Doom's
+  `R_RenderPlayerView` at link time. The game still uses the real angle, so a
+  run plays out exactly the same; only the picture changes.
 
 `doom.py` compiles the move language below into key events, runs the binary,
 and turns the frames into a GIF (lossless, since Doom only uses 256 colours),
@@ -195,6 +201,7 @@ survives because those deaths were tried and fixed first.
 | `--every` | `2` | GIF frame interval in tics (2 = 17.5 fps) |
 | `--scale` | `1` | GIF scale factor (frames are 320×200) |
 | `--video` | | write a 640×400 MP4 of the run at 35 fps |
+| `--smooth` | | ease the camera into turns instead of snapping (only the picture changes) |
 | `--shot` | `out/last.png` | PNG of the final frame, 640×400 |
 | `-f FILE` | | read moves from a file; repeat to play several in a row (files play before any moves on the command line) |
 

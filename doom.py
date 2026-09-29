@@ -43,6 +43,7 @@ START_TIC = 1        # first gametic that scripted moves can land on
 TAIL_TICS = 2        # let the last release register before the final frame
 TAP_TICS = 2         # how long "tap" holds a key
 TAP_GAP_TICS = 2     # pause after each tap so repeated taps stay separate
+SMOOTH_TICS = 4      # --smooth: how long the camera takes to settle into a turn
 
 # Turning: the first 5 tics of a turn are slow (320 units), then 640 units a
 # tic, out of 65536 for a full circle (g_game.c: angleturn, SLOWTURNTICS).
@@ -334,6 +335,8 @@ def play(args):
                "-maxtics", end + TAIL_TICS, "-shot", tmp / "last.ppm"]
         if not args.title:
             cmd += warp_args(level) + ["-skill", args.skill]
+        if args.smooth:
+            cmd += ["-smoothcam", SMOOTH_TICS]
         writers = []
         if args.gif:
             writers.append(GifWriter(args.gif, args.scale, args.every))
@@ -406,6 +409,9 @@ def main():
     p.add_argument("--every", type=int, default=2,
                    help="GIF frame interval in 1/35 s; 2 = 17.5 fps (default)")
     p.add_argument("--scale", type=int, default=1, help="GIF scale factor")
+    p.add_argument("--smooth", action="store_true",
+                   help="ease the camera into turns instead of snapping (only the "
+                   "picture changes, not the game)")
     p.add_argument("--video", type=Path, help="write a 640x400 MP4 of the run at "
                    "35 fps (needs: pip install imageio-ffmpeg)")
     p.add_argument("--session", help="keep playing a saved game: earlier moves are "

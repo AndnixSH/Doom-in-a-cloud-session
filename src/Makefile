@@ -7,6 +7,8 @@ OUTPUT ?= ../build/doomgeneric_headless
 
 CFLAGS += -O2 -DNORMALUNIX -DLINUX -D_DEFAULT_SOURCE -I$(DOOMGENERIC)
 LIBS += -lm
+# Our backend stands in for R_RenderPlayerView to smooth the camera (-smoothcam).
+LDFLAGS += -Wl,--wrap=R_RenderPlayerView
 
 # Upstream's object list from its Makefile, minus the X11 backend.
 SRC_DOOM = dummy.o am_map.o doomdef.o doomstat.o dstrings.o d_event.o \
@@ -33,7 +35,7 @@ vpath %.c . $(DOOMGENERIC)
 all: $(OUTPUT)
 
 $(OUTPUT): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $@ $(LIBS)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) -o $@ $(LIBS)
 
 $(OBJS): | $(OBJDIR)
 

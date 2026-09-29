@@ -22,6 +22,9 @@
 //                   320x200 RGB bytes; a pipe here makes Doom wait for its reader
 //   -every N        frame interval (default 2, i.e. 17.5 fps)
 //   -shot FILE      write the final frame to FILE at full 640x400
+//   -smoothcam T    draw the view from a camera that eases toward the
+//                   player's angle over about T tics instead of snapping to
+//                   it (the game itself still uses the real angle)
 //   -maxtics N      stop once gametic reaches N (35 tics = 1 second;
 //                   default 30 seconds)
 //   -interactive    at -maxtics, print the status and wait for commands on
@@ -43,7 +46,9 @@
 #include "m_argv.h"
 #include "p_local.h"
 #include "r_state.h"
+#include "r_main.h"
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -73,6 +78,11 @@ static int frame_every = 2;
 static int max_tics = 35 * 30;
 static int frame_no = 0;
 static int interactive = 0;
+
+static double cam_smooth = 0;     // -smoothcam: smoothing time in tics, 0 = off
+static double cam_angle, cam_vel; // camera yaw in degrees, and degrees per tic
+static mobj_t *cam_mo = NULL;
+static fixed_t cam_x, cam_y;
 
 static const char *ArgValue(const char *name)
 {
@@ -400,6 +410,11 @@ void DG_Init(void)
         max_tics = atoi(value);
     }
 
+    if ((value = ArgValue("-smoothcam")) != NULL)
+    {
+        cam_smooth = atof(value);
+    }
+
     frames_dir = ArgValue("-frames");
     if ((value = ArgValue("-framefd")) != NULL)
     {
@@ -451,6 +466,56 @@ void DG_DrawFrame(void)
 
         ReadCommands();
     }
+}
+
+void __real_R_RenderPlayerView(player_t *player);
+
+// Linked in place of R_RenderPlayerView (-Wl,--wrap in the Makefile). With
+// -smoothcam, the view is drawn from a camera that follows the player's angle
+// like a critically damped spring, so a one-tic turn becomes a quick, eased
+// pan. Only the picture changes: the real angle is put back after drawing.
+void __wrap_R_RenderPlayerView(player_t *player)
+{
+    mobj_t *mo = player->mo;
+    angle_t real;
+    double target;
+
+    if (cam_smooth <= 0 || mo == NULL)
+    {
+        __real_R_RenderPlayerView(player);
+        return;
+    }
+
+    real = mo->angle;
+    target = real * (360.0 / 4294967296.0);
+
+    // A new level, a respawn or a teleport starts over from the real view.
+    if (mo != cam_mo || abs(mo->x - cam_x) > 64 * FRACUNIT
+     || abs(mo->y - cam_y) > 64 * FRACUNIT)
+    {
+        cam_mo = mo;
+        cam_angle = target;
+        cam_vel = 0;
+    }
+    else
+    {
+        // SmoothDamp (Game Programming Gems 4, 1.10), one tic per step.
+        double omega = 2.0 / cam_smooth;
+        double decay = 1.0 / (1.0 + omega + 0.48 * omega * omega
+                                 + 0.235 * omega * omega * omega);
+        double change = -fmod(fmod(target - cam_angle, 360.0) + 540.0, 360.0) + 180.0;
+        double goal = cam_angle - change;
+        double temp = cam_vel + omega * change;
+
+        cam_vel = (cam_vel - omega * temp) * decay;
+        cam_angle = fmod(goal + (change + temp) * decay + 360.0, 360.0);
+    }
+    cam_x = mo->x;
+    cam_y = mo->y;
+
+    mo->angle = (angle_t) (int64_t) (cam_angle * (4294967296.0 / 360.0));
+    __real_R_RenderPlayerView(player);
+    mo->angle = real;
 }
 
 void DG_SleepMs(uint32_t ms)
