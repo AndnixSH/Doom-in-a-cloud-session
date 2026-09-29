@@ -126,6 +126,12 @@ class Map:
         self.clear = {}
         self.drop = {}
 
+    def give_up_lift(self, sec):
+        """Stop planning over a lift that couldn't be called from where it's needed."""
+        self.lifts.pop(sec, None)
+        self.clear = {}
+        self.drop = {}
+
     def update_heights(self, heights):
         """Take current [floor, ceiling] pairs from the engine (live mode's `sectors`)."""
         for i, (f, c) in enumerate(heights):

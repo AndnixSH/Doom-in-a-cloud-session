@@ -112,6 +112,8 @@ def ride_lift(L, m, sec, before, board, after):
     if floor_before < level() - 24:
         # We're below it: bring it down.
         if not lower_lift(L, m, sec, floor_before):
+            L.log(f"planning around lift {sec} from now on")
+            m.give_up_lift(sec)
             return False
         if not wait_lift(L, sec, lambda f: f <= max(floor_before + 24, info["low"] + 4)):
             L.log("the lift didn't come down")
@@ -185,8 +187,9 @@ def travel(L, m, goal, arrive=30, max_legs=60, live_heights=False, on_leg=None,
                 before = cells[i - 1] if i > 0 else m.cell(*here)
                 after = cells[j + 1] if j + 1 < len(cells) else cells[j]
                 if not ride_lift(L, m, sec, before, m.center(*cells[(i + j) // 2]), after):
-                    return None
-                continue
+                    if sec in m.lifts:
+                        return None
+                continue          # (re-plan without that lift)
         wps = m.waypoints(cells)
         ahead = [w for w in wps[1:] if math.hypot(w[0] - here[0], w[1] - here[1]) > 45]
         nxt = ahead[0] if ahead else goal
