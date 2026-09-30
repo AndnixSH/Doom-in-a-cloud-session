@@ -8,7 +8,9 @@ so yes:
 That GIF was rendered inside the container, which has no display, no GPU and
 no sound card. [doomgeneric](https://github.com/ozkl/doomgeneric) runs the
 game with a small custom backend, and [Freedoom](https://freedoom.github.io/)
-(a free replacement for the original game data) supplies the levels.
+(a free replacement for the original game data) supplies the levels. An
+[autopilot](#autopilot), also written in the session, then played through all
+of Episode 1, from the title screen to the ending text.
 
 ## The container
 
@@ -68,7 +70,36 @@ the 8% health E1M1 ended on, and kills all 93 monsters on the way to the exit.
 It gathers all three keycards and finishes on 102% health, with 78% of items
 and 42% of secrets, in 7:21 (par is 1:15):
 `python3 doom.py play --title -f examples/e1m1-complete.txt -f examples/e1m2-complete.txt`.
-The [autopilot](#autopilot) recorded both.
+
+The rest of the episode follows the same way, each level starting with
+whatever health and ammo the one before it ended on, up to the closing text
+after E1M8. [Watch the last level and the ending](media/e1m8-complete.mp4).
+
+| Level | Moves file | Kills | Health at the exit | Time |
+|---|---|---|---|---|
+| E1M1 | `examples/e1m1-complete.txt` | 10 of 29 | 8% | 0:44 |
+| E1M2 | `examples/e1m2-complete.txt` | 93 of 93 | 102% | 7:21 |
+| E1M3 | `examples/e1m3-complete.txt` | 80 of 97 | 100% | 10:24 |
+| E1M4 | `examples/e1m4-complete.txt` | 115 of 124 | 105% | 6:56 |
+| E1M5 | `examples/e1m5-complete.txt` | 104 of 119 | 69% | 7:19 |
+| E1M6 | `examples/e1m6-complete.txt` | 188 of 192 | 15% | 12:35 |
+| E1M7 | `examples/e1m7-complete.txt` | 115 of 203 | 32% | 10:48 |
+| E1M8 | `examples/e1m8-complete.txt` | 3 of 3 | 39% | 1:36 |
+
+The whole episode, about an hour of play, replays in a couple of seconds:
+
+```sh
+python3 doom.py play --title $(for i in 1 2 3 4 5 6 7 8; do echo -f examples/e1m$i-complete.txt; done)
+```
+
+To watch one level on its own, put the ones before it in a session first:
+
+```sh
+python3 doom.py play --session ep1 --reset --title $(for i in 1 2 3 4 5 6 7; do echo -f examples/e1m$i-complete.txt; done)
+python3 doom.py play --session ep1 -f examples/e1m8-complete.txt --smooth --video media/e1m8-complete.mp4
+```
+
+The [autopilot](#autopilot) recorded them all.
 
 ## How it works
 
@@ -164,30 +195,70 @@ written for that level; the parts in between are general:
 ```sh
 python3 autopilot/e1m1.py   # ~10 s, writes out/e1m1-autopilot.txt
 python3 autopilot/e1m2.py   # ~2.5 min, carries on from examples/e1m1-complete.txt
+python3 autopilot/e1m7.py   # carries on from examples/e1m1..e1m6-complete.txt
 python3 autopilot/e1m2.py --out examples/e1m2-complete.txt   # regenerates the example
 ```
+
+From E1M3 on, a level's script is just its route: the switches to press (by
+line number), things to get, trigger lines to cross, and the exit, in order.
+E1M8's is the whole file:
+
+```python
+ROUTE = [
+    ("get", (2464, -224), "the armor by the start"),
+    ("get", (3200, -280), "the rocket launcher"),
+    ("get", (416, -224), "the armor that lets the barons out"),
+    ("get", (1160, -1480), "the first baron's pit"),
+    ("get", (104, -1160), "the second baron's pit"),
+    ("get", (-232, -248), "the third baron's pit"),
+    ("exit", 165),
+]
+main("E1M8", ROUTE, after=["e1m1-complete.txt", ..., "e1m7-complete.txt"])
+```
+
+Most of the orders came from a scouting run in god mode that tried the
+switches and keys it could reach until the exit opened. The route is then
+played for real, without cheats.
 
 - `nav.py` reads the map from the WAD and plans with A* on a 16-unit grid,
   using Doom's movement rules: steps of at most 24 units, 56 units of
   headroom, and ledges you can drop off but not climb. Keycards it holds make
   their doors count as open, and it can take current floor and ceiling heights
-  from the engine, so switched doors and lowered floors count too.
-- `route.py` follows a planned route leg by leg, re-planning after each one
-  and opening doors on the way.
+  from the engine, so switched doors and lowered floors count too. It knows
+  lifts, teleporters (front side only), doors that only open from one side,
+  and it keeps off nukage unless there's no other way.
+- `route.py` follows a planned route leg by leg, re-planning after each one,
+  opening doors, riding lifts (calling them from wherever their switch is,
+  and hurrying back before they rise again), and waiting out stairs that are
+  still rising.
 - `live.py` drives the game: it moves in short running bursts, re-aiming with
   `aim` each time, and shoots anything in `monsters_in_sight` with one aimed
-  shot per weapon cycle. For E1M2 it also picks the weapon by distance
-  (shotgun close up), backs away from demons, sidesteps fireballs, and can
-  rewind to a checkpoint.
-- `actions.py` has the rest: detours for health, armor and ammo near the
-  route, pressing switches (by line number), and riding lifts.
+  shot per weapon cycle. It picks the weapon by distance and target (shotgun
+  close up, rockets for tough monsters far enough off), backs away from demons
+  and barons between shots, sidesteps fireballs, and backs off along the way
+  it came when three or more monsters are in sight.
+- `actions.py` has the pickups: detours for health, armor and ammo near the
+  route (further for health when running low), and pressing switches.
+- `level.py` plays a route with checkpoints. Every few seconds of quiet
+  walking it notes how many moves have been made; after dying (or getting
+  stuck) it rewinds to the last checkpoint and tries again with different
+  tactics (back off sooner, walk past fireball throwers, hurry past
+  everything), and it waits a few tics first, which is enough to change what
+  the monsters do. A step can also turn off pickups on the way (`{"grab":
+  False}`) or run from demons instead of fighting them (`{"outrun": True}`).
+  `--resume FILE MOVES STEP` carries on from part of an earlier run, and
+  `--warp` tries the route from a pistol start.
 
-The E1M2 route took several tries to settle: it died to an ambush of demons
-and imps until it picked up health first and learned to back away from
-demons, and it died in a hall of imps until it hurried past them to the
-soulsphere. The recorded run has no cheats, just the moves above, but it is
-tool-assisted: the route was scripted with knowledge of the map, and it
-survives because those deaths were tried and fixed first.
+The routes took several tries to settle. E1M2 died to an ambush of demons and
+imps until it picked up health first and learned to back away from demons,
+and it died in a hall of imps until it hurried past them to the soulsphere.
+E1M7 starts on the 15% health E1M6 left: its yellow key sits at the end of a
+hall of eight spectres, and the run only got through once it stopped
+detouring to armor on nukage and fought the spectres from the corridor outside the hall.
+E1M8's barons died once the fight kept backing away from them to rocket
+range. The recorded runs have no cheats, just the moves, but they are
+tool-assisted: each route was scripted with knowledge of the map, and each
+run survives because its deaths were retried from checkpoints.
 
 ## Options
 
