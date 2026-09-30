@@ -42,10 +42,12 @@ class Checkpoints:
         self.budget = budget    # retries allowed in the whole level
         self.step = 0           # the route step being done
         self.saved = []
+        self.stuck = set()      # steps that failed without dying (no new checkpoints in them)
 
     def mark(self, force=False):
         L, s = self.L, self.L.status
-        if s["dead"] or s["state"] != "level" or (s["health"] < 25 and not force):
+        if s["dead"] or s["state"] != "level" or (not force and (
+                s["health"] < 25 or self.step in self.stuck)):
             return
         last = self.saved[-1] if self.saved else None
         if last and (last["n"] == len(L.moves) or (
@@ -55,8 +57,8 @@ class Checkpoints:
                                health=s["health"]))
 
     # Retries also fight differently: (back off with this many in sight,
-    # walk past fireball throwers further than this).
-    TACTICS = [(3, 450), (2, 350), (99, 600), (4, 300)]
+    # walk past fireball throwers further than this, hurry past everything).
+    TACTICS = [(3, 450, False), (2, 350, False), (99, 600, True), (4, 300, False), (3, 450, True)]
 
     def tries_for(self, i):
         """Retries for checkpoint i: one if nearly dead and there's a
@@ -76,7 +78,7 @@ class Checkpoints:
         cp["tries"] += 1
         self.budget -= 1
         self.L.rewind(cp["n"])
-        self.L.back_off, self.L.pass_by = self.TACTICS[cp["tries"] % len(self.TACTICS)]
+        self.L.back_off, self.L.pass_by, self.L.hurry = self.TACTICS[cp["tries"] % len(self.TACTICS)]
         self.L.do(f"wait {7 * cp['tries']}t")
         self.L.log(f"rewound to tic {cp['tic']} (route step {cp['step']}), retry {cp['tries']}")
         return cp["step"]
@@ -137,9 +139,11 @@ def follow(r, route, start=0, progress=None):
         cps.step = i
         if fresh:
             cps.mark(force=True)
+        died = False
         try:
             ok = do_step(r, route[i])
         except Died:
+            died = True
             L.log("died; just before:")
             for h in L.history:
                 L.log(f"    tic {h['tic']} health {h['health']} at ({h['x']},{h['y']}) sees " + ", ".join(
@@ -149,11 +153,14 @@ def follow(r, route, start=0, progress=None):
         if L.status["state"] != "level" and not L.status["dead"]:
             return True
         if ok:
-            L.back_off, L.pass_by = Checkpoints.TACTICS[0]
+            cps.stuck.discard(i)
+            L.back_off, L.pass_by, L.hurry = Checkpoints.TACTICS[0]
             L.log(f"step {i} done after {len(L.moves)} moves")
             if progress:
                 progress(i)
         if not ok:
+            if not died:
+                cps.stuck.add(i)    # (retrying won't get further by checkpointing on)
             back = cps.back()
             if back is None:
                 L.log("out of retries")

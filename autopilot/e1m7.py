@@ -3,7 +3,9 @@
 
 The order of switches and keys is the one a god-mode scout found. Most of
 the switches open the way on; the yellow key sits on a pillar that switch
-4155 lowers, and switch 4279 opens the doors on the way to the exit.
+4155 lowers, and switch 4279 opens the doors on the way to the exit. E1M6
+ends on little health and this level is full of monsters, so the route
+also fetches the soulsphere and some health on the way.
 """
 
 from level import main
@@ -16,10 +18,16 @@ ROUTE = [
     ("press", 2553, "the floor switch (tag 6)"),
     ("press", 2538, "the floor switch (tag 7)"),
     ("press", 2619, "the door switch (tag 9)"),
+    ("get", (-1744, 2192), "the soulsphere"),
     ("press", 1181, "the door switch (tag 17)"),
-    ("get", (2664, 1088), "the blue armor"),
+    ("get", (2456, 1392), "a stimpack"),
+    ("get", (3184, 1424), "another stimpack"),
     ("press", 1090, "the floor switch (tag 18)"),
     ("get", (3104, 992), "the blue key"),
+    ("get", (1952, 1960), "a stimpack"),
+    ("get", (2144, 672), "a medikit"),
+    ("get", (1888, 384), "another medikit"),
+    ("get", (3824, 192), "the armor"),
     ("cross", 4153, "the floor trigger (tag 59)"),
     ("press", 4155, "the switch that lowers the yellow key"),
     ("get", (3424, 992), "the yellow key"),

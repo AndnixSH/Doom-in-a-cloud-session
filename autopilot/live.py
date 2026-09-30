@@ -58,6 +58,7 @@ class Live:
         self.dodge = False    # strafe between shots at monsters that throw fireballs
         self.engage = 900     # how far away a monster in sight gets shot at while moving
         self.pass_by = 450    # ... unless it throws fireballs and is further than this
+        self.hurry = False    # while walking, leave everything further than 200 alone
         self.on_calm = None   # called while walking with no monster in sight
         self.safe_move = None # safe_move((x, y), (x2, y2)): may dodging run that way?
         self.near_drop = None # near_drop((x, y), (x2, y2)): walk, don't run, that way?
@@ -156,13 +157,16 @@ class Live:
     def threats(self, maxd, moving=False):
         """Monsters in sight within maxd, nearest first. When moving, ones
         throwing fireballs from far off are left alone: a moving player is
-        hard to hit, and standing to shoot back lets the rest catch up."""
+        hard to hit, and standing to shoot back lets the rest catch up. When
+        nearly dead (or hurrying), only monsters close by are fought."""
         s = self.status
         out = []
         for m in s["monsters_in_sight"]:
             d = math.hypot(m["x"] - s["x"], m["y"] - s["y"])
             if moving and m["type"] in PROJECTILES and d > self.pass_by:
                 continue
+            if moving and (self.hurry or s["health"] < 25) and d > 200:
+                continue          # (nearly dead: keep running, don't stop to fight)
             if d < maxd and not any(
                     m["type"] == t and math.hypot(m["x"] - x, m["y"] - y) < 96 and s["tic"] < until
                     for t, x, y, until in self.ignored):
