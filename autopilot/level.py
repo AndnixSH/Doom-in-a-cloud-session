@@ -89,9 +89,11 @@ def do_step(r, step):
     L = r.L
     kind, what = step[0], step[1]
     name = step[2] if len(step) > 2 else ""
+    grab = (step[3] if len(step) > 3 else {}).get("grab", True)   # pickups on the way?
     if kind == "press":
         stand, mid = r.line_stand(what)
-        ok = r.go(*stand, name=name or f"switch {what}") and r.press_line(what, name or f"switch {what}")
+        ok = (r.go(*stand, name=name or f"switch {what}", grab=grab)
+              and r.press_line(what, name or f"switch {what}"))
         L.do("wait 1s")
     elif kind == "cross":
         # Walk over a trigger line, from whichever side is nearer by the map
@@ -101,11 +103,11 @@ def do_step(r, step):
         to_a, to_b = r.m.path(here, a), r.m.path(here, b)
         if to_b and (not to_a or len(to_b) < len(to_a)):
             a, b = b, a
-        ok = r.go(*a, name=name or f"line {what}")
+        ok = r.go(*a, name=name or f"line {what}", grab=grab)
         if ok:
             L.goto(*b, tol=10, final=True)
     elif kind == "get":
-        ok = r.go(*what, name=name, near=40)
+        ok = r.go(*what, name=name, near=40, grab=grab)
     elif kind == "do":
         # Plain moves, e.g. a shot to wake monsters up.
         if name:

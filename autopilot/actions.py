@@ -61,9 +61,10 @@ class Run:
         L.log(f"collected {name}" if name else f"at ({x},{y})")
         return True
 
-    def go(self, x, y, name="", near=0):
-        """Like collect(), but picking up useful things near the way. If
-        there's a pickup at (x, y), having got it counts as arriving."""
+    def go(self, x, y, name="", near=0, grab=True):
+        """Like collect(), but picking up useful things near the way (unless
+        grab is off). If there's a pickup at (x, y), having got it counts as
+        arriving."""
         L = self.L
         here = [it for it in L.items() if math.hypot(it["x"] - x, it["y"] - y) < 8]
 
@@ -71,7 +72,8 @@ class Run:
             return bool(here) and not any(it in here for it in L.items())
 
         r = travel(L, self.m, (x, y), arrive=40, live_heights=True,
-                   on_leg=self.grab_nearby, near=near, stop=got_it if here else None)
+                   on_leg=self.grab_nearby if grab else None, near=near,
+                   stop=got_it if here else None)
         if r != "arrived":
             L.log(f"could not reach {name} ({x},{y}): {r}")
             return False
@@ -107,8 +109,9 @@ class Run:
                 if not cells or m.cell_sector[cells[-1]] != m.sector_at(it["x"], it["y"]):
                     self.skip.add((it["x"], it["y"]))
                     continue
-                if len(cells) * 16 > 1.8 * reach(it):
-                    continue            # too far round for now
+                if len(cells) * 16 > min(1.8 * reach(it), 1500):
+                    continue            # too far round for now (and no long detours
+                                        # through who knows what when nearly dead)
                 self.collect(it["x"], it["y"], ride_lifts=False)
                 if it in L.items():
                     self.skip.add((it["x"], it["y"]))    # still there: out of reach

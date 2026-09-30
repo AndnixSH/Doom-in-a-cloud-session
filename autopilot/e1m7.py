@@ -27,8 +27,7 @@ ROUTE = [
     ("get", (1952, 1960), "a stimpack"),
     ("get", (2144, 672), "a medikit"),
     ("get", (1888, 384), "another medikit"),
-    ("get", (3824, 192), "the armor"),
-    ("cross", 4153, "the floor trigger (tag 59)"),
+    ("cross", 4153, "the floor trigger (tag 59)", {"grab": False}),   # (no detours up north)
     ("press", 4155, "the switch that lowers the yellow key"),
     ("get", (3424, 992), "the yellow key"),
     ("press", 4279, "the door switch (tag 61)"),
