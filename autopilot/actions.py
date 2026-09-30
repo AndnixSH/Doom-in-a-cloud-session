@@ -94,7 +94,7 @@ class Run:
             here = (s["x"], s["y"])
 
             def reach(it):
-                if it["type"] in HEALTH | ALWAYS and s["health"] < 50:
+                if it["type"] in HEALTH | {2013, 2014} and s["health"] < 50:   # (things that heal)
                     return radius * (6 if s["health"] < 25 else 2.5)
                 return radius
 
@@ -105,6 +105,9 @@ class Run:
             cands = [c for c in cands if c[0] < reach(c[1])][:3]
             got = False
             for d, it in cands:
+                if m.sector_at(it["x"], it["y"]) in m.hurt and it["type"] not in HEALTH | ALWAYS:
+                    self.skip.add((it["x"], it["y"]))    # (armor on nukage costs more health
+                    continue                              # than it saves)
                 cells = m.path(here, (it["x"], it["y"]))
                 if not cells or m.cell_sector[cells[-1]] != m.sector_at(it["x"], it["y"]):
                     self.skip.add((it["x"], it["y"]))

@@ -59,6 +59,8 @@ class Live:
         self.engage = 900     # how far away a monster in sight gets shot at while moving
         self.pass_by = 450    # ... unless it throws fireballs and is further than this
         self.hurry = False    # while walking, leave everything further than 200 alone
+        self.outrun = False   # while walking, leave demons alone unless in the way
+        self.heading = None   # where the player is walking to, for outrun
         self.on_calm = None   # called while walking with no monster in sight
         self.safe_move = None # safe_move((x, y), (x2, y2)): may dodging run that way?
         self.near_drop = None # near_drop((x, y), (x2, y2)): walk, don't run, that way?
@@ -167,6 +169,10 @@ class Live:
                 continue
             if moving and (self.hurry or s["health"] < 25) and d > 200:
                 continue          # (nearly dead: keep running, don't stop to fight)
+            if moving and self.outrun and m["type"] in ("demon", "spectre") and not (
+                    self.heading is not None and d < 160 and abs(angnorm(
+                        bearing(s["x"], s["y"], m["x"], m["y"]) - self.heading)) < 40):
+                continue          # (a running player leaves them behind)
             if d < maxd and not any(
                     m["type"] == t and math.hypot(m["x"] - x, m["y"] - y) < 96 and s["tic"] < until
                     for t, x, y, until in self.ignored):
@@ -256,8 +262,15 @@ class Live:
                 cycle = {"shotgun": 37, "rocket launcher": 22}.get(s["weapon"], 20)
                 move = f"wait {cycle - 5}t"
                 if self.kite and m["type"] in MELEE and d < 250:
-                    # Demons bite; a running player outpaces them.
-                    move = self._move_if_safe(facing, [("back", 180)], cycle - 5) or move
+                    # Demons bite; a running player outpaces them. A short
+                    # run back after each shot keeps them out of reach (the
+                    # way we came, where straight back isn't clear).
+                    step = min(14, cycle - 5)
+                    back = self._move_if_safe(facing, [("back", 180)], step)
+                    if not back and self._trail_move(facing):
+                        back = f"hold {self._trail_move(facing)}+run {step}t"
+                    if back:
+                        move = back + (f"; wait {cycle - 5 - step}t" if cycle - 5 > step else "")
                 elif self.dodge and m["type"] in PROJECTILES:
                     # Fireballs are slow enough to sidestep, and a short step
                     # clears them (without wandering off the way).
@@ -318,6 +331,7 @@ class Live:
             if self.status["state"] != "level":
                 return True        # (walked over an exit line)
             before = (self.status["x"], self.status["y"])
+            self.heading = bearing(before[0], before[1], x, y)
             if self.fight(maxd, moving=True) and replan and math.hypot(
                     self.status["x"] - before[0], self.status["y"] - before[1]) > 48:
                 return True

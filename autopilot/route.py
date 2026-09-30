@@ -147,7 +147,7 @@ def ride_lift(L, m, sec, before, board, after):
         L.do("wait 10t")
         if level() >= info["high"] - 4:      # stepping on didn't send it down
             lower_lift(L, m, sec, level())
-            L.goto(*board, tol=14, final=True)
+            L.goto(*board, tol=14, final=True, maxd=100)   # (before it comes back up)
         ok = wait_lift(L, sec, lambda f: f <= max(floor_after + 24, info["low"] + 4))
     else:
         ok = True

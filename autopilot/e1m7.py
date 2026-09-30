@@ -29,9 +29,13 @@ ROUTE = [
     ("get", (1888, 384), "another medikit"),
     ("cross", 4153, "the floor trigger (tag 59)", {"grab": False}),   # (no detours up north)
     ("press", 4155, "the switch that lowers the yellow key"),
-    ("get", (3424, 992), "the yellow key"),
-    ("press", 4279, "the door switch (tag 61)"),
-    ("exit", 1436),
+    # The yellow key's hall has eight spectres at its far end: in for the
+    # key (and the stimpack by the door) and straight out again.
+    ("get", (3224, 952), "the stimpack by the yellow key", {"outrun": True, "grab": False}),
+    ("get", (3424, 992), "the yellow key", {"outrun": True, "grab": False}),
+    ("get", (2632, 824), "the way out", {"outrun": True, "grab": False}),
+    ("press", 4279, "the door switch (tag 61)", {"outrun": True}),
+    ("exit", 1436, "", {"outrun": True}),
 ]
 
 main("E1M7", ROUTE, after=["e1m1-complete.txt", "e1m2-complete.txt", "e1m3-complete.txt",

@@ -89,7 +89,9 @@ def do_step(r, step):
     L = r.L
     kind, what = step[0], step[1]
     name = step[2] if len(step) > 2 else ""
-    grab = (step[3] if len(step) > 3 else {}).get("grab", True)   # pickups on the way?
+    opts = step[3] if len(step) > 3 else {}
+    grab = opts.get("grab", True)        # pickups on the way?
+    L.outrun = opts.get("outrun", False) # run from demons rather than fight them?
     if kind == "press":
         stand, mid = r.line_stand(what)
         ok = (r.go(*stand, name=name or f"switch {what}", grab=grab)
@@ -123,7 +125,8 @@ def do_step(r, step):
             r.go(*stand, name="the exit") and r.press_line(what, "the exit switch")
         L.do("wait 1s")
         ok = L.status["state"] != "level"
-    L.fight(900)
+    if not L.outrun:
+        L.fight(900)
     return ok
 
 
