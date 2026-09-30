@@ -38,6 +38,7 @@ WEAPON_KEYS = {"pistol": "2", "shotgun": "3", "chaingun": "4", "rocket launcher"
 AMMO_OF = {"pistol": "bullets", "shotgun": "shells", "chaingun": "bullets",
            "rocket launcher": "rockets", "plasma rifle": "cells"}
 AUTOMATIC = {"chaingun", "plasma rifle"}
+KEEP_OFF = {"baron of hell": 300, "hell knight": 300}   # slow, and they claw: stay this far
 
 
 class Live:
@@ -261,7 +262,7 @@ class Live:
                 # goes where you aim, a held trigger sprays.
                 cycle = {"shotgun": 37, "rocket launcher": 22}.get(s["weapon"], 20)
                 move = f"wait {cycle - 5}t"
-                if self.kite and m["type"] in MELEE and d < 250:
+                if self.kite and (m["type"] in MELEE and d < 250 or d < KEEP_OFF.get(m["type"], 0)):
                     # Demons bite; a running player outpaces them. A short
                     # run back after each shot keeps them out of reach (the
                     # way we came, where straight back isn't clear).
