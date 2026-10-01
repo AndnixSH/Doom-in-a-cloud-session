@@ -72,19 +72,20 @@ and 42% of secrets, in 7:21 (par is 1:15):
 `python3 doom.py play --title -f examples/e1m1-complete.txt -f examples/e1m2-complete.txt`.
 
 The rest of the episode follows the same way, each level starting with
-whatever health and ammo the one before it ended on, up to the closing text
-after E1M8. [Watch the last level and the ending](media/e1m8-complete.mp4).
+whatever health and ammo the one before it ended on. Every level has a video;
+from E1M2 on, each starts on the tally screen of the level before, and
+[the last one](media/e1m8-complete.mp4) ends on the episode's closing text.
 
-| Level | Moves file | Kills | Health at the exit | Time |
-|---|---|---|---|---|
-| E1M1 | `examples/e1m1-complete.txt` | 10 of 29 | 8% | 0:44 |
-| E1M2 | `examples/e1m2-complete.txt` | 93 of 93 | 102% | 7:21 |
-| E1M3 | `examples/e1m3-complete.txt` | 80 of 97 | 100% | 10:24 |
-| E1M4 | `examples/e1m4-complete.txt` | 115 of 124 | 105% | 6:56 |
-| E1M5 | `examples/e1m5-complete.txt` | 104 of 119 | 69% | 7:19 |
-| E1M6 | `examples/e1m6-complete.txt` | 188 of 192 | 15% | 12:35 |
-| E1M7 | `examples/e1m7-complete.txt` | 115 of 203 | 32% | 10:48 |
-| E1M8 | `examples/e1m8-complete.txt` | 3 of 3 | 39% | 1:36 |
+| Level | Moves file | Kills | Health at the exit | Time | Video |
+|---|---|---|---|---|---|
+| E1M1 | `examples/e1m1-complete.txt` | 10 of 29 | 8% | 0:44 | [watch](media/e1m1-complete.mp4) (6 MB) |
+| E1M2 | `examples/e1m2-complete.txt` | 93 of 93 | 102% | 7:21 | [watch](media/e1m2-complete.mp4) (25 MB) |
+| E1M3 | `examples/e1m3-complete.txt` | 80 of 97 | 100% | 10:24 | [watch](media/e1m3-complete.mp4) (36 MB) |
+| E1M4 | `examples/e1m4-complete.txt` | 115 of 124 | 105% | 6:56 | [watch](media/e1m4-complete.mp4) (21 MB) |
+| E1M5 | `examples/e1m5-complete.txt` | 104 of 119 | 69% | 7:19 | [watch](media/e1m5-complete.mp4) (31 MB) |
+| E1M6 | `examples/e1m6-complete.txt` | 188 of 192 | 15% | 12:35 | [watch](media/e1m6-complete.mp4) (55 MB) |
+| E1M7 | `examples/e1m7-complete.txt` | 115 of 203 | 32% | 10:48 | [watch](media/e1m7-complete.mp4) (42 MB) |
+| E1M8 | `examples/e1m8-complete.txt` | 3 of 3 | 39% | 1:36 | [watch](media/e1m8-complete.mp4) (14 MB) |
 
 The whole episode, about an hour of play, replays in a couple of seconds:
 
