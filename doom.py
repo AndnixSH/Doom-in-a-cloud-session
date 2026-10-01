@@ -264,7 +264,8 @@ class VideoWriter:
              "-r", str(TICRATE), "-i", "-",
              # Doubled with nearest-neighbour scaling so the pixels stay sharp.
              "-vf", "scale=640:400:flags=neighbor", "-c:v", "libx264", "-preset", "slow",
-             "-crf", "26", "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(path)],
+             # (CRF 30 looks much the same as 26 at 60% of the size: about 3 MB a minute.)
+             "-crf", "30", "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(path)],
             stdin=subprocess.PIPE)
 
     def add(self, frame_no, rgb):
